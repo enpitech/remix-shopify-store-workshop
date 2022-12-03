@@ -4,7 +4,7 @@ import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
 import { requireUserId } from "~/session.server";
 import { useUser } from "~/utils";
-import { getNoteListItems } from "~/models/note.server";
+import { getNoteListItems } from "~/models/skeleton/note.server";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await requireUserId(request);
