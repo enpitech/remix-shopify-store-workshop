@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Dialog, Popover, Tab, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -7,6 +7,7 @@ import {
   ShoppingBagIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+import { fetchHomeCollection } from "~/models/collection.client";
 
 const navigation = {
   categories: [
@@ -189,7 +190,9 @@ function classNames(...classes: string[]) {
 
 export default function Index() {
   const [open, setOpen] = useState(false);
-
+  useEffect(() => {
+    fetchHomeCollection();
+  });
   return (
     <div className="bg-white">
       {/* Mobile menu */}
