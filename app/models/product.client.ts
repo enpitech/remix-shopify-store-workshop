@@ -4,6 +4,18 @@ export const fetchProductById = async (productId: string) => {
   const getProductByIdQuery = `query getProductById($id: ID!) {
     product(id: $id) {
       title
+      priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+      description
+      featuredImage {
+        originalSrc
+        altText
+      }
+
     }
   }
   `;
@@ -13,6 +25,7 @@ export const fetchProductById = async (productId: string) => {
     variables: { id: productId },
   };
 
-  const data = await runQuery(params);
-  console.log(JSON.stringify(data, null, 4));
+  const result = await runQuery(params);
+  console.log(JSON.stringify(result, null, 4));
+  return result.data.product;
 };
