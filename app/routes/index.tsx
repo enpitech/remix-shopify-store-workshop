@@ -7,7 +7,7 @@ import {
   ShoppingBagIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { fetchHomeCollection } from "~/models/collection.client";
+import { fetchProductById } from "~/models/product.client";
 
 const navigation = {
   categories: [
@@ -191,7 +191,7 @@ function classNames(...classes: string[]) {
 export default function Index() {
   const [open, setOpen] = useState(false);
   useEffect(() => {
-    fetchHomeCollection();
+    fetchProductById("gid://shopify/Product/5523362250915");
   });
   return (
     <div className="bg-white">
