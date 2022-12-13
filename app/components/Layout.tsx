@@ -360,8 +360,8 @@ function Header() {
 
   return (
     <>
-      <MobileMenu />
       <header className="relative">
+        <MobileMenu />
         <NavBar />
       </header>
     </>
