@@ -132,10 +132,10 @@ export const footerNavigation = {
 export const navigation = {
   categories: [
     {
-      name: "Women",
+      name: "Clothes",
       featured: [
         {
-          name: "New Arrivals",
+          name: "T-Shirts",
           href: "#",
           imageSrc:
             "https://tailwindui.com/img/ecommerce-images/mega-menu-category-01.jpg",
@@ -143,7 +143,7 @@ export const navigation = {
             "Models sitting back to back, wearing Basic Tee in black and bone.",
         },
         {
-          name: "Basic Tees",
+          name: "Masks",
           href: "#",
           imageSrc:
             "https://tailwindui.com/img/ecommerce-images/mega-menu-category-02.jpg",
@@ -151,7 +151,7 @@ export const navigation = {
             "Close up of Basic Tee fall bundle with off-white, ochre, olive, and black tees.",
         },
         {
-          name: "Accessories",
+          name: "Long Sleeves",
           href: "#",
           imageSrc:
             "https://tailwindui.com/img/ecommerce-images/mega-menu-category-03.jpg",
@@ -159,7 +159,7 @@ export const navigation = {
             "Model wearing minimalist watch with black wristband and white watch face.",
         },
         {
-          name: "Carry",
+          name: "Hats",
           href: "#",
           imageSrc:
             "https://tailwindui.com/img/ecommerce-images/mega-menu-category-04.jpg",
@@ -169,7 +169,7 @@ export const navigation = {
       ],
     },
     {
-      name: "Men",
+      name: "Drinking",
       featured: [
         {
           name: "New Arrivals",
