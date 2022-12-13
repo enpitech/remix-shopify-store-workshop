@@ -1,31 +1,64 @@
+// import { runQuery } from "./utils";
+
+// export const fetchCollectionById = async (
+//   collectionId: string,
+//   productsAmount: number
+// ) => {
+//   const getCollectionByIdQuery = `query getCollectionById($id: ID!) {
+//     collection(id: $id) {
+//       title
+//       products(first: ${productsAmount}) {
+//         edges {
+//             node {
+//                 id
+//                 title
+//                 description
+//                 variants(first:1) {
+//                     edges {
+//                         node {
+//                             title
+//                             id
+//                             priceV2 {
+//                                 amount
+//                                 currencyCode
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//       }
+//     }
+//   }
+//   `;
+
+//   const params = {
+//     query: getCollectionByIdQuery,
+//     variables: { id: collectionId },
+//   };
+
+//   const data = await runQuery(params);
+//   console.log(JSON.stringify(data, null, 4));
+// };
+
+// export const fetchHomeCollection = () =>
+//   fetchCollectionById("gid://shopify/Collection/216731549859", 10);
+
 import { runQuery } from "./utils";
 
-export const fetchCollectionById = async (
-  collectionId: string,
-  productsAmount: number
-) => {
-  const getCollectionByIdQuery = `query getCollectionById($id: ID!) {
-    collection(id: $id) {
-      title
-      products(first: ${productsAmount}) {
-        edges {
-            node {
+export const getCollections = async (productId: string) => {
+  const getProductByIdQuery = `query {
+    collections(first: 2) {
+      edges {
+        node {
+          id
+          products(first: 5) {
+            edges {
+              node {
                 id
-                title
-                description
-                variants(first:1) {
-                    edges {
-                        node {
-                            title
-                            id
-                            priceV2 {
-                                amount
-                                currencyCode
-                            }
-                        }
-                    }
-                }
+              }
             }
+          }
         }
       }
     }
@@ -33,13 +66,11 @@ export const fetchCollectionById = async (
   `;
 
   const params = {
-    query: getCollectionByIdQuery,
-    variables: { id: collectionId },
+    query: getProductByIdQuery,
+    variables: { id: productId },
   };
 
-  const data = await runQuery(params);
-  console.log(JSON.stringify(data, null, 4));
+  const result = await runQuery(params);
+  console.log(JSON.stringify(result, null, 4));
+  return result.data.product;
 };
-
-export const fetchHomeCollection = () =>
-  fetchCollectionById("gid://shopify/Collection/216731549859", 10);
