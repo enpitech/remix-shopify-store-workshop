@@ -1,8 +1,8 @@
 import { runQuery } from "./utils";
 
-export const getAllCollections = async () => {
-  const getAllCollectionsQuery = `{
-    collections(first: 20) {
+export const getAllCollections = async (amount: Number) => {
+  const query = `{
+    collections(first: ${amount}) {
       edges {
         node {
           title
@@ -28,20 +28,23 @@ export const getAllCollections = async () => {
   `;
 
   const params = {
-    query: getAllCollectionsQuery,
-    variables: {},
+    query: query,
   };
   try {
-    const data = await runQuery(params);
-    return data.data.collections.edges;
+    const response = await runQuery(params);
+    if (!response) {
+      console.log("No data found");
+      return;
+    }
+    return response.data.collections.edges;
   } catch (error) {
     return error;
   }
 };
 
-export const getTrendingProducts = async () => {
+export const getTrendingProducts = async (amount: Number) => {
   const query = `{
-    products(first: 10) {
+    products(first: ${amount}) {
       edges {
         node {
           id
@@ -62,12 +65,17 @@ export const getTrendingProducts = async () => {
 
   const params = {
     query: query,
-    variables: {},
   };
 
   try {
-    const data = await runQuery(params);
-    return data.data.products.edges;
+    const response = await runQuery(params);
+
+    if (!response) {
+      console.log("No Data Found");
+      return;
+    }
+
+    return response.data.products.edges;
   } catch (error) {
     return error;
   }
@@ -110,9 +118,11 @@ export const fetchCollectionById = async (
     variables: { id: collectionId },
   };
 
-  const data = await runQuery(params);
-  console.log(JSON.stringify(data, null, 4));
+  const response = await runQuery(params);
+  console.log(JSON.stringify(response, null, 4));
 };
 
 export const fetchHomeCollection = () =>
   fetchCollectionById("gid://shopify/Collection/216731549859", 10);
+
+
