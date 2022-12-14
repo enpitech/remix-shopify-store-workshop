@@ -172,7 +172,6 @@ export const navigation = {
   pages: [
     { name: "Drinking", href: "#" },
     { name: "Home & Living", href: "#" },
-    { name: "Home & Living", href: "#" },
     { name: "Phone", href: "#" },
     { name: "Beach", href: "#" },
     { name: "Bags", href: "#" },

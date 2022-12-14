@@ -8,7 +8,7 @@ interface QueryParams {
 }
 
 export const runQuery = async (params: QueryParams) => {
-  const optionsCollectionByIdQuery = {
+  const options = {
     method: "post",
     headers: {
       "Content-Type": "application/json",
@@ -18,10 +18,7 @@ export const runQuery = async (params: QueryParams) => {
     body: JSON.stringify(params),
   };
 
-  const response = await fetch(
-    shopUrl + `/api/graphql`,
-    optionsCollectionByIdQuery
-  );
+  const response = await fetch(shopUrl + `/api/graphql`, options);
   const data = await response.json();
 
   return data;

@@ -1,5 +1,78 @@
 import { runQuery } from "./utils";
 
+export const getAllCollections = async () => {
+  const getAllCollectionsQuery = `{
+    collections(first: 20) {
+      edges {
+        node {
+          title
+          products(first: 1) {
+            edges {
+              node {
+                id
+                images(first: 1) {
+                  edges {
+                    node {
+                      altText
+                      src
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  `;
+
+  const params = {
+    query: getAllCollectionsQuery,
+    variables: {},
+  };
+  try {
+    const data = await runQuery(params);
+    return data.data.collections.edges;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const getTrendingProducts = async () => {
+  const query = `{
+    products(first: 10) {
+      edges {
+        node {
+          id
+          title
+          images(first: 10) {
+            edges {
+              node {
+                altText
+                src
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  `;
+
+  const params = {
+    query: query,
+    variables: {},
+  };
+
+  try {
+    const data = await runQuery(params);
+    return data.data.products.edges;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const fetchCollectionById = async (
   collectionId: string,
   productsAmount: number
