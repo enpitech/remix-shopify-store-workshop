@@ -28,13 +28,12 @@ export const getAllCollections = async (amount: Number) => {
   `;
 
   const params = {
-    query: query,
+    query,
   };
   try {
     const response = await runQuery(params);
     if (!response) {
-      console.log("No data found");
-      return;
+      return response;
     }
     return response.data.collections.edges;
   } catch (error) {
@@ -64,21 +63,18 @@ export const getTrendingProducts = async (amount: Number) => {
   `;
 
   const params = {
-    query: query,
+    query,
   };
 
-  try {
-    const response = await runQuery(params);
+  const response = await runQuery(params);
+  console.log(response);
 
-    if (!response) {
-      console.log("No Data Found");
-      return;
-    }
-
-    return response.data.products.edges;
-  } catch (error) {
-    return error;
+  if (!response) {
+    console.log("No Data Found");
+    return;
   }
+
+  return response.data.products.edges;
 };
 
 export const fetchCollectionById = async (
@@ -124,5 +120,3 @@ export const fetchCollectionById = async (
 
 export const fetchHomeCollection = () =>
   fetchCollectionById("gid://shopify/Collection/216731549859", 10);
-
-

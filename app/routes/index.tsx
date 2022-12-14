@@ -15,7 +15,7 @@ export default function Home() {
     key: string;
     name: string;
     imgSrc: string;
-    altTxt: null | string;
+    altTxt: string | undefined;
   }
 
   interface Collection {
@@ -30,7 +30,7 @@ export default function Home() {
                 edges: [
                   {
                     node: {
-                      altText: null | string;
+                      altText: string | undefined;
                       src: string;
                     };
                   }
@@ -47,7 +47,7 @@ export default function Home() {
     key: string;
     name: string;
     imgSrc: string;
-    altTxt: null | string;
+    altTxt: string | undefined;
   }
 
   interface Product {
@@ -58,7 +58,7 @@ export default function Home() {
         edges: [
           {
             node: {
-              altText: null | string;
+              altText: string | undefined;
               src: string;
             };
           }
@@ -172,12 +172,11 @@ export default function Home() {
 
             <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 md:gap-y-0 lg:gap-x-8">
               {trendingProducts.map((product: Product) => {
-                console.log(product);
                 const productObj: ProductObj = {
                   name: product.node.title,
                   key: product.node.id,
                   imgSrc: product.node.images.edges[0].node.src,
-                  altTxt: "null",
+                  altTxt: "",
                 };
                 return (
                   <div key={productObj.key} className="group relative">

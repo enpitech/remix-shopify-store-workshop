@@ -28,7 +28,7 @@ export const runQuery = async (
 
     if (!data) {
       console.log("No Data Found");
-      return;
+      return data;
     }
     return data;
   } catch (error) {
