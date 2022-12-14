@@ -7,14 +7,9 @@ import {
   ShoppingBagIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import type { ReactNode } from "react";
 import { footerNavigation, navigation } from "mocks/DUMMY_DATA";
 import { getAllCollections } from "~/models/collection.client";
-import type { Collection } from "~/routes/index";
-
-interface Props {
-  children: ReactNode;
-}
+import type { Collection, Props } from "~/types";
 
 export default function Layout({ children }: Props) {
   const [collections, setCollections] = useState([]);
