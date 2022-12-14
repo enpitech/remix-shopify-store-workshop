@@ -6,66 +6,66 @@ import {
 } from "~/models/collection.client";
 import { useState, useEffect } from "react";
 
+export interface CollectionObj {
+  key: string;
+  name: string;
+  imgSrc: string;
+  altTxt: string | undefined;
+}
+
+export interface Collection {
+  node: {
+    title: string;
+    products: {
+      edges: [
+        {
+          node: {
+            id: string;
+            images: {
+              edges: [
+                {
+                  node: {
+                    altText: string | undefined;
+                    src: string;
+                  };
+                }
+              ];
+            };
+          };
+        }
+      ];
+    };
+  };
+}
+
+export interface ProductObj {
+  key: string;
+  name: string;
+  imgSrc: string;
+  altTxt: string | undefined;
+}
+
+export interface Product {
+  node: {
+    id: string;
+    title: string;
+    images: {
+      edges: [
+        {
+          node: {
+            altText: string | undefined;
+            src: string;
+          };
+        }
+      ];
+    };
+  };
+}
+
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [collections, setCollections] = useState([]);
   const [trendingProducts, setTrendingProducts] = useState([]);
-
-  interface CollectionObj {
-    key: string;
-    name: string;
-    imgSrc: string;
-    altTxt: string | undefined;
-  }
-
-  interface Collection {
-    node: {
-      title: string;
-      products: {
-        edges: [
-          {
-            node: {
-              id: string;
-              images: {
-                edges: [
-                  {
-                    node: {
-                      altText: string | undefined;
-                      src: string;
-                    };
-                  }
-                ];
-              };
-            };
-          }
-        ];
-      };
-    };
-  }
-
-  interface ProductObj {
-    key: string;
-    name: string;
-    imgSrc: string;
-    altTxt: string | undefined;
-  }
-
-  interface Product {
-    node: {
-      id: string;
-      title: string;
-      images: {
-        edges: [
-          {
-            node: {
-              altText: string | undefined;
-              src: string;
-            };
-          }
-        ];
-      };
-    };
-  }
 
   //Get Data
   useEffect(() => {

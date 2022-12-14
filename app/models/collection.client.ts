@@ -67,7 +67,6 @@ export const getTrendingProducts = async (amount: Number) => {
   };
 
   const response = await runQuery(params);
-  console.log(response);
 
   if (!response) {
     console.log("No Data Found");
