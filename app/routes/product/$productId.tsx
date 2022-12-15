@@ -12,7 +12,6 @@ import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 
 export const loader: LoaderFunction = (request) => {
   const { productId } = request.params;
-
   return json({ productId });
 };
 
@@ -36,43 +35,14 @@ export default function Product() {
   if (loading) {
     return <SkeletonLoader />;
   }
-
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
         {/* Product details */}
         <div className="lg:max-w-lg lg:self-end">
-          <nav aria-label="Breadcrumb">
-            <ol role="list" className="flex items-center space-x-2">
-              {product.breadcrumbs.map((breadcrumb, breadcrumbIdx) => (
-                <li key={breadcrumb.id}>
-                  <div className="flex items-center text-sm">
-                    <a
-                      href={breadcrumb.href}
-                      className="font-medium text-gray-500 hover:text-gray-900"
-                    >
-                      {breadcrumb.name}
-                    </a>
-                    {breadcrumbIdx !== product.breadcrumbs.length - 1 ? (
-                      <svg
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        aria-hidden="true"
-                        className="ml-2 h-5 w-5 flex-shrink-0 text-gray-300"
-                      >
-                        <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
-                      </svg>
-                    ) : null}
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </nav>
-
           <div className="mt-4">
             <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              {product.title}
+              {product.name}
             </h1>
           </div>
 
