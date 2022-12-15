@@ -164,14 +164,6 @@ const productMock = {
   description: "Failed to load description",
   imageSrc: "/",
   imageAlt: "Some alt text",
-  breadcrumbs: [
-    { id: 1, name: "Travel", href: "#" },
-    { id: 2, name: "Bags", href: "#" },
-  ],
-  sizes: [
-    { name: "18L", description: "Perfect for a reasonable amount of snacks." },
-    { name: "20L", description: "Enough room for a serious amount of snacks." },
-  ],
   reviews: { average: 4, totalCount: 1624 },
 };
 
