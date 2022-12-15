@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { fetchProductById } from "~/models/product.client";
 import {
   CheckIcon,
-  QuestionMarkCircleIcon,
   StarIcon,
 } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
@@ -18,7 +17,6 @@ export const loader: LoaderFunction = (request) => {
 export default function Product() {
   const [loading, setLoading] = useState(true);
   const { productId } = useLoaderData();
-  const [selectedSize, setSelectedSize] = useState(productMock.sizes[0]);
   const [product, setProduct] = useState(productMock);
   useEffect(() => {
     fetchProductById(productId).then((data) => {
@@ -123,11 +121,6 @@ export default function Product() {
 
             <form>
               <div className="sm:flex sm:justify-between">
-                {/* Size selector */}
-                <RadioGroup
-                  value={selectedSize}
-                  onChange={setSelectedSize}
-                ></RadioGroup>
               </div>
               <div className="mt-4"></div>
               <div className="mt-10">
