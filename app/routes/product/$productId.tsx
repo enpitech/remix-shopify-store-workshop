@@ -2,11 +2,7 @@ import { useLoaderData } from "@remix-run/react";
 import { json, type LoaderFunction } from "@remix-run/node";
 import { useEffect, useState } from "react";
 import { fetchProductById } from "~/models/product.client";
-import {
-  CheckIcon,
-  QuestionMarkCircleIcon,
-  StarIcon,
-} from "@heroicons/react/20/solid";
+import { CheckIcon, StarIcon } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 
