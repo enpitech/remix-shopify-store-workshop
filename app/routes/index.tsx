@@ -19,7 +19,6 @@ export default function Home() {
       setCollections(data);
     });
     // Get Trending Data
-
     getTrendingProducts(8).then((trends) => {
       setTrendingProducts(trends);
 
