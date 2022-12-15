@@ -1,5 +1,81 @@
 import { runQuery } from "./utils";
 
+export const getAllCollections = async (amount: Number) => {
+  const query = `{
+    collections(first: ${amount}) {
+      edges {
+        node {
+          title
+          products(first: 1) {
+            edges {
+              node {
+                id
+                images(first: 1) {
+                  edges {
+                    node {
+                      altText
+                      src
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  `;
+
+  const params = {
+    query,
+  };
+  try {
+    const response = await runQuery(params);
+    if (!response) {
+      return response;
+    }
+    return response.data.collections.edges;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const getTrendingProducts = async (amount: Number) => {
+  const query = `{
+    products(first: ${amount}) {
+      edges {
+        node {
+          id
+          title
+          images(first: 10) {
+            edges {
+              node {
+                altText
+                src
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  `;
+
+  const params = {
+    query,
+  };
+
+  const response = await runQuery(params);
+
+  if (!response) {
+    console.log("No Data Found");
+    return;
+  }
+
+  return response.data.products.edges;
+};
+
 export const fetchCollectionById = async (
   collectionId: string,
   productsAmount: number
@@ -37,8 +113,8 @@ export const fetchCollectionById = async (
     variables: { id: collectionId },
   };
 
-  const data = await runQuery(params);
-  console.log(JSON.stringify(data, null, 4));
+  const response = await runQuery(params);
+  console.log(JSON.stringify(response, null, 4));
 };
 
 export const fetchHomeCollection = () =>
