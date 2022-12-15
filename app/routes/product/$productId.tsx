@@ -4,10 +4,8 @@ import { useEffect, useState } from "react";
 import { fetchProductById } from "~/models/product.client";
 import {
   CheckIcon,
-  QuestionMarkCircleIcon,
   StarIcon,
 } from "@heroicons/react/20/solid";
-import { RadioGroup } from "@headlessui/react";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 
 export const loader: LoaderFunction = (request) => {
@@ -18,13 +16,14 @@ export const loader: LoaderFunction = (request) => {
 export default function Product() {
   const [loading, setLoading] = useState(true);
   const { productId } = useLoaderData();
-  const [selectedSize, setSelectedSize] = useState(productMock.sizes[0]);
   const [product, setProduct] = useState(productMock);
   useEffect(() => {
-    fetchProductById("gid://shopify/Product/5523362250915").then((data) => {
+    fetchProductById(productId).then((data) => {
+      console.log(data);
       setProduct({
         ...productMock,
-        ...data,
+        description: data.description,
+        name: data.title,
         price: `$${data.priceRange.minVariantPrice.amount}`,
         imageSrc: data.featuredImage.originalSrc,
       });
@@ -65,7 +64,7 @@ export default function Product() {
                         <StarIcon
                           key={rating}
                           className={classNames(
-                            reviews.average > rating
+                            product.reviews.average > rating
                               ? "text-yellow-400"
                               : "text-gray-300",
                             "h-5 w-5 flex-shrink-0"
@@ -74,10 +73,12 @@ export default function Product() {
                         />
                       ))}
                     </div>
-                    <p className="sr-only">{reviews.average} out of 5 stars</p>
+                    <p className="sr-only">
+                      {product.reviews.average} out of 5 stars
+                    </p>
                   </div>
                   <p className="ml-2 text-sm text-gray-500">
-                    {reviews.totalCount} reviews
+                    {product.reviews.totalCount} reviews
                   </p>
                 </div>
               </div>
@@ -119,67 +120,8 @@ export default function Product() {
 
             <form>
               <div className="sm:flex sm:justify-between">
-                {/* Size selector */}
-                <RadioGroup value={selectedSize} onChange={setSelectedSize}>
-                  <RadioGroup.Label className="block text-sm font-medium text-gray-700">
-                    Size
-                  </RadioGroup.Label>
-                  <div className="mt-1 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    {product.sizes.map((size) => (
-                      <RadioGroup.Option
-                        as="div"
-                        key={size.name}
-                        value={size}
-                        className={({ active }) =>
-                          classNames(
-                            active ? "ring-2 ring-indigo-500" : "",
-                            "relative block cursor-pointer rounded-lg border border-gray-300 p-4 focus:outline-none"
-                          )
-                        }
-                      >
-                        {({ active, checked }) => (
-                          <>
-                            <RadioGroup.Label
-                              as="p"
-                              className="text-base font-medium text-gray-900"
-                            >
-                              {size.name}
-                            </RadioGroup.Label>
-                            <RadioGroup.Description
-                              as="p"
-                              className="mt-1 text-sm text-gray-500"
-                            >
-                              {size.description}
-                            </RadioGroup.Description>
-                            <div
-                              className={classNames(
-                                active ? "border" : "border-2",
-                                checked
-                                  ? "border-indigo-500"
-                                  : "border-transparent",
-                                "pointer-events-none absolute -inset-px rounded-lg"
-                              )}
-                              aria-hidden="true"
-                            />
-                          </>
-                        )}
-                      </RadioGroup.Option>
-                    ))}
-                  </div>
-                </RadioGroup>
               </div>
-              <div className="mt-4">
-                <a
-                  href="#"
-                  className="group inline-flex text-sm text-gray-500 hover:text-gray-700"
-                >
-                  <span>What size should I buy?</span>
-                  <QuestionMarkCircleIcon
-                    className="ml-2 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
-                    aria-hidden="true"
-                  />
-                </a>
-              </div>
+              <div className="mt-4"></div>
               <div className="mt-10">
                 <button
                   type="submit"
@@ -189,7 +131,7 @@ export default function Product() {
                 </button>
               </div>
               <div className="mt-6 text-center">
-                <a href="#" className="group inline-flex text-base font-medium">
+                <a href="/" className="group inline-flex text-base font-medium">
                   <ShieldCheckIcon
                     className="mr-2 h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                     aria-hidden="true"
@@ -208,25 +150,14 @@ export default function Product() {
 }
 
 const productMock = {
-  name: "Everyday Ruck Snack",
-  href: "#",
-  price: "$220",
-  description:
-    "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-  imageSrc:
-    "https://tailwindui.com/img/ecommerce-images/product-page-04-featured-product-shot.jpg",
-  imageAlt:
-    "Model wearing light green backpack with black canvas straps and front zipper pouch.",
-  breadcrumbs: [
-    { id: 1, name: "Travel", href: "#" },
-    { id: 2, name: "Bags", href: "#" },
-  ],
-  sizes: [
-    { name: "18L", description: "Perfect for a reasonable amount of snacks." },
-    { name: "20L", description: "Enough room for a serious amount of snacks." },
-  ],
+  name: "Failed to load name",
+  href: "/",
+  price: "Failed to load price ",
+  description: "Failed to load description",
+  imageSrc: "/",
+  imageAlt: "Some alt text",
+  reviews: { average: 4, totalCount: 1624 },
 };
-const reviews = { average: 4, totalCount: 1624 };
 
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
