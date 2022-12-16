@@ -32,10 +32,10 @@ export const getAllCollections = async (amount: Number) => {
   };
   try {
     const response = await runQuery(params);
-    if (!response) {
-      return response;
-    }
-    return response.data.collections.edges;
+
+    const collections = response.data.collections.edges;
+
+    return collections;
   } catch (error) {
     return error;
   }
@@ -76,46 +76,4 @@ export const getTrendingProducts = async (amount: Number) => {
   return response.data.products.edges;
 };
 
-export const fetchCollectionById = async (
-  collectionId: string,
-  productsAmount: number
-) => {
-  const getCollectionByIdQuery = `query getCollectionById($id: ID!) {
-    collection(id: $id) {
-      title
-      products(first: ${productsAmount}) {
-        edges {
-            node {
-                id
-                title
-                description
-                variants(first:1) {
-                    edges {
-                        node {
-                            title
-                            id
-                            priceV2 {
-                                amount
-                                currencyCode
-                            }
-                        }
-                    }
-                }
-            }
-        }
-      }
-    }
-  }
-  `;
 
-  const params = {
-    query: getCollectionByIdQuery,
-    variables: { id: collectionId },
-  };
-
-  const response = await runQuery(params);
-  console.log(JSON.stringify(response, null, 4));
-};
-
-export const fetchHomeCollection = () =>
-  fetchCollectionById("gid://shopify/Collection/216731549859", 10);

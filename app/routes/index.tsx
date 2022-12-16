@@ -1,9 +1,7 @@
-import { perks } from "mocks/DUMMY_DATA";
 import { Link } from "@remix-run/react";
-import {
-  getAllCollections,
-  getTrendingProducts,
-} from "~/models/collection.client";
+import { getTrendingProducts } from "~/models/product.client";
+import { getAllCollections } from "~/models/collection.client";
+
 import { useState, useEffect } from "react";
 import type { CollectionObj, Collection, ProductObj, Product } from "~/types";
 
@@ -12,18 +10,18 @@ export default function Home() {
   const [collections, setCollections] = useState([]);
   const [trendingProducts, setTrendingProducts] = useState([]);
 
-  //Get Data
   useEffect(() => {
-    //Get Collections Data
-    getAllCollections(20).then((data) => {
+    async function getData() {
+      //Get Collections Data
+      const data = await getAllCollections(10);
       setCollections(data);
-    });
-    // Get Trending Data
-    getTrendingProducts(8).then((trends) => {
-      setTrendingProducts(trends);
 
-      setLoading(false);
-    });
+      // Get Trending Data
+      const trends = await getTrendingProducts(8);
+      setTrendingProducts(trends);
+    }
+    getData();
+    setLoading(false);
   }, []);
 
   if (loading) {
@@ -168,41 +166,10 @@ export default function Home() {
 
 const Perks = () => {
   return (
-    <section
-      aria-labelledby="perks-heading"
-      className="border-t border-gray-200 bg-gray-50"
-    >
-      <h2 id="perks-heading" className="sr-only">
-        Our perks
-      </h2>
-
-      <div className="mx-auto max-w-7xl py-24 px-4 sm:px-6 sm:py-32 lg:px-8">
-        <div className="grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-0">
-          {perks.map((perk) => (
-            <div
-              key={perk.name}
-              className="text-center md:flex md:items-start md:text-left lg:block lg:text-center"
-            >
-              <div className="md:flex-shrink-0">
-                <div className="flow-root">
-                  <img
-                    className="-my-1 mx-auto h-24 w-auto"
-                    src={perk.imageUrl}
-                    alt=""
-                  />
-                </div>
-              </div>
-              <div className="mt-6 md:mt-0 md:ml-4 lg:mt-6 lg:ml-0">
-                <h3 className="text-base font-medium text-gray-900">
-                  {perk.name}
-                </h3>
-                <p className="mt-3 text-sm text-gray-500">{perk.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+    <img
+      src="https://media.licdn.com/dms/image/C4D1BAQGKMh1Xw_Lbfg/company-background_10000/0/1637829460479?e=1671778800&v=beta&t=8WQG2Q0Hox7iZrr7RPsVjbkp2ebTwjpfYWUhD30s4RU"
+      alt=""
+    />
   );
 };
 

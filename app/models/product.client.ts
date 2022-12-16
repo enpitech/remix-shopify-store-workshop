@@ -1,5 +1,40 @@
 import { runQuery } from "./utils";
 
+export const getTrendingProducts = async (amount: Number) => {
+  const query = `{
+    products(first: ${amount}) {
+      edges {
+        node {
+          id
+          title
+          images(first: 10) {
+            edges {
+              node {
+                altText
+                src
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  `;
+
+  const params = {
+    query,
+  };
+
+  const response = await runQuery(params);
+
+  if (!response) {
+    console.log("No Data Found");
+    return;
+  }
+
+  return response.data.products.edges;
+};
+
 export const fetchProductById = async (productId: string) => {
   const getProductByIdQuery = `query getProductById($id: ID!) {
     product(id: $id) {
@@ -26,6 +61,5 @@ export const fetchProductById = async (productId: string) => {
   };
 
   const result = await runQuery(params);
-  console.log(JSON.stringify(result, null, 4));
   return result.data.product;
 };

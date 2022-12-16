@@ -1,6 +1,8 @@
 // Shop specific setup constants
 export const shopUrl = "https://wearjs.myshopify.com";
 export const accessToken = "41d163286cd756551cd06df943018bb1";
+// export const shopUrl = "https://{shop}.myshopify.com/admin/api/2022-10";
+export const serverAccessToken = "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";
 
 interface QueryParams {
   query: string;

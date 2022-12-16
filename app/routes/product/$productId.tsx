@@ -3,8 +3,8 @@ import { json, type LoaderFunction } from "@remix-run/node";
 import { useEffect, useState } from "react";
 import { fetchProductById } from "~/models/product.client";
 import { CheckIcon, StarIcon } from "@heroicons/react/20/solid";
-import { RadioGroup } from "@headlessui/react";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
+import { createCart, addItemToCart } from "~/models/cart.client";
 
 export const loader: LoaderFunction = (request) => {
   const { productId } = request.params;
@@ -14,11 +14,37 @@ export const loader: LoaderFunction = (request) => {
 export default function Product() {
   const [loading, setLoading] = useState(true);
   const { productId } = useLoaderData();
-  const [selectedSize, setSelectedSize] = useState(productMock.sizes[0]);
   const [product, setProduct] = useState(productMock);
+
+  async function handleAddToBag(e: any) {
+    const cartId = localStorage.getItem("cartId");
+
+    if (true) {
+      e.preventDefault();
+      console.log("Creating Cart");
+      const quantity = 1;
+      const itemId = productId;
+
+      //Create Cart
+      const CartResponse = await createCart({
+        itemId,
+        quantity,
+      });
+      const cartId = CartResponse?.cartId;
+      localStorage.setItem("cartId", cartId);
+
+      //Add Item
+    } else {
+      e.preventDefault();
+      console.log("Adding Items to existing cart");
+
+      //Handle adding items to existing cart
+    }
+  }
+
+  //Render producr details
   useEffect(() => {
     fetchProductById(productId).then((data) => {
-      console.log(data);
       setProduct({
         ...productMock,
         description: data.description,
@@ -27,6 +53,10 @@ export default function Product() {
         imageSrc: data.featuredImage.originalSrc,
       });
       setLoading(false);
+      // TEST
+      addItemToCart(productId).then((res) => {
+        console.log("check");
+      });
     });
   }, [productId]);
 
@@ -98,7 +128,6 @@ export default function Product() {
             </div>
           </section>
         </div>
-
         {/* Product image */}
         <div className="mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center">
           <div className="aspect-w-1 aspect-h-1 overflow-hidden rounded-lg">
@@ -118,16 +147,10 @@ export default function Product() {
             </h2>
 
             <form>
-              <div className="sm:flex sm:justify-between">
-                {/* Size selector */}
-                <RadioGroup
-                  value={selectedSize}
-                  onChange={setSelectedSize}
-                ></RadioGroup>
-              </div>
               <div className="mt-4"></div>
               <div className="mt-10">
                 <button
+                  onClick={handleAddToBag}
                   type="submit"
                   className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                 >
