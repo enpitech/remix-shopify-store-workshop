@@ -45,10 +45,7 @@ export default function Cart() {
   useEffect(() => {
     async function getData() {
       const cartId = localStorage.getItem("cartId");
-      console.log("Cart id is:");
-      console.log(cartId);
-      const test = await getCart(cartId);
-      //   console.log(test);
+      await getCart(cartId);
     }
     getData();
   }, []);
