@@ -1,38 +1,25 @@
 import { Link } from "@remix-run/react";
-import { getTrendingProducts } from "~/models/product.client";
-import { getAllCollections } from "~/models/collection.client";
-
-import { useState, useEffect } from "react";
+import { getTrendingProducts } from "~/models/product.server";
+import { getCollections } from "~/models/collection.server";
 import type { CollectionObj, Collection, ProductObj, Product } from "~/types";
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+
+export const loader = async () => {
+  const collections = await getCollections(10);
+
+  const trendingProducts = await getTrendingProducts(8);
+
+  return json({ collections, trendingProducts });
+};
 
 export default function Home() {
-  const [loading, setLoading] = useState(true);
-  const [collections, setCollections] = useState([]);
-  const [trendingProducts, setTrendingProducts] = useState([]);
-
-  useEffect(() => {
-    async function getData() {
-      //Get Collections Data
-      const data = await getAllCollections(10);
-      setCollections(data);
-
-      // Get Trending Data
-      const trends = await getTrendingProducts(8);
-      setTrendingProducts(trends);
-    }
-    getData();
-    setLoading(false);
-  }, []);
-
-  if (loading) {
-    return <SkeletonLoader />;
-  }
+  const { collections, trendingProducts } = useLoaderData<typeof loader>();
 
   function Collections() {
     return (
       <div className="relative">
         <BackgroundImage />
-
         <section
           aria-labelledby="collection-heading"
           className="relative -mt-96 sm:mt-0"
@@ -159,53 +146,9 @@ export default function Home() {
     <>
       <Collections />
       <Trending />
-      <Perks />
     </>
   );
 }
-
-const Perks = () => {
-  return (
-    <img
-      src="https://media.licdn.com/dms/image/C4D1BAQGKMh1Xw_Lbfg/company-background_10000/0/1637829460479?e=1671778800&v=beta&t=8WQG2Q0Hox7iZrr7RPsVjbkp2ebTwjpfYWUhD30s4RU"
-      alt=""
-    />
-  );
-};
-
-const SkeletonLoader = () => {
-  return (
-    <div className="bg-white">
-      <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
-        <div
-          role="status"
-          className="animate-pulse space-y-8 md:flex md:items-center md:space-y-0 md:space-x-8"
-        >
-          <div className="w-full">
-            <div className="mb-4 h-2.5 w-48 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-            <div className="mb-2.5 h-2 max-w-[480px] rounded-full bg-gray-200 dark:bg-gray-700"></div>
-            <div className="mb-2.5 h-2 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-            <div className="mb-2.5 h-2 max-w-[440px] rounded-full bg-gray-200 dark:bg-gray-700"></div>
-            <div className="mb-2.5 h-2 max-w-[460px] rounded-full bg-gray-200 dark:bg-gray-700"></div>
-            <div className="h-2 max-w-[360px] rounded-full bg-gray-200 dark:bg-gray-700"></div>
-          </div>
-          <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700 sm:w-96">
-            <svg
-              className="h-12 w-12 text-gray-200"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-              fill="currentColor"
-              viewBox="0 0 640 512"
-            >
-              <path d="M480 80C480 35.82 515.8 0 560 0C604.2 0 640 35.82 640 80C640 124.2 604.2 160 560 160C515.8 160 480 124.2 480 80zM0 456.1C0 445.6 2.964 435.3 8.551 426.4L225.3 81.01C231.9 70.42 243.5 64 256 64C268.5 64 280.1 70.42 286.8 81.01L412.7 281.7L460.9 202.7C464.1 196.1 472.2 192 480 192C487.8 192 495 196.1 499.1 202.7L631.1 419.1C636.9 428.6 640 439.7 640 450.9C640 484.6 612.6 512 578.9 512H55.91C25.03 512 .0006 486.1 .0006 456.1L0 456.1z" />
-            </svg>
-          </div>
-          <span className="sr-only">Loading...</span>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 function BackgroundImage() {
   return (

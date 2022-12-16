@@ -1,7 +1,8 @@
-// Shop specific setup constants
 export const shopUrl = "https://wearjs.myshopify.com";
+export const serverShopUrl =
+  "https://wearjs.myshopify.com/admin/api/2022-10/graphql.json";
+
 export const accessToken = "41d163286cd756551cd06df943018bb1";
-// export const shopUrl = "https://{shop}.myshopify.com/admin/api/2022-10";
 export const serverAccessToken = "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";
 
 interface QueryParams {
@@ -36,4 +37,22 @@ export const runQuery = async (
   } catch (error) {
     return error;
   }
+};
+
+// Shop specific setup constants
+export const runQueryInBE = async (query: string) => {
+  const optionsCollectionByIdQuery = {
+    method: "post",
+    headers: {
+      "Content-Type": "application/graphql",
+      "X-Shopify-Access-Token": serverAccessToken,
+    },
+    body: query,
+  };
+
+  const response = await fetch(serverShopUrl, optionsCollectionByIdQuery);
+  const data = await response.json();
+  console.log(data);
+
+  return data;
 };

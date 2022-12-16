@@ -418,6 +418,7 @@ export default function Layout({ children }: Props) {
               </div>
             </div>
           </footer>
+          <Enpitech />
         </>
       </div>
     );
@@ -431,3 +432,12 @@ export default function Layout({ children }: Props) {
     </>
   );
 }
+
+const Enpitech = () => {
+  return (
+    <img
+      src="https://media.licdn.com/dms/image/C4D1BAQGKMh1Xw_Lbfg/company-background_10000/0/1637829460479?e=1671778800&v=beta&t=8WQG2Q0Hox7iZrr7RPsVjbkp2ebTwjpfYWUhD30s4RU"
+      alt=""
+    />
+  );
+};
