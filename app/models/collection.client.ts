@@ -75,5 +75,3 @@ export const getTrendingProducts = async (amount: Number) => {
 
   return response.data.products.edges;
 };
-
-
