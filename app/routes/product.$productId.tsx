@@ -1,13 +1,14 @@
 import { useLoaderData } from "@remix-run/react";
 import { json, type LoaderFunction } from "@remix-run/node";
 import { useEffect, useState } from "react";
-import { fetchProductById } from "~/models/product.client";
+import { fetchProductById } from "~/models/product.server";
 import { CheckIcon, StarIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { createCart, addItemToCart } from "~/models/cart.client";
 
 export const loader: LoaderFunction = (request) => {
   const { productId } = request.params;
+  console.log(productId);
   return json({ productId });
 };
 

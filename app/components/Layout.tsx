@@ -14,7 +14,6 @@ import { useLoaderData } from "@remix-run/react";
 
 export default function Layout({ collections, children }: any) {
   const [headerStatus, setHeaderStatus] = useState(false);
-  console.log(collections);
 
   return (
     <>

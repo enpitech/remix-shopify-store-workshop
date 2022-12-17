@@ -29,8 +29,8 @@ export const getTrendingProducts = async (amount: Number) => {
 };
 
 export const fetchProductById = async (productId: string) => {
-  const getProductByIdQuery = `query getProductById($id: ID!) {
-    product(id: $id) {
+  const query = `query getProductById{
+    product(id: ${productId}) {
       title
       priceRange {
         minVariantPrice {
@@ -49,10 +49,9 @@ export const fetchProductById = async (productId: string) => {
   `;
 
   const params = {
-    query: getProductByIdQuery,
-    variables: { id: productId },
+    query: query,
   };
 
-  const result = await runQuery(params);
+  const result = await runQueryInBE(params);
   return result.data.product;
 };
