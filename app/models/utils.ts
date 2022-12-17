@@ -26,11 +26,11 @@ export const runQuery = async (
     body: JSON.stringify(params),
   };
   try {
+    console.log("Fetching API")
     const response = await fetch(shopUrl + `/api/graphql`, options);
     const data = await response.json();
 
     if (!data) {
-      console.log("No Data Found");
       return data;
     }
     return data;
@@ -52,7 +52,7 @@ export const runQueryInBE = async (query: string) => {
 
   const response = await fetch(serverShopUrl, optionsCollectionByIdQuery);
   const data = await response.json();
-  console.log(data);
+  
 
   return data;
 };
