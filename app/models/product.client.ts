@@ -2,7 +2,7 @@ import { runQuery } from "./utils";
 
 export const getTrendingProducts = async (amount: Number) => {
   const query = `{
-    products(first: ${amount}) {
+    products(first: 5) {
       edges {
         node {
           id
@@ -12,6 +12,13 @@ export const getTrendingProducts = async (amount: Number) => {
               node {
                 altText
                 src
+              }
+            }
+          }
+          variants(first: 5) {
+            edges {
+              node {
+                id
               }
             }
           }

@@ -74,6 +74,9 @@ export const getCart = async (cartId: string) => {
       variables: { id: cartId },
     });
     console.log("Get Cart Response");
+    console.log(cartId);
+    console.log("response");
+    console.log(response);
     if (response.errors) {
       console.log(response.errors);
     } else {

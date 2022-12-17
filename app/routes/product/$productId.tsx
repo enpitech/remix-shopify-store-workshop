@@ -5,6 +5,7 @@ import { fetchProductById } from "~/models/product.client";
 import { CheckIcon, StarIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { createCart, addItemToCart } from "~/models/cart.client";
+import { getCart } from "~/models/cart.client";
 
 export const loader: LoaderFunction = (request) => {
   const { productId } = request.params;
@@ -58,10 +59,16 @@ export default function Product() {
         if (cartId) {
           //try with numerical ID
           console.log("Trying with numerical id:");
-          await addItemToCart(productId, cartId);
+          await addItemToCart(
+            "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8zNTQ4MDUzMTczMDU5NQ==",
+            cartId
+          );
           //Another try with gid ID
           console.log("Trying with gid id:");
           await addItemToCart("gid://shopify/Product/5504781451427", cartId);
+          //get cart
+          const tomer = await getCart(cartId);
+          console.log(tomer);
         }
       }
       add();
