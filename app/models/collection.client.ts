@@ -41,37 +41,3 @@ export const getAllCollections = async (amount: Number) => {
   }
 };
 
-export const getTrendingProducts = async (amount: Number) => {
-  const query = `{
-    products(first: ${amount}) {
-      edges {
-        node {
-          id
-          title
-          images(first: 10) {
-            edges {
-              node {
-                altText
-                src
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  `;
-
-  const params = {
-    query,
-  };
-
-  const response = await runQuery(params);
-
-  if (!response) {
-    console.log("No Data Found");
-    return;
-  }
-
-  return response.data.products.edges;
-};
