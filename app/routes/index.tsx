@@ -11,8 +11,8 @@ export default function Home() {
   const [trendingProducts, setTrendingProducts] = useState([]);
 
   useEffect(() => {
+    //Get Collections Data
     async function getData() {
-      //Get Collections Data
       const data = await getAllCollections(10);
       setCollections(data);
 
