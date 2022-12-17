@@ -1,24 +1,31 @@
-import { useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import { type LoaderFunction } from "@remix-run/node";
 import { useEffect, useState } from "react";
 import { fetchProductById } from "~/models/product.server";
 import { CheckIcon, StarIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
-import { createCart, addItemToCart } from "~/models/cart.client";
+import { createCart, addItemToCart } from "~/models/cart.server";
 
-export const loader: LoaderFunction = async (params) => {
-  console.log("test");
+export const loader: LoaderFunction = async () => {
   const productId = "gid://shopify/Product/5504781451427";
+
   const data = await fetchProductById(productId);
+
   return data;
 };
+
+export async function action() {
+  const cart = await createCart();
+  console.log(cart);
+  return cart;
+}
 
 export default function Product() {
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(productMock);
   const data = useLoaderData();
 
-  useEffect(() => {
+  const setProductProps = () => {
     setProduct({
       ...productMock,
       description: data.description,
@@ -28,32 +35,9 @@ export default function Product() {
         "https://cdn.shopify.com/s/files/1/0450/9584/6051/products/146d66a908ed139c9c41cd0cd1052947.jpg?v=1596716125'",
     });
     setLoading(false);
-  }, []);
+  };
 
-  async function handleAddToBag(e: any) {
-    const cartId = localStorage.getItem("cartId");
-
-    if (true) {
-      e.preventDefault();
-      //   const quantity = 1;
-      //   const itemId = productId;
-
-      //   //Create Cart
-      //   const CartResponse = await createCart({
-      //     itemId,
-      //     quantity,
-      //   });
-      //   const cartId = CartResponse?.cartId;
-      //   localStorage.setItem("cartId", cartId);
-
-      //Add Item
-    } else {
-      e.preventDefault();
-      console.log("Adding Items to existing cart");
-
-      //Handle adding items to existing cart
-    }
-  }
+  useEffect(setProductProps, []);
 
   if (loading) {
     return <SkeletonLoader />;
@@ -143,11 +127,10 @@ export default function Product() {
                 Product options
               </h2>
 
-              <form>
+              <Form method="post">
                 <div className="mt-4"></div>
                 <div className="mt-10">
                   <button
-                    onClick={handleAddToBag}
                     type="submit"
                     className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                   >
@@ -168,7 +151,7 @@ export default function Product() {
                     </span>
                   </a>
                 </div>
-              </form>
+              </Form>
             </section>
           </div>
         </div>

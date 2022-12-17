@@ -1,16 +1,20 @@
 import { fetchShopify } from "~/models/utils";
+import { runQuery } from "~/models/utils";
 
 export const createCart = async () => {
   const query = `mutation createCart {
     cartCreate {
       cart {
         id
+        checkoutUrl
       }
     }
   }
 `;
   try {
-    const response = await fetchShopify(query);
+    const variables = {};
+    const response = await runQuery({ query, variables });
+    console.log(response);
     return {
       cartId: response.data.cartCreate.cart.id,
       data: response.data.cartCreate.cart,
@@ -73,9 +77,7 @@ export const getCart = async (cartId: string) => {
   }
 };
 
-export const addItemToCart = async (itemId: string) => {
-  const cartId =
-    "Z2lkOi8vc2hvcGlmeS9DYXJ0LzMyMzg1YmRjMmJkODViZmU0YjFiMDY0MTZlMmIyMTZm";
+export const addItemToCart = async (itemId: string, cartId) => {
   const lines = [
     {
       quantity: 1,
@@ -108,3 +110,5 @@ export const addItemToCart = async (itemId: string) => {
     console.log(error);
   }
 };
+
+//variant example : gid://shopify/ProductVariant/35480531730595

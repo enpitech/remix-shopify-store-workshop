@@ -15,6 +15,7 @@ export const loader = async () => {
 
 export default function Home() {
   const { collections, trendingProducts } = useLoaderData<typeof loader>();
+  console.log(trendingProducts);
 
   function Collections() {
     return (

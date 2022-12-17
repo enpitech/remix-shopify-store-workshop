@@ -1,12 +1,19 @@
 import { fetchShopify } from "./utils";
 
 export const getTrendingProducts = async (amount: Number) => {
-  const query = `{
-    products(first: ${amount}) {
+  const query = `query MyQuery {
+    products(first: 10) {
       edges {
         node {
           id
           title
+          variants(first: 10) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
           images(first: 10) {
             edges {
               node {
@@ -22,6 +29,8 @@ export const getTrendingProducts = async (amount: Number) => {
   `;
 
   const response = await fetchShopify(query);
+
+  // console.log(JSON.stringify(response.data.products.edges[0]));
 
   const trends = response.data.products.edges;
 

@@ -53,7 +53,5 @@ const queryParams = {
 export const fetchShopify = async (query: Query) => {
   const response = await fetch(serverShopUrl, { ...queryParams, body: query });
   const data = await response.json();
-  console.log("fetchShopifyResponse:");
-  console.log(data);
   return data;
 };
