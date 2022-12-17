@@ -26,8 +26,7 @@ export const meta: MetaFunction = () => ({
 
 export async function loader({ request }: LoaderArgs) {
   const collections = await getCollections(10);
-  console.log(collections);
-  console.log("run");
+
   return collections;
 }
 

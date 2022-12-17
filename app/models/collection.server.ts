@@ -1,4 +1,4 @@
-import { runQueryInBE } from "./utils";
+import { fetchShopify } from "./utils";
 
 export const getCollections = async (amount: Number) => {
   const query = `{
@@ -27,7 +27,7 @@ export const getCollections = async (amount: Number) => {
   }
   `;
   try {
-    const response = await runQueryInBE(query);
+    const response = await fetchShopify(query);
 
     const collections = response.data.collections.edges;
 
@@ -57,7 +57,7 @@ export const getTrendingProducts = async (amount: Number) => {
     }
   }
   `;
-  const response = await runQueryInBE(query);
+  const response = await fetchShopify(query);
 
   const trends = response.data.products.edges;
 

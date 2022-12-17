@@ -23,7 +23,6 @@ export const runQuery = async (
     body: JSON.stringify(params),
   };
   try {
-    console.log("Fetching API");
     const response = await fetch(shopUrl + `/api/graphql`, options);
     const data = await response.json();
 
@@ -37,9 +36,11 @@ export const runQuery = async (
 };
 
 // Server-Side Rendering
+type Query = string;
+
+export const serverAccessToken = "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";
 export const serverShopUrl =
   "https://wearjs.myshopify.com/admin/api/2022-10/graphql.json";
-export const serverAccessToken = "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";
 
 const queryParams = {
   method: "POST",
@@ -49,18 +50,10 @@ const queryParams = {
   },
 };
 
-// const fetchShopify = async (query) => {
-//   const response = await fetch(serverShopUrl, { ...queryParams, body: query });
-//   const data = await response.json();
-//   return data;
-// };
-
-// Shop specific setup constants
-export const runQueryInBE = async (query: string) => {
-  const options = { ...queryParams, body: query };
-
-  const response = await fetch(serverShopUrl, options);
+export const fetchShopify = async (query: Query) => {
+  const response = await fetch(serverShopUrl, { ...queryParams, body: query });
   const data = await response.json();
+  console.log("fetchShopifyResponse:");
   console.log(data);
   return data;
 };

@@ -1,4 +1,4 @@
-import { runQueryInBE } from "./utils";
+import { fetchShopify } from "./utils";
 
 export const getTrendingProducts = async (amount: Number) => {
   const query = `{
@@ -21,7 +21,7 @@ export const getTrendingProducts = async (amount: Number) => {
   }
   `;
 
-  const response = await runQueryInBE(query);
+  const response = await fetchShopify(query);
 
   const trends = response.data.products.edges;
 
@@ -29,10 +29,11 @@ export const getTrendingProducts = async (amount: Number) => {
 };
 
 export const fetchProductById = async (productId: string) => {
-  const query = `query getProductById{
-    product(id: ${productId}) {
+  const query = `query getProductById {
+    product(id:"${productId}") {
       title
-      priceRange {
+      id
+      priceRangeV2 {
         minVariantPrice {
           amount
           currencyCode
@@ -40,20 +41,13 @@ export const fetchProductById = async (productId: string) => {
       }
       description
       featuredImage {
-        originalSrc
         altText
+        src
       }
-
     }
   }
   `;
 
-  const params = {
-    query: query,
-  };
-
-  const result = await runQueryInBE(params);
+  const result = await fetchShopify(query);
   return result.data.product;
 };
-
-//Example : Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzU1MDQ3ODE0NTE0Mjc=

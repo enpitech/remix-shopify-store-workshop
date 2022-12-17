@@ -1,20 +1,16 @@
-import { runQuery } from "~/models/utils";
+import { fetchShopify } from "~/models/utils";
 
-export const createCart = async ({ itemId, quantity }) => {
+export const createCart = async () => {
+  const query = `mutation createCart {
+    cartCreate {
+      cart {
+        id
+      }
+    }
+  }
+`;
   try {
-    const response = await runQuery({
-      query: `mutation createCart {
-            cartCreate {
-              cart {
-                checkoutUrl
-                id
-              }
-            }
-          }
-        `,
-      variables: {},
-    });
-    console.log(response);
+    const response = await fetchShopify(query);
     return {
       cartId: response.data.cartCreate.cart.id,
       data: response.data.cartCreate.cart,
@@ -25,57 +21,51 @@ export const createCart = async ({ itemId, quantity }) => {
 };
 
 export const getCart = async (cartId: string) => {
-  console.log("cart id is:");
-  console.log(cartId);
-  try {
-    const response = await runQuery({
-      query: `query {
-        cart(
-          id: "Z2lkOi8vc2hvcGlmeS9DYXJ0LzVjZDMwMTFlNTE4NzIwM2Y0ZjJhM2I3ZGUyMmVkZTAy"
-        ) {
+  const query = `query {
+  cart(
+    id: "Z2lkOi8vc2hvcGlmeS9DYXJ0LzVjZDMwMTFlNTE4NzIwM2Y0ZjJhM2I3ZGUyMmVkZTAy"
+  ) {
+    id
+    createdAt
+    updatedAt
+    lines(first: 10) {
+      edges {
+        node {
           id
-          createdAt
-          updatedAt
-          lines(first: 10) {
-            edges {
-              node {
-                id
-                quantity
-                merchandise {
-                  ... on ProductVariant {
-                    id
-                  }
-                }
-                attributes {
-                  key
-                  value
-                }
-              }
+          quantity
+          merchandise {
+            ... on ProductVariant {
+              id
             }
           }
           attributes {
             key
             value
           }
-          buyerIdentity {
-            email
-            phone
-            customer {
-              id
-            }
-            countryCode
-          }
         }
       }
-      
-    `,
-      variables: { cartId },
-    });
-    console.log("Get Cart Response");
+    }
+    attributes {
+      key
+      value
+    }
+    buyerIdentity {
+      email
+      phone
+      customer {
+        id
+      }
+      countryCode
+    }
+  }
+}
+
+`;
+  try {
+    const response = await fetchShopify(query);
     if (response.errors) {
       console.log(response.errors);
     } else {
-      console.log(response);
       return response;
     }
   } catch (error) {
@@ -112,7 +102,6 @@ export const addItemToCart = async (itemId: string) => {
     if (response.errors) {
       console.log(response.errors);
     } else {
-      console.log(response);
       return response;
     }
   } catch (error) {
