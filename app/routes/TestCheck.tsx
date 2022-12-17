@@ -8,10 +8,11 @@ export default function Checkout() {
 
   const formik = useFormik({
     initialValues: {
+      //   username: "",
+      //   password: "",
       lastName: "",
       firstName: "",
       phone: "",
-      email: "",
     },
     validationSchema: Yup.object({
       firstName: Yup.string()
@@ -29,8 +30,7 @@ export default function Checkout() {
       email: Yup.string()
         .max(20, "Must be 20 characters or less")
         .min(4, "Password must be more then 4 characters")
-        .required("Required")
-        .email("Please enter valid email"),
+        .required("Required"),
     }),
     onSubmit: async (values) => {
       try {
@@ -71,18 +71,12 @@ export default function Checkout() {
                 </label>
                 <div className="mt-1">
                   <input
-                    id="email"
-                    name="email"
-                    type="text"
-                    placeholder="Enter your email address"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.email}
-                    className=" block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    type="email"
+                    id="email-address"
+                    name="email-address"
+                    autoComplete="email"
+                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
-                  {formik.touched.email && formik.errors.email ? (
-                    <div className="text-red-500">{formik.errors.email}</div>
-                  ) : null}
                 </div>
               </div>
             </div>
@@ -105,16 +99,14 @@ export default function Checkout() {
                       id="firstName"
                       name="firstName"
                       type="text"
-                      placeholder="Enter your first name"
+                      placeholder="firstName"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.firstName}
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                     {formik.touched.firstName && formik.errors.firstName ? (
-                      <div className="text-red-500">
-                        {formik.errors.firstName}
-                      </div>
+                      <div className="err">{formik.errors.firstName}</div>
                     ) : null}
                   </div>
                 </div>
@@ -128,20 +120,12 @@ export default function Checkout() {
                   </label>
                   <div className="mt-1">
                     <input
-                      id="lastName"
-                      name="lastName"
                       type="text"
-                      placeholder="Enter your last name"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.lastName}
+                      id="last-name"
+                      name="last-name"
+                      autoComplete="family-name"
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
-                    {formik.touched.lastName && formik.errors.lastName ? (
-                      <div className="text-red-500">
-                        {formik.errors.lastName}
-                      </div>
-                    ) : null}
                   </div>
                 </div>
 
@@ -154,18 +138,12 @@ export default function Checkout() {
                   </label>
                   <div className="mt-1">
                     <input
-                      id="phone"
-                      name="phone"
                       type="text"
-                      placeholder="Enter your phone name"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.phone}
+                      name="phone"
+                      id="phone"
+                      autoComplete="tel"
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
-                    {formik.touched.phone && formik.errors.phone ? (
-                      <div className="text-red-500">{formik.errors.phone}</div>
-                    ) : null}
                   </div>
                 </div>
               </div>
