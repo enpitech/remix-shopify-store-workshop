@@ -8,8 +8,6 @@ export default function Checkout() {
 
   const formik = useFormik({
     initialValues: {
-      //   username: "",
-      //   password: "",
       lastName: "",
       firstName: "",
       phone: "",
