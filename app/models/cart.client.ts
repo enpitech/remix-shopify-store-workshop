@@ -1,6 +1,9 @@
+import { type } from "os";
 import { runQuery } from "~/models/utils";
+import type { Lines } from "~/types";
+import { runCart } from "~/models/utils";
 
-export const createCart = async ({ itemId, quantity }) => {
+export const createCart = async () => {
   try {
     const response = await runQuery({
       query: `mutation createCart {
@@ -12,7 +15,6 @@ export const createCart = async ({ itemId, quantity }) => {
             }
           }
         `,
-      variables: {},
     });
     console.log(response);
     return {
@@ -25,51 +27,51 @@ export const createCart = async ({ itemId, quantity }) => {
 };
 
 export const getCart = async (cartId: string) => {
-  console.log("cart id is:");
-  console.log(cartId);
-  try {
-    const response = await runQuery({
-      query: `query {
-        cart(
-          id: "Z2lkOi8vc2hvcGlmeS9DYXJ0LzVjZDMwMTFlNTE4NzIwM2Y0ZjJhM2I3ZGUyMmVkZTAy"
-        ) {
-          id
-          createdAt
-          updatedAt
-          lines(first: 10) {
-            edges {
-              node {
+  const query = `query {
+    cart(
+      id: ${cartId}
+    ) {
+      id
+      createdAt
+      updatedAt
+      lines(first: 10) {
+        edges {
+          node {
+            id
+            quantity
+            merchandise {
+              ... on ProductVariant {
                 id
-                quantity
-                merchandise {
-                  ... on ProductVariant {
-                    id
-                  }
-                }
-                attributes {
-                  key
-                  value
-                }
               }
             }
-          }
-          attributes {
-            key
-            value
-          }
-          buyerIdentity {
-            email
-            phone
-            customer {
-              id
+            attributes {
+              key
+              value
             }
-            countryCode
           }
         }
       }
-      
-    `,
-      variables: { cartId },
+      attributes {
+        key
+        value
+      }
+      buyerIdentity {
+        email
+        phone
+        customer {
+          id
+        }
+        countryCode
+      }
+    }
+  }
+  
+`;
+
+  try {
+    const response = await runQuery({
+      query,
+      variables: { id: cartId },
     });
     console.log("Get Cart Response");
     if (response.errors) {
@@ -83,39 +85,39 @@ export const getCart = async (cartId: string) => {
   }
 };
 
-export const addItemToCart = async (itemId: string) => {
-  const cartId =
-    "Z2lkOi8vc2hvcGlmeS9DYXJ0LzMyMzg1YmRjMmJkODViZmU0YjFiMDY0MTZlMmIyMTZm";
-  const lines = [
+export const addItemToCart = async (itemId: string, cartId: string) => {
+  const query = `mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+    cartLinesAdd(cartId: $cartId, lines: $lines) {
+      cart {
+        id
+      }
+      userErrors {
+        field
+        message
+      }
+    }
+  }
+`;
+  const lines: Lines = [
     {
       quantity: 1,
-      merchandiseId: "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzU1MDQ3ODE0NTE0Mjc=",
+      merchandiseId: itemId,
     },
   ];
+
   try {
-    const response = await runQuery({
-      query: `mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
-        cartLinesAdd(cartId: $cartId, lines: $lines) {
-          cart {
-            id
-          }
-          userErrors {
-            field
-            message
-          }
-        }
-      }
-    `,
-      variables: { cartId, lines },
-    });
-    console.log("Get Cart Response");
+    const response = await runCart(query, cartId, lines);
     if (response.errors) {
       console.log(response.errors);
-    } else {
-      console.log(response);
-      return response;
+      return;
     }
+    return response;
   } catch (error) {
     console.log(error);
   }
 };
+
+// params {
+//   query:"string"
+//   variables { id : "", lines: []}
+// }

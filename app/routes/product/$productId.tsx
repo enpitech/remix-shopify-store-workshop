@@ -26,10 +26,7 @@ export default function Product() {
       const itemId = productId;
 
       //Create Cart
-      const CartResponse = await createCart({
-        itemId,
-        quantity,
-      });
+      const CartResponse = await createCart();
       const cartId = CartResponse?.cartId;
       localStorage.setItem("cartId", cartId);
 
@@ -53,10 +50,21 @@ export default function Product() {
         imageSrc: data.featuredImage.originalSrc,
       });
       setLoading(false);
-      // TEST
-      addItemToCart(productId).then((res) => {
-        console.log("check");
-      });
+
+      // TEST ADDING TO CART
+      async function add() {
+        const cartId = localStorage.getItem("cartId");
+        //verify cartId is true
+        if (cartId) {
+          //try with numerical ID
+          console.log("Trying with numerical id:");
+          await addItemToCart(productId, cartId);
+          //Another try with gid ID
+          console.log("Trying with gid id:");
+          await addItemToCart("gid://shopify/Product/5504781451427", cartId);
+        }
+      }
+      add();
     });
   }, [productId]);
 

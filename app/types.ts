@@ -60,3 +60,5 @@ export interface CollectionObj {
       };
     };
   }
+
+  export type Lines = [{quantity: number, merchandiseId: string}];
