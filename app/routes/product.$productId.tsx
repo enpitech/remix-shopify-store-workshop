@@ -14,19 +14,48 @@ export const loader: LoaderFunction = async ({ params }) => {
   return data;
 };
 
-export async function action() {
+export async function action({ request }) {
+  //check if cart already exists
+  console.clear();
+  const body = await request.formData();
+  const localCartNo = await body.get("localCartNo");
+
+  if (true) {
+    //Add item to existing cart
+    console.log("Adding item to existing cart");
+
+    // await addItemToCart(localCart);
+  }
+
+  // create cart
+  console.log("Creating cart and adding items");
+
   const cart = await createCart();
 
   if (cart) {
-    const added = await addItemToCart(cart.cartId);
-    console.log(added.data.cartLinesAdd.cart);
+    return cart;
   }
-
-  return cart;
+  // add item
 }
+
+type LocalCart = string | null;
 
 export default function Product() {
   const [loading, setLoading] = useState(true);
+
+  const [localCart, setlocalCart] = useState(null);
+
+  // setlocalCart(localStorage.getItem("cartId"));
+
+  // console.log(localId);
+
+  if (typeof window !== "undefined") {
+    console.log("we are running on the client");
+    localStorage.setItem("cartId", localCart);
+  } else {
+    console.log("we are running on the server");
+  }
+
   const [product, setProduct] = useState(productMock);
   const data = useLoaderData();
 
@@ -132,6 +161,12 @@ export default function Product() {
               </h2>
 
               <Form method="post">
+                <input
+                  type="text"
+                  name="localCartNo"
+                  className="hidden"
+                  value={localCart}
+                />
                 <div className="mt-4"></div>
                 <div className="mt-10">
                   <button
