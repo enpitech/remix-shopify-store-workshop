@@ -38,12 +38,10 @@ export async function action({ request }) {
   // add item
 }
 
-type LocalCart = string | null;
-
 export default function Product() {
   const [loading, setLoading] = useState(true);
 
-  const [localCart, setlocalCart] = useState(null);
+  const [localCart, setlocalCart] = useState("none");
 
   // setlocalCart(localStorage.getItem("cartId"));
 
@@ -165,7 +163,7 @@ export default function Product() {
                   type="text"
                   name="localCartNo"
                   className="hidden"
-                  value={localCart}
+                  // value={localCart}
                 />
                 <div className="mt-4"></div>
                 <div className="mt-10">
