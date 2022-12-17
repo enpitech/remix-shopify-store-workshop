@@ -17,7 +17,8 @@ export default function Home() {
       setCollections(data);
 
       // Get Trending Data
-      const trends = await getTrendingProducts(8);
+      const trends = await getTrendingProducts(3);
+      console.log(trends);
       setTrendingProducts(trends);
     }
     getData();

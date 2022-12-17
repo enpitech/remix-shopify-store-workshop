@@ -14,19 +14,20 @@ export default function Checkout() {
     },
     validationSchema: Yup.object({
       firstName: Yup.string()
-        .max(20, "Must be 20 characters or less")
+        .max(15, "Must be less then 15 characters")
         .min(4, "first name must be more then 4 characters")
         .required("Required"),
       lastName: Yup.string()
-        .max(15, "Must be 15 characters or less")
-        .min(1, "Username must be more then 1 characters")
+        .max(15, "Must be less then 15 characters")
+        .min(1, "Last Name must be more then 1 characters")
         .required("Required"),
       phone: Yup.string()
-        .max(20, "Must be 20 characters or less")
+        .max(15, "Must be less then 15 characters")
         .min(4, "Password must be more then 4 characters")
-        .required("Required"),
+        .required("Required")
+        .trim("No spaces allowed"),
       email: Yup.string()
-        .max(20, "Must be 20 characters or less")
+        .max(15, "Must be less then 15 characters")
         .min(4, "Password must be more then 4 characters")
         .required("Required"),
     }),

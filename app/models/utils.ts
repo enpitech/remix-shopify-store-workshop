@@ -27,6 +27,7 @@ export const runQuery = async (
   try {
     const response = await fetch(shopUrl + `/api/graphql`, options);
     const data = await response.json();
+    console.log(data);
 
     if (!data) {
       console.log("No Data Found");
