@@ -77,30 +77,32 @@ export const getCart = async (cartId: string) => {
   }
 };
 
-export const addItemToCart = async (itemId: string, cartId) => {
-  const lines = [
-    {
-      quantity: 1,
-      merchandiseId: "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzU1MDQ3ODE0NTE0Mjc=",
-    },
-  ];
-  try {
-    const response = await runQuery({
-      query: `mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
-        cartLinesAdd(cartId: $cartId, lines: $lines) {
-          cart {
-            id
-          }
-          userErrors {
-            field
-            message
+export const addItemToCart = async (cartId: any) => {
+  console.log("---------");
+  console.log(cartId);
+  const query = `mutation MyMutation {
+    cartLinesAdd(
+      cartId: "Z2lkOi8vc2hvcGlmeS9DYXJ0Lzg1NGY2ODljYzJhMmFiZDQxZjRhNTgxNWEwYzAyODI2"
+      lines: {merchandiseId: "gid://shopify/ProductVariant/35480531730595", quantity: 5}
+    ) {
+      cart {
+        id
+        checkoutUrl
+        lines(first: 100) {
+          edges {
+            node {
+              id
+              quantity
+            }
           }
         }
       }
-    `,
-      variables: { cartId, lines },
-    });
-    console.log("Get Cart Response");
+    }
+  }
+  `;
+  try {
+    const variables = {};
+    const response = await runQuery({ query, variables });
     if (response.errors) {
       console.log(response.errors);
     } else {

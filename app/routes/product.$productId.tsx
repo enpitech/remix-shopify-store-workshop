@@ -6,8 +6,8 @@ import { CheckIcon, StarIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { createCart, addItemToCart } from "~/models/cart.server";
 
-export const loader: LoaderFunction = async () => {
-  const productId = "gid://shopify/Product/5504781451427";
+export const loader: LoaderFunction = async ({ params }) => {
+  const productId = `gid://shopify/Product/${params.productId}`;
 
   const data = await fetchProductById(productId);
 
@@ -16,7 +16,12 @@ export const loader: LoaderFunction = async () => {
 
 export async function action() {
   const cart = await createCart();
-  console.log(cart);
+
+  if (cart) {
+    const added = await addItemToCart(cart.cartId);
+    console.log(added.data.cartLinesAdd.cart);
+  }
+
   return cart;
 }
 
@@ -31,8 +36,7 @@ export default function Product() {
       description: data.description,
       name: data.title,
       price: `$${data.priceRangeV2.minVariantPrice.amount}`,
-      imageSrc:
-        "https://cdn.shopify.com/s/files/1/0450/9584/6051/products/146d66a908ed139c9c41cd0cd1052947.jpg?v=1596716125'",
+      imageSrc: data.featuredImage.src,
     });
     setLoading(false);
   };
@@ -170,10 +174,6 @@ const productMock = {
   breadcrumbs: [
     { id: 1, name: "Travel", href: "#" },
     { id: 2, name: "Bags", href: "#" },
-  ],
-  sizes: [
-    { name: "18L", description: "Perfect for a reasonable amount of snacks." },
-    { name: "20L", description: "Enough room for a serious amount of snacks." },
   ],
   reviews: { average: 4, totalCount: 1624 },
 };

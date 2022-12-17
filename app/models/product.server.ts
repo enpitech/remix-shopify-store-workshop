@@ -58,5 +58,6 @@ export const fetchProductById = async (productId: string) => {
   `;
 
   const result = await fetchShopify(query);
+  console.log(result);
   return result.data.product;
 };

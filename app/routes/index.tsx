@@ -15,7 +15,6 @@ export const loader = async () => {
 
 export default function Home() {
   const { collections, trendingProducts } = useLoaderData<typeof loader>();
-  console.log(trendingProducts);
 
   function Collections() {
     return (
@@ -118,7 +117,9 @@ export default function Home() {
                       />
                     </div>
                     <h3 className="mt-4 text-sm text-gray-700">
-                      <Link to={`product/?${productObj.key}`}>
+                      <Link
+                        to={`product/${productObj.key.trim().slice(22, 35)}`}
+                      >
                         <span className="absolute inset-0" />
                         {productObj.name}
                       </Link>
