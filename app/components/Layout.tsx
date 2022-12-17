@@ -8,30 +8,34 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { footerNavigation, navigation } from "mocks/DUMMY_DATA";
-import type { Collection, Props } from "~/types";
+import type { Collection, CollectionObj, Props } from "~/types";
 import { getCollections } from "~/models/collection.server";
 import { useLoaderData } from "@remix-run/react";
-import { json } from "@remix-run/node";
 
-export const loader = async () => {
-  console.log("loader run");
-};
-
-export default function Layout(props: Props) {
+export default function Layout({ collections, children }: any) {
   const [headerStatus, setHeaderStatus] = useState(false);
-
-  // const collections = useLoaderData<typeof loader>();
+  console.log(collections);
 
   return (
     <>
-      <Header open={headerStatus} setOpen={setHeaderStatus} />
-      <main>{props.children}</main>
+      <Header
+        open={headerStatus}
+        setOpen={setHeaderStatus}
+        collections={collections}
+      />
+      <main>{children}</main>
       <Footer />
     </>
   );
 }
 
-function Header({ open, setOpen }: { open: boolean; setOpen: any }) {
+interface HeaderProps {
+  open: boolean;
+  setOpen: any;
+  collections: CollectionObj;
+}
+
+function Header({ open, setOpen, collections }: HeaderProps) {
   // Header Elements
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
@@ -265,7 +269,7 @@ function Header({ open, setOpen }: { open: boolean; setOpen: any }) {
                 </div>
                 {/* Links */}
                 <div className="space-y-6 border-t border-gray-200 py-6 px-4">
-                  {/* {collections.map((collection: Collection) => (
+                  {collections.map((collection: Collection) => (
                     <div key={collection.node.title} className="flow-root">
                       <a
                         href={"/"}
@@ -274,7 +278,7 @@ function Header({ open, setOpen }: { open: boolean; setOpen: any }) {
                         {collection.node.title}
                       </a>
                     </div>
-                  ))} */}
+                  ))}
                 </div>
               </Dialog.Panel>
             </Transition.Child>
@@ -418,17 +422,11 @@ function Footer() {
             </div>
           </div>
         </footer>
-        <Enpitech />
+        <img
+          src="https://media.licdn.com/dms/image/C4D1BAQGKMh1Xw_Lbfg/company-background_10000/0/1637829460479?e=1671778800&v=beta&t=8WQG2Q0Hox7iZrr7RPsVjbkp2ebTwjpfYWUhD30s4RU"
+          alt=""
+        />{" "}
       </>
     </div>
   );
 }
-
-const Enpitech = () => {
-  return (
-    <img
-      src="https://media.licdn.com/dms/image/C4D1BAQGKMh1Xw_Lbfg/company-background_10000/0/1637829460479?e=1671778800&v=beta&t=8WQG2Q0Hox7iZrr7RPsVjbkp2ebTwjpfYWUhD30s4RU"
-      alt=""
-    />
-  );
-};

@@ -7,12 +7,12 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
-import { getUser } from "./session.server";
+import { getCollections } from "./models/collection.server";
 import Layout from "./components/Layout";
-
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
@@ -24,13 +24,15 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
-// export async function loader({ request }: LoaderArgs) {
-//   return json({
-//     user: await getUser(request),
-//   });
-// }
+export async function loader({ request }: LoaderArgs) {
+  const collections = await getCollections(10);
+  console.log(collections);
+  console.log("run");
+  return collections;
+}
 
 export default function App() {
+  const collections = useLoaderData();
   return (
     <html lang="en" className="h-full">
       <head>
@@ -38,7 +40,7 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <Layout>
+        <Layout collections={collections}>
           <Outlet />
         </Layout>
         <ScrollRestoration />
