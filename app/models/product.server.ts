@@ -55,3 +55,5 @@ export const fetchProductById = async (productId: string) => {
   const result = await runQueryInBE(params);
   return result.data.product;
 };
+
+//Example : Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzU1MDQ3ODE0NTE0Mjc=
