@@ -11,21 +11,21 @@ export async function loader(args: DataFunctionArgs) {
   return {};
 }
 
-function validateFirstname(username: unknown) {
-  if (typeof username !== "string" || username.length < 3) {
-    return `Usernames must be at least 3 characters long`;
+function validateFirstname(firstName: unknown) {
+  if (typeof firstName !== "string" || firstName.length < 3) {
+    return `firstNames must be at least 3 characters long`;
   }
 }
 
-function validateLastname(username: unknown) {
-  if (typeof username !== "string" || username.length < 3) {
-    return `Usernames must be at least 3 characters long`;
+function validateLastname(lastName: unknown) {
+  if (typeof lastName !== "string" || lastName.length < 3) {
+    return `lastNames must be at least 3 characters long`;
   }
 }
 
-function validatePhone(password: unknown) {
-  if (typeof password !== "string" || password.length < 6) {
-    return `Passwords must be at least 6 characters long`;
+function validatePhone(phone: unknown) {
+  if (typeof phone !== "string" || phone.length < 6) {
+    return `Phone must be at least 6 characters long`;
   }
 }
 
