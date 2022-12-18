@@ -8,9 +8,8 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { footerNavigation, navigation } from "mocks/DUMMY_DATA";
-import type { Collection, CollectionObj, Props } from "~/types";
-import { getCollections } from "~/models/collection.server";
-import { useLoaderData } from "@remix-run/react";
+import type { CollectionObj } from "~/types";
+// import type { Collection } from "~/types";
 
 export default function Layout({ collections, children }: any) {
   const [headerStatus, setHeaderStatus] = useState(false);
@@ -39,7 +38,6 @@ function Header({ open, setOpen, collections }: HeaderProps) {
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
   }
-  // Below components are  using the "open" state
   function NavBar() {
     return (
       <nav aria-label="Top">
@@ -53,7 +51,6 @@ function Header({ open, setOpen, collections }: HeaderProps) {
                   <img className="h-32 w-auto" src="/logo.png" alt="" />
                 </a>
               </div>
-
               <div className="hidden h-full lg:flex">
                 {/* Flyout menus */}
                 <Popover.Group className="inset-x-0 bottom-0 px-4">
@@ -152,7 +149,6 @@ function Header({ open, setOpen, collections }: HeaderProps) {
                         )}
                       </Popover>
                     ))}
-
                     {navigation.pages.map((page) => (
                       <a
                         key={page.name}
@@ -268,7 +264,7 @@ function Header({ open, setOpen, collections }: HeaderProps) {
                 </div>
                 {/* Links */}
                 <div className="space-y-6 border-t border-gray-200 py-6 px-4">
-                  {collections.map((collection: Collection) => (
+                  {/* {collections?.map((collection: Collection) => (
                     <div key={collection.node.title} className="flow-root">
                       <a
                         href={"/"}
@@ -277,7 +273,7 @@ function Header({ open, setOpen, collections }: HeaderProps) {
                         {collection.node.title}
                       </a>
                     </div>
-                  ))}
+                  ))} */}
                 </div>
               </Dialog.Panel>
             </Transition.Child>
@@ -319,9 +315,6 @@ function Footer() {
     <div>
       <>
         <footer aria-labelledby="footer-heading" className="bg-gray-50">
-          <h2 id="footer-heading" className="sr-only">
-            Footer
-          </h2>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="border-t border-gray-200 py-20">
               <div className="grid grid-cols-1 md:grid-flow-col md:auto-rows-min md:grid-cols-12 md:gap-x-8 md:gap-y-16">
@@ -424,7 +417,7 @@ function Footer() {
         <img
           src="https://media.licdn.com/dms/image/C4D1BAQGKMh1Xw_Lbfg/company-background_10000/0/1637829460479?e=1671778800&v=beta&t=8WQG2Q0Hox7iZrr7RPsVjbkp2ebTwjpfYWUhD30s4RU"
           alt=""
-        />{" "}
+        />
       </>
     </div>
   );

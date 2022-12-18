@@ -1,15 +1,14 @@
 import { Link } from "@remix-run/react";
-import { getTrendingProducts } from "~/models/product.server";
+// import { getTrendingProducts } from "~/models/product.server";
 import { getCollections } from "~/models/collection.server";
 import type { CollectionObj, Collection, ProductObj, Product } from "~/types";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { getProducts } from "~/models/product.server";
 
 export const loader = async () => {
   const collections = await getCollections(10);
-
-  const trendingProducts = await getTrendingProducts(8);
-
+  const trendingProducts = await getProducts(8);
   return json({ collections, trendingProducts });
 };
 
@@ -117,9 +116,7 @@ export default function Home() {
                       />
                     </div>
                     <h3 className="mt-4 text-sm text-gray-700">
-                      <Link
-                        to={`product/${productObj.key.trim().slice(22, 35)}`}
-                      >
+                      <Link to={`product/${productObj.key}`}>
                         <span className="absolute inset-0" />
                         {productObj.name}
                       </Link>

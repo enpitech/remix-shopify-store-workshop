@@ -1,5 +1,4 @@
 import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -13,6 +12,7 @@ import {
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getCollections } from "./models/collection.server";
 import Layout from "./components/Layout";
+import { useState } from "react";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
@@ -31,6 +31,12 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 export default function App() {
+  // const [cartId, setCartId] = useState(
+  //   "Z2lkOi8vc2hvcGlmeS9DYXJ0LzU3YjA3NGZjYjBhMmQzNGY1NDIzZWM1ZDAyMzMwYjhl"
+  // );
+
+  const [cartId, setCartId] = useState("none");
+
   const collections = useLoaderData();
   return (
     <html lang="en" className="h-full">
@@ -40,7 +46,7 @@ export default function App() {
       </head>
       <body className="h-full">
         <Layout collections={collections}>
-          <Outlet />
+          <Outlet context={[cartId, setCartId]} />
         </Layout>
         <ScrollRestoration />
         <Scripts />

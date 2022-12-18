@@ -1,74 +1,98 @@
-import { Form, useLoaderData } from "@remix-run/react";
-import { type LoaderFunction } from "@remix-run/node";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { type LoaderArgs, type LoaderFunction } from "@remix-run/node";
 import { useEffect, useState } from "react";
 import { fetchProductById } from "~/models/product.server";
 import { CheckIcon, StarIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
-import { createCart, addItemToCart } from "~/models/cart.server";
+import { addItemToCart } from "~/models/cart.server";
+// import { createCart } from "~/models/cart.server";
+import { useOutletContext } from "@remix-run/react";
 
-export const loader: LoaderFunction = async ({ params }) => {
-  const productId = `gid://shopify/Product/${params.productId}`;
+// export const loader: LoaderFunction = async ({ params }) => {
+//   const productId = `gid://shopify/Product/${params.productId}`;
+//   console.log("product id");
+//   console.log(productId);
 
-  const data = await fetchProductById(productId);
+//   const data = await fetchProductById(productId);
+//   console.log("data");
+//   console.log(data);
 
+//   return data;
+// };
+
+export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
+  const data = await fetchProductById(params.productId);
   return data;
 };
 
-export async function action({ request }) {
-  //check if cart already exists
-  console.clear();
-  const body = await request.formData();
-  const localCartNo = await body.get("localCartNo");
-
-  if (true) {
-    //Add item to existing cart
-    console.log("Adding item to existing cart");
-
-    // await addItemToCart(localCart);
-  }
-
-  // create cart
-  console.log("Creating cart and adding items");
-
-  const cart = await createCart();
-
-  if (cart) {
-    return cart;
-  }
-  // add item
+export async function action() {
+  // console.log("action");
+  // const body = await request.formData();
+  // const cartId = body.get("cartId");
+  // const cartId = "none";
+  // const cartId =
+  //   "Z2lkOi8vc2hvcGlmeS9DYXJ0LzcwYjVjMWJjNTdlZjg4OGZjOTQ0MmFlNGIxMzFkYzhh";
+  // const productId = "gid://shopify/ProductVariant/35480531730595";
+  // if (cartId === "none") {
+  //   console.log("create cart and adding items");
+  //   const response = await addItemToCart(cartId, productId);
+  //   console.log("response is");
+  //   console.log(response);
+  //   return response;
+  // } else {
+  //   console.log("adding items to existing cart");
+  //   const response = await addItemToCart(cartId, productId);
+  //   console.log("added");
+  //   console.log(response);
+  //   if (response) {
+  //     return response;
+  //   }
+  //   return { message: "failed" };
+  //   // return {response.message};
+  // }
 }
 
 export default function Product() {
   const [loading, setLoading] = useState(true);
-
-  const [localCart, setlocalCart] = useState("none");
-
-  // setlocalCart(localStorage.getItem("cartId"));
-
-  // console.log(localId);
-
-  if (typeof window !== "undefined") {
-    console.log("we are running on the client");
-    localStorage.setItem("cartId", localCart);
-  } else {
-    console.log("we are running on the server");
-  }
-
   const [product, setProduct] = useState(productMock);
   const data = useLoaderData();
+  const [cartId, setCartId] = useOutletContext();
 
-  const setProductProps = () => {
+  // const actionData = useActionData();
+  // setCartId(actionData);
+  // console.log(actionData);
+  // console.log(cartId);
+
+  // async function handleSubmit(e) {
+  // e.preventDefault();
+  //   if (cartId === "none") {
+  //     console.log("create cart and adding items");
+  //     const response = await addItemToCart(cartId, data.id);
+  //     if (response) {
+  //       setCartId(response);
+  //       console.log("new cart id");
+  //       console.log(cartId);
+  //     }
+  //   } else {
+  //     console.log("adding items to existing cart");
+  //     const response = await addItemToCart(cartId, data.id);
+  //     console.log("added");
+  //     console.log(response);
+  //   }
+  // }
+
+  useEffect(() => {
+    // set mockup data details
+    console.log(data);
     setProduct({
       ...productMock,
-      description: data.description,
-      name: data.title,
-      price: `$${data.priceRangeV2.minVariantPrice.amount}`,
-      imageSrc: data.featuredImage.src,
+      description: data.product.description,
+      name: data.product.title,
+      price: `$${data.product.priceRange.minVariantPrice.amount}`,
+      imageSrc: data.product.featuredImage.src,
     });
     setLoading(false);
-  };
-
-  useEffect(setProductProps, []);
+  }, [data]);
 
   if (loading) {
     return <SkeletonLoader />;
@@ -157,13 +181,12 @@ export default function Product() {
               <h2 id="options-heading" className="sr-only">
                 Product options
               </h2>
-
               <Form method="post">
                 <input
                   type="text"
                   name="localCartNo"
                   className="hidden"
-                  // value={localCart}
+                  defaultValue={cartId}
                 />
                 <div className="mt-4"></div>
                 <div className="mt-10">

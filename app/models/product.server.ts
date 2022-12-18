@@ -1,8 +1,30 @@
-import { fetchShopify } from "./utils";
+import { postToShopify } from "./utils";
 
-export const getTrendingProducts = async (amount: Number) => {
-  const query = `query MyQuery {
-    products(first: 10) {
+export const fetchProductById = async (productId: string) => {
+  console.log(productId);
+  const result = await postToShopify({
+    query: queries.getProductById,
+    variables: {
+      id: productId,
+    },
+  });
+  return result;
+};
+
+export const getProducts = async (amount: Number) => {
+  const response = await postToShopify({
+    query: queries.getProducts,
+    variables: { first: amount },
+  });
+  // console.log(response.products.edges);
+  const trends = response.products.edges;
+  return trends;
+};
+
+//Global queries
+const queries = {
+  getProducts: `query getProducts($first: Int = 10) {
+    products(first: $first) {
       edges {
         node {
           id
@@ -26,23 +48,12 @@ export const getTrendingProducts = async (amount: Number) => {
       }
     }
   }
-  `;
-
-  const response = await fetchShopify(query);
-
-  // console.log(JSON.stringify(response.data.products.edges[0]));
-
-  const trends = response.data.products.edges;
-
-  return trends;
-};
-
-export const fetchProductById = async (productId: string) => {
-  const query = `query getProductById {
-    product(id:"${productId}") {
+  `,
+  getProductById: `query getProductById($id: ID = "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzU1MjMxODQ1NTAwNTE=") {
+    product(id: $id) {
       title
       id
-      priceRangeV2 {
+      priceRange {
         minVariantPrice {
           amount
           currencyCode
@@ -55,9 +66,5 @@ export const fetchProductById = async (productId: string) => {
       }
     }
   }
-  `;
-
-  const result = await fetchShopify(query);
-  console.log(result);
-  return result.data.product;
+  `,
 };
