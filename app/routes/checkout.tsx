@@ -1,72 +1,73 @@
-import { useFormik } from "formik";
-import * as Yup from "yup";
-// import { redirect } from "@remix-run/react";
-import { useState } from "react";
 import { type DataFunctionArgs } from "@remix-run/server-runtime";
 import { getCart } from "~/models/cart.server";
+import { badRequest } from "~/models/utils";
+import type { ActionArgs } from "@remix-run/node";
 
 export async function loader(args: DataFunctionArgs) {
-  console.log("first");
-  const test = await getCart(
+  const testCart = await getCart(
     "Z2lkOi8vc2hvcGlmeS9DYXJ0LzAyZDM5NDQ0NTc5MWQwOTM0YjcxNmNhNzNjYmJiNjc3"
   );
-  console.log(test);
+  console.log(testCart);
   return {};
 }
 
+function validateFirstname(username: unknown) {
+  if (typeof username !== "string" || username.length < 3) {
+    return `Usernames must be at least 3 characters long`;
+  }
+}
+
+function validateLastname(username: unknown) {
+  if (typeof username !== "string" || username.length < 3) {
+    return `Usernames must be at least 3 characters long`;
+  }
+}
+
+function validatePhone(password: unknown) {
+  if (typeof password !== "string" || password.length < 6) {
+    return `Passwords must be at least 6 characters long`;
+  }
+}
+
+export const action = async ({ request }: ActionArgs) => {
+  const form = await request.formData();
+  const firstName = form.get("firstName");
+  const lastName = form.get("lastName");
+  const phone = form.get("phone");
+  if (
+    typeof firstName !== "string" ||
+    typeof lastName !== "string" ||
+    typeof phone !== "string"
+  ) {
+    return badRequest({
+      fieldErrors: null,
+      fields: null,
+      formError: `Form not submitted correctly.`,
+    });
+  }
+
+  const fields = { firstName, lastName, phone };
+  const fieldErrors = {
+    firstName: validateFirstname(firstName),
+    lastName: validateLastname(lastName),
+    phone: validatePhone(phone),
+  };
+  if (Object.values(fieldErrors).some(Boolean)) {
+    return badRequest({
+      fieldErrors,
+      fields,
+      formError: null,
+    });
+  }
+};
+
 export default function Checkout() {
-  const [error, setError] = useState("");
-
-  const formik = useFormik({
-    initialValues: {
-      lastName: "",
-      firstName: "",
-      phone: "",
-      email: "",
-    },
-    validationSchema: Yup.object({
-      firstName: Yup.string()
-        .max(20, "Must be 20 characters or less")
-        .min(4, "first name must be more then 4 characters")
-        .required("Required"),
-      lastName: Yup.string()
-        .max(15, "Must be 15 characters or less")
-        .min(1, "Username must be more then 1 characters")
-        .required("Required"),
-      phone: Yup.string()
-        .max(20, "Must be 20 characters or less")
-        .min(4, "Password must be more then 4 characters")
-        .required("Required"),
-      email: Yup.string()
-        .max(20, "Must be 20 characters or less")
-        .min(4, "Password must be more then 4 characters")
-        .required("Required")
-        .email("Please enter valid email"),
-    }),
-    onSubmit: async (values) => {
-      try {
-        await new Promise((resolve) =>
-          setTimeout(() => resolve("resolved"), 3000)
-        );
-
-        //check if it is the correct syntax
-        console.log("submit");
-        // redirect("/");
-      } catch (error: any) {
-        setError(error.response.data.message);
-      }
-    },
-  });
-
   return (
     <div className="bg-gray-50">
       <div className="mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
         <h2 className="sr-only">Checkout</h2>
 
-        <form
-          onSubmit={formik.handleSubmit}
-          className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16"
-        >
+        <form className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
           <div>
             <div>
               <h2 className="text-lg font-medium text-gray-900">
@@ -86,14 +87,8 @@ export default function Checkout() {
                     name="email"
                     type="text"
                     placeholder="Enter your email address"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.email}
                     className=" block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
-                  {formik.touched.email && formik.errors.email ? (
-                    <div className="text-red-500">{formik.errors.email}</div>
-                  ) : null}
                 </div>
               </div>
             </div>
@@ -117,16 +112,8 @@ export default function Checkout() {
                       name="firstName"
                       type="text"
                       placeholder="Enter your first name"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.firstName}
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
-                    {formik.touched.firstName && formik.errors.firstName ? (
-                      <div className="text-red-500">
-                        {formik.errors.firstName}
-                      </div>
-                    ) : null}
                   </div>
                 </div>
 
@@ -143,16 +130,8 @@ export default function Checkout() {
                       name="lastName"
                       type="text"
                       placeholder="Enter your last name"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.lastName}
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
-                    {formik.touched.lastName && formik.errors.lastName ? (
-                      <div className="text-red-500">
-                        {formik.errors.lastName}
-                      </div>
-                    ) : null}
                   </div>
                 </div>
 
@@ -169,14 +148,8 @@ export default function Checkout() {
                       name="phone"
                       type="text"
                       placeholder="Enter your phone name"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.phone}
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
-                    {formik.touched.phone && formik.errors.phone ? (
-                      <div className="text-red-500">{formik.errors.phone}</div>
-                    ) : null}
                   </div>
                 </div>
               </div>
@@ -218,7 +191,6 @@ export default function Checkout() {
                 >
                   Confirm order
                 </button>
-                {error ? <div className="text-red-500">{error}</div> : null}
               </div>
             </div>
           </div>

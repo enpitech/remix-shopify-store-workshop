@@ -1,3 +1,5 @@
+import { json } from "@remix-run/node";
+
 // Client-Side Rendering
 export const shopUrl = "https://wearjs.myshopify.com";
 export const postToShopifyAddress = "https://wearjs.myshopify.com/api/graphql";
@@ -94,3 +96,5 @@ export const postToShopify = async ({
     console.log(error);
   }
 };
+
+export const badRequest = <T>(data: T) => json<T>(data, { status: 400 });
