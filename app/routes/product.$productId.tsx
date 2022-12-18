@@ -8,17 +8,6 @@ import { addItemToCart } from "~/models/cart.server";
 // import { createCart } from "~/models/cart.server";
 import { useOutletContext } from "@remix-run/react";
 
-// export const loader: LoaderFunction = async ({ params }) => {
-//   const productId = `gid://shopify/Product/${params.productId}`;
-//   console.log("product id");
-//   console.log(productId);
-
-//   const data = await fetchProductById(productId);
-//   console.log("data");
-//   console.log(data);
-
-//   return data;
-// };
 
 export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
   const data = await fetchProductById(params.productId);

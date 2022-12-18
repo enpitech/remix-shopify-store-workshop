@@ -11,7 +11,7 @@ export const fetchProductById = async (productId: string) => {
   return result;
 };
 
-export const getProducts = async (amount: Number) => {
+export const getTrendingProducts = async (amount: Number) => {
   const response = await postToShopify({
     query: queries.getProducts,
     variables: { first: amount },

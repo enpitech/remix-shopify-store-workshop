@@ -1,14 +1,13 @@
 import { Link } from "@remix-run/react";
-// import { getTrendingProducts } from "~/models/product.server";
 import { getCollections } from "~/models/collection.server";
 import type { CollectionObj, Collection, ProductObj, Product } from "~/types";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { getProducts } from "~/models/product.server";
+import { getTrendingProducts } from "~/models/product.server";
 
 export const loader = async () => {
   const collections = await getCollections(10);
-  const trendingProducts = await getProducts(8);
+  const trendingProducts = await getTrendingProducts(8);
   return json({ collections, trendingProducts });
 };
 
