@@ -36,30 +36,3 @@ export const getCollections = async (amount: Number) => {
     return error;
   }
 };
-
-export const getTrendingProducts = async (amount: Number) => {
-  const query = `{
-    products(first: ${amount}) {
-      edges {
-        node {
-          id
-          title
-          images(first: 10) {
-            edges {
-              node {
-                altText
-                src
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  `;
-  const response = await fetchShopify(query);
-
-  const trends = response.data.products.edges;
-
-  return trends;
-};
