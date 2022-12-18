@@ -5,74 +5,46 @@ import { fetchProductById } from "~/models/product.server";
 import { CheckIcon, StarIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { addItemToCart } from "~/models/cart.server";
-// import { createCart } from "~/models/cart.server";
 import { useOutletContext } from "@remix-run/react";
-
+import { createCartAndAdd } from "~/models/cart.server";
 
 export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
   const data = await fetchProductById(params.productId);
   return data;
 };
 
-export async function action() {
-  // console.log("action");
-  // const body = await request.formData();
-  // const cartId = body.get("cartId");
-  // const cartId = "none";
-  // const cartId =
-  //   "Z2lkOi8vc2hvcGlmeS9DYXJ0LzcwYjVjMWJjNTdlZjg4OGZjOTQ0MmFlNGIxMzFkYzhh";
-  // const productId = "gid://shopify/ProductVariant/35480531730595";
-  // if (cartId === "none") {
-  //   console.log("create cart and adding items");
-  //   const response = await addItemToCart(cartId, productId);
-  //   console.log("response is");
-  //   console.log(response);
-  //   return response;
-  // } else {
-  //   console.log("adding items to existing cart");
-  //   const response = await addItemToCart(cartId, productId);
-  //   console.log("added");
-  //   console.log(response);
-  //   if (response) {
-  //     return response;
-  //   }
-  //   return { message: "failed" };
-  //   // return {response.message};
-  // }
+export async function action({ params, request }: LoaderArgs) {
+  console.log("Clicked the backend");
+  const body = await request.formData();
+  const cartId = body.get("localCartNo");
+  console.log("cartId is (back):");
+  console.log(cartId);
+  if (false) {
+    //Create cart and add
+    const response = await createCartAndAdd();
+    const newCartId = response?.cartId;
+    return newCartId;
+  } else {
+    const response = await addItemToCart(
+      "Z2lkOi8vc2hvcGlmeS9DYXJ0LzdlMTdhN2UzMzdhYzc5NTM1MGEzZjFmZTM1NzM4YzZm",
+      "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8zNTQ4MDUzMTczMDU5NQ=="
+    );
+    console.log(response);
+    return {};
+  }
 }
 
 export default function Product() {
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(productMock);
   const data = useLoaderData();
+  const actionData = useActionData();
   const [cartId, setCartId] = useOutletContext();
 
-  // const actionData = useActionData();
-  // setCartId(actionData);
-  // console.log(actionData);
-  // console.log(cartId);
-
-  // async function handleSubmit(e) {
-  // e.preventDefault();
-  //   if (cartId === "none") {
-  //     console.log("create cart and adding items");
-  //     const response = await addItemToCart(cartId, data.id);
-  //     if (response) {
-  //       setCartId(response);
-  //       console.log("new cart id");
-  //       console.log(cartId);
-  //     }
-  //   } else {
-  //     console.log("adding items to existing cart");
-  //     const response = await addItemToCart(cartId, data.id);
-  //     console.log("added");
-  //     console.log(response);
-  //   }
-  // }
+  console.log("this is the global cart ID");
+  console.log(cartId);
 
   useEffect(() => {
-    // set mockup data details
-    console.log(data);
     setProduct({
       ...productMock,
       description: data.product.description,
@@ -81,7 +53,10 @@ export default function Product() {
       imageSrc: data.product.featuredImage.src,
     });
     setLoading(false);
-  }, [data]);
+    if (actionData) {
+      setCartId(actionData);
+    }
+  }, [data, actionData]);
 
   if (loading) {
     return <SkeletonLoader />;
@@ -260,5 +235,3 @@ const SkeletonLoader = () => {
     </div>
   );
 };
-
-//GID example : gid://shopify/Product/5504781451427

@@ -9,7 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { footerNavigation, navigation } from "mocks/DUMMY_DATA";
 import type { CollectionObj } from "~/types";
-// import type { Collection } from "~/types";
+import type { Collection } from "~/types";
 
 export default function Layout({ collections, children }: any) {
   const [headerStatus, setHeaderStatus] = useState(false);
@@ -264,7 +264,7 @@ function Header({ open, setOpen, collections }: HeaderProps) {
                 </div>
                 {/* Links */}
                 <div className="space-y-6 border-t border-gray-200 py-6 px-4">
-                  {/* {collections?.map((collection: Collection) => (
+                  {collections?.map((collection: Collection) => (
                     <div key={collection.node.title} className="flow-root">
                       <a
                         href={"/"}
@@ -273,7 +273,7 @@ function Header({ open, setOpen, collections }: HeaderProps) {
                         {collection.node.title}
                       </a>
                     </div>
-                  ))} */}
+                  ))}
                 </div>
               </Dialog.Panel>
             </Transition.Child>
@@ -286,7 +286,7 @@ function Header({ open, setOpen, collections }: HeaderProps) {
   function Cart() {
     return (
       <div className="ml-4 flow-root lg:ml-8">
-        <a href="/" className="group -m-2 flex items-center p-2">
+        <a href="/checkout" className="group -m-2 flex items-center p-2">
           <ShoppingBagIcon
             className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
             aria-hidden="true"
