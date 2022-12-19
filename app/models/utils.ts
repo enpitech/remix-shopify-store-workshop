@@ -1,18 +1,15 @@
 import { json } from "@remix-run/node";
 
-// Client-Side Rendering
-export const shopUrl = "https://wearjs.myshopify.com";
-export const postToShopifyAddress = "https://wearjs.myshopify.com/api/graphql";
-
-export const accessToken = "41d163286cd756551cd06df943018bb1";
-
-//Global Params
-
+// ***** StoreFront API *****
+// Params
+export const storeFrontApiShopUrl = "https://wearjs.myshopify.com/api/graphql";
+export const storeFrontApiAccessToken = "41d163286cd756551cd06df943018bb1";
 interface QueryParams {
   query: string;
   variables?: { [id: string]: string };
 }
 
+//Deprecated
 export const runQuery = async (
   params: QueryParams = {
     query: "",
@@ -41,12 +38,48 @@ export const runQuery = async (
   }
 };
 
-// Server-Side Rendering
-type Query = string;
+interface PostToShopifyParams {
+  query: string;
+  variables?: {};
+}
 
+//Params
+const params = {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "X-Shopify-Storefront-Access-Token": storeFrontApiAccessToken,
+  },
+};
+//Global fetching function
+export const postToShopify = async ({
+  query,
+  variables = {},
+}: PostToShopifyParams): Promise<any> => {
+  try {
+    const response: any = await fetch(storeFrontApiShopUrl, {
+      ...params,
+      body: JSON.stringify({ query, variables }),
+    }).then((res) => res.json());
+
+    if (response.errors) {
+      console.log({ errors: response.errors });
+    } else if (!response || !response.data) {
+      console.log({ result: response });
+      return "No results found.";
+    }
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// ***** Admin API ***** Not Required to our site
+// Params
 export const serverAccessToken = "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";
 export const serverShopUrl =
   "https://wearjs.myshopify.com/admin/api/2022-10/graphql.json";
+type Query = string;
 
 const queryParams = {
   method: "POST",
@@ -62,39 +95,5 @@ export const fetchShopify = async (query: Query) => {
   return data;
 };
 
-//
-
-//Global function of Storefront Api
-
-interface PostToShopifyParams {
-  query: string;
-  variables?: {};
-}
-
-export const postToShopify = async ({
-  query,
-  variables = {},
-}: PostToShopifyParams): Promise<any> => {
-  try {
-    const result: any = await fetch(postToShopifyAddress, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Storefront-Access-Token": accessToken,
-      },
-      body: JSON.stringify({ query, variables }),
-    }).then((res) => res.json());
-
-    if (result.errors) {
-      console.log({ errors: result.errors });
-    } else if (!result || !result.data) {
-      console.log({ result });
-      return "No results found.";
-    }
-    return result.data;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
+//Validation function for Backend validation
 export const badRequest = <T>(data: T) => json<T>(data, { status: 400 });

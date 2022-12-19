@@ -1,8 +1,26 @@
-import { fetchShopify } from "./utils";
+import { postToShopify } from "./utils";
 
 export const getCollections = async (amount: Number) => {
-  const query = `{
-    collections(first: ${amount}) {
+  const variables = { first: amount };
+  try {
+    const response = await postToShopify({
+      query: queries.getCollectionsQuery,
+      variables,
+    });
+
+    const collections = response.collections.edges;
+
+    return collections;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+//Global Queries
+const queries = {
+  getCollectionsQuery: `query getCollections($first: Int = 10) {
+    collections(first: $first) {
       edges {
         node {
           title
@@ -25,14 +43,5 @@ export const getCollections = async (amount: Number) => {
       }
     }
   }
-  `;
-  try {
-    const response = await fetchShopify(query);
-
-    const collections = response.data.collections.edges;
-
-    return collections;
-  } catch (error) {
-    return error;
-  }
+ `,
 };

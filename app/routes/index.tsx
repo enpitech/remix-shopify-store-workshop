@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { createCart } from "~/models/cart.client";
 
 export const loader = async () => {
-  const collections = await getCollections(10);
+  const collections = await getCollections(3);
   const trendingProducts = await getTrendingProducts(8);
 
   return json({ collections, trendingProducts });
