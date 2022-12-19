@@ -1,4 +1,3 @@
-import { runQuery } from "~/models/utils";
 import { postToShopify } from "~/models/utils";
 
 export const createCart = async () => {
