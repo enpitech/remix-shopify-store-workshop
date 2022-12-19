@@ -1,28 +1,29 @@
 import { runQuery } from "~/models/utils";
 import { postToShopify } from "~/models/utils";
 
-// export const createCart = async () => {
-//   const query = `mutation createCart {
-//     cartCreate {
-//       cart {
-//         id
-//         checkoutUrl
-//       }
-//     }
-//   }
-// `;
-//   try {
-//     const variables = {};
-//     const response = await runQuery({ query, variables });
-//     console.log(response);
-//     return {
-//       cartId: response.data.cartCreate.cart.id,
-//       data: response.data.cartCreate.cart,
-//     };
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+export const createCart = async () => {
+  console.log("workingBE");
+  const query = `mutation createCart {
+    cartCreate {
+      cart {
+        id
+        checkoutUrl
+      }
+    }
+  }
+`;
+  try {
+    const variables = {};
+    const response = await runQuery({ query, variables });
+    console.log(response);
+    return {
+      cartId: response.data.cartCreate.cart.id,
+      data: response.data.cartCreate.cart,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const getCart = async (cartId: string) => {
   const query = `{

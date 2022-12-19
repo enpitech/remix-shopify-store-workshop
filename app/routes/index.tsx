@@ -4,15 +4,33 @@ import type { CollectionObj, Collection, ProductObj, Product } from "~/types";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { getTrendingProducts } from "~/models/product.server";
+import { useEffect } from "react";
+import { createCart } from "~/models/cart.client";
 
 export const loader = async () => {
   const collections = await getCollections(10);
   const trendingProducts = await getTrendingProducts(8);
+
   return json({ collections, trendingProducts });
 };
 
 export default function Home() {
   const { collections, trendingProducts } = useLoaderData<typeof loader>();
+
+  useEffect(() => {
+    // check weather localCartId exists
+    const localCartId = localStorage.getItem("cartId");
+
+    if (!localCartId) {
+      async function makeNewCart() {
+        const newCart = await createCart();
+        localStorage.setItem("cartId", newCart?.cartId);
+      }
+      makeNewCart();
+    }
+    //if cart exists return
+    return;
+  }, []);
 
   function Collections() {
     return (
