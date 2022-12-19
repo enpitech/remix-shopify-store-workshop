@@ -21,12 +21,12 @@ export const runQuery = async (
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
-      "X-Shopify-Storefront-Access-Token": accessToken,
+      "X-Shopify-Storefront-Access-Token": storeFrontApiAccessToken,
     },
     body: JSON.stringify(params),
   };
   try {
-    const response = await fetch(shopUrl + `/api/graphql`, options);
+    const response = await fetch(storeFrontApiShopUrl, options);
     const data = await response.json();
 
     if (!data) {
