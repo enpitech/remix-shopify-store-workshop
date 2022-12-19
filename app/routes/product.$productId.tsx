@@ -7,24 +7,20 @@ import {
 } from "@remix-run/node";
 import { useEffect, useState } from "react";
 import { fetchProductById } from "~/models/product.server";
-import { CheckIcon, StarIcon } from "@heroicons/react/20/solid";
+import { CheckIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { addItemToCart } from "~/models/cart.server";
 import { createCart } from "~/models/cart.client";
 
 export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
   const data = await fetchProductById(params.productId!);
-  return data;
+  return data.product;
 };
 
 export async function action({ request }: ActionArgs) {
   const body = await request.formData();
   const cartId: any | null = body.get("localCartNo");
-  console.log("cart id is:");
-  console.log(cartId);
   const variantId: any = body.get("variantId");
-  console.log("item id is :");
-  console.log(variantId);
 
   if (!cartId) {
     return { message: "No Cart Found" };
@@ -38,27 +34,28 @@ export async function action({ request }: ActionArgs) {
 export default function Product() {
   const [loading, setLoading] = useState(true);
   const [localCartId, setLocalCartId] = useState("undefined");
-  const [product, setProduct] = useState(productMock);
+  const [product, setProduct] = useState(mock);
   const data = useLoaderData();
 
   useEffect(() => {
     setProduct({
-      ...productMock,
-      description: data.product.description,
-      name: data.product.title,
-      price: `$${data.product.priceRange.minVariantPrice.amount}`,
-      imageSrc: data.product.featuredImage.src,
-      variantId: data.product.variants.edges[0].node.id,
+      description: data.description,
+      name: data.title,
+      price: `$${data.priceRange.minVariantPrice.amount}`,
+      imageSrc: data.featuredImage.src,
+      imageAlt: data.featuredImage.altText,
+      variantId: data.variants.edges[0].node.id,
     });
 
     async function checkCartStatus() {
       //check if localCartId exists
       const cartId = localStorage.getItem("cartId");
 
+      // keep the localCarId if exists
       if (cartId && cartId != "undefined") {
         setLocalCartId(cartId);
       }
-
+      // create new cart if not exists
       if (!cartId) {
         const newCartId = await createCart();
         localStorage.setItem("cartId", newCartId);
@@ -96,30 +93,6 @@ export default function Product() {
 
                 <div className="ml-4 border-l border-gray-300 pl-4">
                   <h2 className="sr-only">Reviews</h2>
-                  <div className="flex items-center">
-                    <div>
-                      <div className="flex items-center">
-                        {[0, 1, 2, 3, 4].map((rating) => (
-                          <StarIcon
-                            key={rating}
-                            className={classNames(
-                              product.reviews.average > rating
-                                ? "text-yellow-400"
-                                : "text-gray-300",
-                              "h-5 w-5 flex-shrink-0"
-                            )}
-                            aria-hidden="true"
-                          />
-                        ))}
-                      </div>
-                      <p className="sr-only">
-                        {product.reviews.average} out of 5 stars
-                      </p>
-                    </div>
-                    <p className="ml-2 text-sm text-gray-500">
-                      {product.reviews.totalCount} reviews
-                    </p>
-                  </div>
                 </div>
               </div>
 
@@ -206,24 +179,14 @@ export default function Product() {
   );
 }
 
-const productMock = {
-  name: "Failed to load name",
-  href: "/",
-  price: "Failed to load price ",
-  description: "Failed to load description",
-  imageSrc: "/",
-  variantId: "Failed to load VariantId",
-  imageAlt: "Failed to Load alt Text",
-  breadcrumbs: [
-    { id: 1, name: "Travel", href: "#" },
-    { id: 2, name: "Bags", href: "#" },
-  ],
-  reviews: { average: 4, totalCount: 1624 },
+const mock = {
+  description: "data.description",
+  name: "data.title",
+  price: "data.priceRange.minVariantPrice.amount",
+  imageSrc: "data.featuredImage.src",
+  imageAlt: "data.featuredImage.altText",
+  variantId: "data.variants.edges[0].node.id",
 };
-
-function classNames(...classes: any[]) {
-  return classes.filter(Boolean).join(" ");
-}
 
 const SkeletonLoader = () => {
   return (

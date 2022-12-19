@@ -12,7 +12,6 @@ import {
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getCollections } from "./models/collection.server";
 import Layout from "./components/Layout";
-import { useEffect, useState } from "react";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
