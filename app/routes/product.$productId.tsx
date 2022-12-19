@@ -19,7 +19,11 @@ export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
 export async function action({ params, request }: LoaderArgs) {
   const body = await request.formData();
   const cartId = body.get("localCartNo");
+  console.log("cart id is:");
+  console.log(cartId);
   const variantId = body.get("variantId");
+  console.log("item id is :");
+  console.log(variantId);
 
   if (!cartId) {
     return { message: "No Cart Found" };
@@ -48,13 +52,15 @@ export default function Product() {
 
     async function checkCartStatus() {
       //check if localCartId exists
-      const cartId: string | null = localStorage.getItem("cartId");
+      const cartId = localStorage.getItem("cartId");
 
-      if (cartId) {
+      if (cartId && cartId != "undefined") {
         setLocalCartId(cartId);
-      } else {
+      }
+
+      if (!cartId) {
         const newCartId = await createCart();
-        localStorage.setItem("cartId", newCartId.cartId);
+        localStorage.setItem("cartId", newCartId);
       }
     }
     checkCartStatus();
@@ -153,7 +159,7 @@ export default function Product() {
                   type="text"
                   name="localCartNo"
                   className="hidden"
-                  value={localCartId}
+                  value={localCartId!}
                 />
                 <input
                   type="text"

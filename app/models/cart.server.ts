@@ -2,62 +2,29 @@ import { runQuery } from "~/models/utils";
 import { postToShopify } from "~/models/utils";
 
 export const createCart = async () => {
-  const query = `mutation createCart {
-    cartCreate {
-      cart {
-        id
-        checkoutUrl
-      }
-    }
-  }
-`;
   try {
     const variables = {};
-    const response = await runQuery({ query, variables });
-    return {
-      cartId: response.data.cartCreate.cart.id,
-      data: response.data.cartCreate.cart,
-    };
+    const response = await postToShopify({
+      query: queries.createCart,
+      variables,
+    });
+    // console.log("response");
+    console.log(response);
+    return response;
   } catch (error) {
     console.log(error);
   }
 };
 
-// export const getCart = async (cartId: string) => {
-//   const query = `{
-//     cart(id: "Z2lkOi8vc2hvcGlmeS9DYXJ0L2JhZWMwZjRjZTc2ZWExNDdjNDUzMzJjZmExY2IzMDY2") {
-//       createdAt
-//       estimatedCost {
-//         subtotalAmount {
-//           amount
-//           currencyCode
-//         }
-//       }
-//     }
-//   }
-// `;
-//   try {
-//     const variables = {};
-//     const response = await runQuery({ query, variables });
-//     if (response.errors) {
-//       console.log(response.errors);
-//     } else {
-//       console.log(response.data.cart.estimatedCost.subtotalAmount.amount);
-//       return response;
-//     }
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
-export const getCart = async (cartId: string): Promise<any> => {
+export const getCart = async (id: string): Promise<any> => {
   try {
-    const variables = { cartId };
+    const variables = { id };
 
     const response = await postToShopify({
       query: queries.getCart,
       variables,
     });
+    console.log(JSON.stringify(response, null, 4));
     if (response.errors) {
       console.log(response.errors);
     } else {
@@ -69,38 +36,26 @@ export const getCart = async (cartId: string): Promise<any> => {
 };
 
 export const addItemToCart = async (
-  //stable
+  //test
   cartId: string | null,
   productId: string
 ) => {
-  const query = `mutation MyMutation {
-      cartLinesAdd(
-        cartId: "${cartId}"
-        lines: {merchandiseId: "${productId}", quantity: 5}
-      ) {
-        cart {
-          id
-          checkoutUrl
-          lines(first: 100) {
-            edges {
-              node {
-                id
-                quantity
-              }
-            }
-          }
-        }
-      }
-    }
-    `;
   try {
-    const variables = {};
-    const response = await runQuery({ query, variables });
+    const variables = {
+      cartId,
+      lines: [{ merchandiseId: productId, quantity: 1 }],
+    };
+    const response = await postToShopify({
+      query: queries.addItemToCart,
+      variables,
+    });
     if (response.errors) {
       console.log(response.errors);
     } else {
-      console.log(response.data.cartLinesAdd.cart.id);
-      return response.data.cartLinesAdd.cart.id;
+      return {
+        lines: response.cartLinesAdd.cart.lines.edges,
+        cartId: response.cartLinesAdd.cart.id,
+      };
     }
   } catch (error) {
     console.log(error);
@@ -108,7 +63,7 @@ export const addItemToCart = async (
 };
 
 const queries = {
-  getCart: `query getCart($id: ID = "Z2lkOi8vc2hvcGlmeS9DYXJ0L2JhZWMwZjRjZTc2ZWExNDdjNDUzMzJjZmExY2IzMDY2") {
+  getCart: `query getCart($id: ID = "Z2lkOi8vc2hvcGlmeS9DYXJ0Lzc2NGYxNDY0ZTYwZTAxN2Q1NTAxZjNiMDMyNjlkZjhh") {
     cart(id: $id) {
       estimatedCost {
         subtotalAmount {
@@ -130,6 +85,14 @@ const queries = {
                 title
                 product {
                   id
+                  description
+                  title
+                  priceRange {
+                    minVariantPrice {
+                      amount
+                      currencyCode
+                    }
+                  }
                 }
               }
             }
@@ -138,6 +101,38 @@ const queries = {
       }
     }
   }`,
+  createCart: `mutation createCart {
+    cartCreate {
+      cart {
+        id
+        checkoutUrl
+      }
+    }
+  }
+`,
+  addItemToCart: `mutation MyMutation($cartId: ID = "Z2lkOi8vc2hvcGlmeS9DYXJ0Lzc2NGYxNDY0ZTYwZTAxN2Q1NTAxZjNiMDMyNjlkZjhh", $lines: [CartLineInput!] = {merchandiseId: "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8zNTU1NjQwNjEwMDEzMQ==", quantity: 1}) {
+    cartLinesAdd(cartId: $cartId, lines: $lines) {
+      cart {
+        id
+        lines(first: 100) {
+          edges {
+            node {
+              id
+              quantity
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  priceV2 {
+                    amount
+                  }
+                  title
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`,
 };
-
-//variant example : gid://shopify/ProductVariant/35480531730595

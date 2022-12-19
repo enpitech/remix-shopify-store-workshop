@@ -8,15 +8,17 @@ export async function loader() {
   //How to send the cartId from client to back?
   //We can reach the cart from many locations => footer,product....
   const data = await getCart(
-    "Z2lkOi8vc2hvcGlmeS9DYXJ0LzZiN2I2ZDVjM2YwOTA3Mjg4YzMxMGYxZDcyMzYwNTkz"
+    "Z2lkOi8vc2hvcGlmeS9DYXJ0Lzc2NGYxNDY0ZTYwZTAxN2Q1NTAxZjNiMDMyNjlkZjhh"
   );
-  return data;
+  return {
+    products: data.cart.lines.edges,
+    total: data.cart.estimatedCost.subtotalAmount.amount,
+  };
 }
 
 export default function Cart() {
   const [localCartId, setLocalCartId] = useState("");
-  const data = useLoaderData();
-  const products = data.cart.lines.edges;
+  const { products, total } = useLoaderData();
 
   useEffect(() => {
     const localCartId = localStorage.getItem("cartId");
@@ -38,16 +40,19 @@ export default function Cart() {
 
             <ul className="divide-y divide-gray-200 border-t border-b border-gray-200">
               {products.map((product: any) => {
+                console.log(product);
                 const item = {
                   id: product.node.id,
-                  name: product.node.merchandise.title,
+                  name: product.node.merchandise.product.title,
                   href: "/",
-                  price: "$35.00",
+                  price:
+                    product.node.merchandise.product.priceRange.minVariantPrice
+                      .amount,
                   color: "TBD",
                   inStock: true,
                   imageSrc: product.node.merchandise.image.src,
                   imageAlt: product.node.merchandise.image.altText,
-                  size: "TBD",
+                  size: product.node.merchandise.title,
                 };
                 return (
                   <li key={item.id} className="flex py-6">
@@ -75,9 +80,6 @@ export default function Cart() {
                           </p>
                         </div>
                         <p className="mt-1 text-sm text-gray-500">
-                          {item.color}
-                        </p>
-                        <p className="mt-1 text-sm text-gray-500">
                           {item.size}
                         </p>
                       </div>
@@ -95,11 +97,10 @@ export default function Cart() {
                               aria-hidden="true"
                             />
                           )}
-
                           <span>
                             {product.inStock
                               ? "In stock"
-                              : `Will ship in ${product.leadTime}`}
+                              : `Will ship in 2-3 days`}
                           </span>
                         </p>
                         <div className="ml-4">
@@ -123,7 +124,6 @@ export default function Cart() {
             <h2 id="summary-heading" className="sr-only">
               Order summary
             </h2>
-
             <div>
               <dl className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -131,7 +131,7 @@ export default function Cart() {
                     Subtotal
                   </dt>
                   <dd className="ml-4 text-base font-medium text-gray-900">
-                    $96.00
+                    ${total}
                   </dd>
                 </div>
               </dl>
