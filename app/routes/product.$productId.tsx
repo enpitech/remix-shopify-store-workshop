@@ -2,6 +2,7 @@ import { Form, Link, useLoaderData } from "@remix-run/react";
 import {
   redirect,
   type LoaderArgs,
+  type ActionArgs,
   type LoaderFunction,
 } from "@remix-run/node";
 import { useEffect, useState } from "react";
@@ -12,16 +13,16 @@ import { addItemToCart } from "~/models/cart.server";
 import { createCart } from "~/models/cart.client";
 
 export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
-  const data = await fetchProductById(params.productId);
+  const data = await fetchProductById(params.productId!);
   return data;
 };
 
-export async function action({ params, request }: LoaderArgs) {
+export async function action({ request }: ActionArgs) {
   const body = await request.formData();
-  const cartId = body.get("localCartNo");
+  const cartId: any | null = body.get("localCartNo");
   console.log("cart id is:");
   console.log(cartId);
-  const variantId = body.get("variantId");
+  const variantId: any = body.get("variantId");
   console.log("item id is :");
   console.log(variantId);
 
@@ -31,12 +32,12 @@ export async function action({ params, request }: LoaderArgs) {
 
   await addItemToCart(cartId, variantId);
 
-  return redirect("/cart");
+  return redirect(`/cart/${cartId}`);
 }
 
 export default function Product() {
   const [loading, setLoading] = useState(true);
-  const [localCartId, setLocalCartId] = useState(null);
+  const [localCartId, setLocalCartId] = useState("undefined");
   const [product, setProduct] = useState(productMock);
   const data = useLoaderData();
 

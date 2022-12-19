@@ -1,228 +1,166 @@
+import { CheckIcon, ClockIcon } from "@heroicons/react/20/solid";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getCart } from "~/models/cart.server";
-import { badRequest } from "~/models/utils";
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
-import { redirect } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import { type LoaderArgs } from "@remix-run/node";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export async function loader({ params }: LoaderArgs) {
   const data = await getCart(params.cartId!);
-  const cost = data?.cart.estimatedCost.subtotalAmount.amount;
-  return cost;
-};
-
-function validateFirstname(firstName: unknown) {
-  if (typeof firstName !== "string" || firstName.length < 3) {
-    return `First Names must be at least 3 characters long`;
-  }
-}
-
-function validateLastname(lastName: unknown) {
-  if (typeof lastName !== "string" || lastName.length < 3) {
-    return `Last Names must be at least 3 characters long`;
-  }
-}
-
-function validatePhone(phone: unknown) {
-  if (typeof phone !== "string" || phone.length < 6) {
-    return `Phone must be at least 6 characters long`;
-  }
-}
-
-function validateEmail(phone: unknown) {
-  if (typeof phone !== "string" || phone.length < 6) {
-    return `Email must be at least 6 characters long`;
-  }
-}
-
-export const action = async ({ request }: ActionArgs) => {
-  const form = await request.formData();
-  const firstName = form.get("firstName");
-  const lastName = form.get("lastName");
-  const phone = form.get("phone");
-  const email = form.get("email");
-
-  if (
-    typeof firstName !== "string" ||
-    typeof lastName !== "string" ||
-    typeof phone !== "string" ||
-    typeof email !== "string"
-  ) {
-    return badRequest({
-      fieldErrors: null,
-      fields: null,
-      formError: `Form not submitted correctly.`,
-    });
-  }
-
-  const fields = { firstName, lastName, phone, email };
-  const fieldErrors = {
-    firstName: validateFirstname(firstName),
-    lastName: validateLastname(lastName),
-    phone: validatePhone(phone),
-    email: validateEmail(email),
+  return {
+    products: data.cart.lines.edges,
+    total: data.cart.estimatedCost.subtotalAmount.amount,
   };
-  if (Object.values(fieldErrors).some(Boolean)) {
-    return badRequest({
-      fieldErrors,
-      fields,
-      formError: null,
-    });
-  }
+}
 
-  return redirect("/");
-};
+export default function Cart() {
+  const [localCartId, setLocalCartId] = useState("");
+  const { products, total } = useLoaderData();
 
-export default function Checkout() {
-  const cost = useLoaderData();
-  const error = useActionData();
+  useEffect(() => {
+    const localCartId = localStorage.getItem("cartId");
+    setLocalCartId(localCartId!);
+  }, []);
 
   return (
-    <div className="bg-gray-50">
-      <div className="mx-auto min-h-screen max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
-        <h2 className="sr-only">Checkout</h2>
+    <div className="bg-white">
+      <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:px-0">
+        <h1 className="text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          Shopping Cart
+        </h1>
 
-        <Form
-          method="post"
-          className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16"
-        >
-          <div>
-            <div>
-              <h2 className="text-lg font-medium text-gray-900">
-                Contact information
-              </h2>
+        <form className="mt-12">
+          <section aria-labelledby="cart-heading">
+            <h2 id="cart-heading" className="sr-only">
+              Items in your shopping cart
+            </h2>
 
-              <div className="mt-4">
-                <label
-                  htmlFor="email-address"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Email address
-                </label>
-                <em className="text-red-600">{error?.fieldErrors?.email}</em>
+            <ul className="divide-y divide-gray-200 border-t border-b border-gray-200">
+              {products.map((product: any) => {
+                console.log(product);
+                const item = {
+                  id: product.node.id,
+                  name: product.node.merchandise.product.title,
+                  href: "/",
+                  price:
+                    product.node.merchandise.product.priceRange.minVariantPrice
+                      .amount,
+                  color: "TBD",
+                  inStock: true,
+                  imageSrc: product.node.merchandise.image.src,
+                  imageAlt: product.node.merchandise.image.altText,
+                  size: product.node.merchandise.title,
+                };
+                return (
+                  <li key={item.id} className="flex py-6">
+                    <div className="flex-shrink-0">
+                      <img
+                        src={item.imageSrc}
+                        alt={item.imageAlt}
+                        className="h-24 w-24 rounded-md object-cover object-center sm:h-32 sm:w-32"
+                      />
+                    </div>
 
-                <div className="mt-1">
-                  <input
-                    id="email"
-                    name="email"
-                    type="text"
-                    placeholder="Enter your email address"
-                    className=" block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  />
-                </div>
-              </div>
-            </div>
+                    <div className="ml-4 flex flex-1 flex-col sm:ml-6">
+                      <div>
+                        <div className="flex justify-between">
+                          <h4 className="text-sm">
+                            <a
+                              href={product.href}
+                              className="font-medium text-gray-700 hover:text-gray-800"
+                            >
+                              {item.name}
+                            </a>
+                          </h4>
+                          <p className="ml-4 text-sm font-medium text-gray-900">
+                            {item.price}
+                          </p>
+                        </div>
+                        <p className="mt-1 text-sm text-gray-500">
+                          {item.size}
+                        </p>
+                      </div>
 
-            <div className="mt-10 border-t border-gray-200 pt-10">
-              <h2 className="text-lg font-medium text-gray-900">
-                Shipping information
-              </h2>
-
-              <div className="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
-                <div>
-                  <label
-                    htmlFor="first-name"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    First name
-                  </label>
-                  <em className="text-red-600">
-                    {error?.fieldErrors?.firstName}
-                  </em>
-
-                  <div className="mt-1">
-                    <input
-                      id="firstName"
-                      name="firstName"
-                      type="text"
-                      placeholder="Enter your first name"
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="last-name"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Last name
-                  </label>
-                  <em className="text-red-600">
-                    {error?.fieldErrors?.lastName}
-                  </em>
-
-                  <div className="mt-1">
-                    <input
-                      id="lastName"
-                      name="lastName"
-                      type="text"
-                      placeholder="Enter your last name"
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
-                  </div>
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Phone
-                  </label>
-                  <em className="text-red-600">{error?.fieldErrors?.phone}</em>
-
-                  <div className="mt-1">
-                    <input
-                      id="phone"
-                      name="phone"
-                      type="text"
-                      placeholder="Enter your phone name"
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                      <div className="mt-4 flex flex-1 items-end justify-between">
+                        <p className="flex items-center space-x-2 text-sm text-gray-700">
+                          {product.inStock ? (
+                            <CheckIcon
+                              className="h-5 w-5 flex-shrink-0 text-green-500"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <ClockIcon
+                              className="h-5 w-5 flex-shrink-0 text-gray-300"
+                              aria-hidden="true"
+                            />
+                          )}
+                          <span>
+                            {product.inStock
+                              ? "In stock"
+                              : `Will ship in 2-3 days`}
+                          </span>
+                        </p>
+                        <div className="ml-4">
+                          <button
+                            type="button"
+                            className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                          >
+                            <span>Remove</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
 
           {/* Order summary */}
-          <div className=" mt-10 lg:mt-0">
-            <h2 className=" text-lg font-medium text-gray-900">
+          <section aria-labelledby="summary-heading" className="mt-10">
+            <h2 id="summary-heading" className="sr-only">
               Order summary
             </h2>
-            <div className=" mt-4 rounded-lg border border-gray-200 bg-white shadow-sm">
-              <h3 className="sr-only">Items in your cart</h3>
-              <dl className="space-y-6 border-t border-gray-200 py-6 px-4 sm:px-6">
+            <div>
+              <dl className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <dt className="text-sm">Subtotal</dt>
-                  <dd className="text-sm font-medium text-gray-900">${cost}</dd>
-                </div>
-                <div className="flex items-center justify-between">
-                  <dt className="text-sm">Shipping</dt>
-                  <dd className="text-sm font-medium text-gray-900">$5</dd>
-                </div>
-                <div className="flex items-center justify-between">
-                  <dt className="text-sm">Taxes</dt>
-                  <dd className="text-sm font-medium text-gray-900">${0}</dd>
-                </div>
-                <div className="flex items-center justify-between border-t border-gray-200 pt-6">
-                  <dt className="text-base font-medium">Total</dt>
-                  <dd className="text-base font-medium text-gray-900">
-                    ${parseInt(cost) + 5}
+                  <dt className="text-base font-medium text-gray-900">
+                    Subtotal
+                  </dt>
+                  <dd className="ml-4 text-base font-medium text-gray-900">
+                    ${total}
                   </dd>
                 </div>
               </dl>
-              <div className="border-t border-gray-200 py-6 px-4 sm:px-6">
+              <p className="mt-1 text-sm text-gray-500">
+                Shipping and taxes will be calculated at checkout.
+              </p>
+            </div>
+            <div className="mt-10">
+              <Link to={`/cart/${localCartId}`}>
                 <button
                   type="submit"
-                  className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                  className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 disabled:opacity-25"
+                  disabled={!localCartId}
                 >
-                  Buy Now
+                  {localCartId ? "Checkout" : "No articles in the cart"}
                 </button>
-              </div>
+              </Link>
             </div>
-          </div>
-        </Form>
+
+            <div className="mt-6 text-center text-sm">
+              <p>
+                <a
+                  href="/"
+                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                >
+                  Continue Shopping
+                  <span aria-hidden="true"> &rarr;</span>
+                </a>
+              </p>
+            </div>
+          </section>
+        </form>
       </div>
     </div>
   );
