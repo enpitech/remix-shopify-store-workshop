@@ -76,7 +76,6 @@ export const loader = async ({ request }: LoaderArgs) => {
 export default function Checkout() {
   const [cartTotal, setCartTotal] = useState("");
   const data = useActionData();
-  console.log(data);
 
   useEffect(() => {
     async function getCartData() {
