@@ -4,46 +4,9 @@ import { Link } from "react-router-dom";
 import { getCart } from "~/models/cart.server";
 import { useLoaderData } from "@remix-run/react";
 
-// const products = [
-//   {
-//     id: 1,
-//     name: "Basic Tee",
-//     href: "#",
-//     price: "$32.00",
-//     color: "Sienna",
-//     inStock: true,
-//     size: "Large",
-//     imageSrc:
-//       "https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-01.jpg",
-//     imageAlt: "Front of men's Basic Tee in sienna.",
-//   },
-//   {
-//     id: 2,
-//     name: "Basic Tee",
-//     href: "#",
-//     price: "$32.00",
-//     color: "Black",
-//     inStock: false,
-//     leadTime: "3–4 weeks",
-//     size: "Large",
-//     imageSrc:
-//       "https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-02.jpg",
-//     imageAlt: "Front of men's Basic Tee in black.",
-//   },
-//   {
-//     id: 3,
-//     name: "Nomad Tumbler",
-//     href: "#",
-//     price: "$35.00",
-//     color: "White",
-//     inStock: true,
-//     imageSrc:
-//       "https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-03.jpg",
-//     imageAlt: "Insulated bottle with white base and black snap lid.",
-//   },
-// ];
-
 export async function loader() {
+  //How to send the cartId from client to back?
+  //We can reach the cart from many locations => footer,product....
   const data = await getCart(
     "Z2lkOi8vc2hvcGlmeS9DYXJ0LzZiN2I2ZDVjM2YwOTA3Mjg4YzMxMGYxZDcyMzYwNTkz"
   );
@@ -57,7 +20,7 @@ export default function Cart() {
 
   useEffect(() => {
     const localCartId = localStorage.getItem("cartId");
-    setLocalCartId(localCartId);
+    setLocalCartId(localCartId!);
   }, []);
 
   return (
@@ -205,15 +168,3 @@ export default function Cart() {
     </div>
   );
 }
-
-const productMockUp = {
-  id: 3,
-  name: "Nomad Tumbler",
-  href: "#",
-  price: "$35.00",
-  color: "White",
-  inStock: true,
-  imageSrc:
-    "https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-03.jpg",
-  imageAlt: "Insulated bottle with white base and black snap lid.",
-};

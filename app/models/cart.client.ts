@@ -2,7 +2,6 @@ import { runQuery } from "~/models/utils";
 import { postToShopify } from "~/models/utils";
 
 export const createCart = async () => {
-  console.log("workingBE");
   const query = `mutation createCart {
     cartCreate {
       cart {

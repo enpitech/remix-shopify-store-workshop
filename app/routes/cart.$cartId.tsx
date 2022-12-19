@@ -1,9 +1,14 @@
-import { getCart } from "~/models/cart.client";
+import { getCart } from "~/models/cart.server";
 import { badRequest } from "~/models/utils";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
-import { useState, useEffect } from "react";
-import { Form, useActionData } from "@remix-run/react";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/node";
+
+export const loader = async ({ params }: LoaderArgs) => {
+  const data = await getCart(params.cartId!);
+  const cost = data?.cart.estimatedCost.subtotalAmount.amount;
+  return cost;
+};
 
 function validateFirstname(firstName: unknown) {
   if (typeof firstName !== "string" || firstName.length < 3) {
@@ -67,35 +72,9 @@ export const action = async ({ request }: ActionArgs) => {
   return redirect("/");
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
-  //How to send the cartId from client to back?
-  //We can reach the cart from many locations => footer,product....
-  return {};
-};
-
 export default function Checkout() {
-  const [cartTotal, setCartTotal] = useState("");
-  const data = useActionData();
-
-  useEffect(() => {
-    async function getCartData() {
-      const cartId: string | null = localStorage.getItem("cartId");
-
-      if (!cartId) {
-        return;
-      } else {
-        const data = await getCart(cartId);
-        setCartTotal(data.cart.estimatedCost.subtotalAmount.amount);
-      }
-    }
-    getCartData();
-  }, []);
-
-  function handleBuyNow() {
-    //Delete local storage
-    //set cartTotal to rerender the page
-    setCartTotal("");
-  }
+  const cost = useLoaderData();
+  const error = useActionData();
 
   return (
     <div className="bg-gray-50">
@@ -103,7 +82,6 @@ export default function Checkout() {
         <h2 className="sr-only">Checkout</h2>
 
         <Form
-          onSubmit={handleBuyNow}
           method="post"
           className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16"
         >
@@ -120,7 +98,7 @@ export default function Checkout() {
                 >
                   Email address
                 </label>
-                <em className="text-red-600">{data?.fieldErrors?.email}</em>
+                <em className="text-red-600">{error?.fieldErrors?.email}</em>
 
                 <div className="mt-1">
                   <input
@@ -148,7 +126,7 @@ export default function Checkout() {
                     First name
                   </label>
                   <em className="text-red-600">
-                    {data?.fieldErrors?.firstName}
+                    {error?.fieldErrors?.firstName}
                   </em>
 
                   <div className="mt-1">
@@ -170,7 +148,7 @@ export default function Checkout() {
                     Last name
                   </label>
                   <em className="text-red-600">
-                    {data?.fieldErrors?.lastName}
+                    {error?.fieldErrors?.lastName}
                   </em>
 
                   <div className="mt-1">
@@ -191,7 +169,7 @@ export default function Checkout() {
                   >
                     Phone
                   </label>
-                  <em className="text-red-600">{data?.fieldErrors?.phone}</em>
+                  <em className="text-red-600">{error?.fieldErrors?.phone}</em>
 
                   <div className="mt-1">
                     <input
@@ -217,9 +195,7 @@ export default function Checkout() {
               <dl className="space-y-6 border-t border-gray-200 py-6 px-4 sm:px-6">
                 <div className="flex items-center justify-between">
                   <dt className="text-sm">Subtotal</dt>
-                  <dd className="text-sm font-medium text-gray-900">
-                    ${cartTotal}
-                  </dd>
+                  <dd className="text-sm font-medium text-gray-900">${cost}</dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-sm">Shipping</dt>
@@ -232,7 +208,7 @@ export default function Checkout() {
                 <div className="flex items-center justify-between border-t border-gray-200 pt-6">
                   <dt className="text-base font-medium">Total</dt>
                   <dd className="text-base font-medium text-gray-900">
-                    ${parseInt(cartTotal) + 5}
+                    ${parseInt(cost) + 5}
                   </dd>
                 </div>
               </dl>

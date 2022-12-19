@@ -50,7 +50,7 @@ export const createCart = async () => {
 //   }
 // };
 
-export const getCart = async (cartId: string) => {
+export const getCart = async (cartId: string): Promise<any> => {
   try {
     const variables = { cartId };
 

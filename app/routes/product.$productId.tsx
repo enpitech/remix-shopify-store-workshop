@@ -1,10 +1,15 @@
 import { Form, Link, useLoaderData } from "@remix-run/react";
-import { type LoaderArgs, type LoaderFunction } from "@remix-run/node";
+import {
+  redirect,
+  type LoaderArgs,
+  type LoaderFunction,
+} from "@remix-run/node";
 import { useEffect, useState } from "react";
 import { fetchProductById } from "~/models/product.server";
 import { CheckIcon, StarIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { addItemToCart } from "~/models/cart.server";
+import { createCart } from "~/models/cart.client";
 
 export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
   const data = await fetchProductById(params.productId);
@@ -22,7 +27,7 @@ export async function action({ params, request }: LoaderArgs) {
 
   await addItemToCart(cartId, variantId);
 
-  return { message: "Item added sucessfully" };
+  return redirect("/cart");
 }
 
 export default function Product() {
@@ -41,15 +46,19 @@ export default function Product() {
       variantId: data.product.variants.edges[0].node.id,
     });
 
-    setLoading(false);
+    async function checkCartStatus() {
+      //check if localCartId exists
+      const cartId: string | null = localStorage.getItem("cartId");
 
-    //Get localCartId if exists
-    const cartId: string | null = localStorage.getItem("cartId");
-    if (!cartId) {
-      return;
-    } else {
-      setLocalCartId(cartId);
+      if (cartId) {
+        setLocalCartId(cartId);
+      } else {
+        const newCartId = await createCart();
+        localStorage.setItem("cartId", newCartId.cartId);
+      }
     }
+    checkCartStatus();
+    setLoading(false);
   }, [data]);
 
   if (loading) {
@@ -160,13 +169,6 @@ export default function Product() {
                   >
                     Add to bag
                   </button>
-                  <Link
-                    className="mb-5 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
-                    to="/cart"
-                  >
-                    Go to Cart
-                  </Link>
-
                   <Link
                     className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                     to="/"
