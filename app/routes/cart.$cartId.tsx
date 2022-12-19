@@ -115,7 +115,6 @@ export default function Cart() {
               })}
             </ul>
           </section>
-
           {/* Order summary */}
           <section aria-labelledby="summary-heading" className="mt-10">
             <h2 id="summary-heading" className="sr-only">
@@ -137,7 +136,7 @@ export default function Cart() {
               </p>
             </div>
             <div className="mt-10">
-              <Link to={`/cart/${localCartId}`}>
+              <Link to={`/cart/${localCartId}/checkout`}>
                 <button
                   type="submit"
                   className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 disabled:opacity-25"
