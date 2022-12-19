@@ -12,6 +12,7 @@ import {
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getCollections } from "./models/collection.server";
 import Layout from "./components/Layout";
+import { useEffect, useState } from "react";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
@@ -29,6 +30,13 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 export default function App() {
+  const [localCartId, setLocalCartId] = useState("");
+
+  useEffect(() => {
+    const data = localStorage.getItem("cartId");
+    setLocalCartId(data);
+  }, []);
+
   const collections = useLoaderData();
   return (
     <html lang="en" className="h-full">
@@ -37,7 +45,7 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <Layout collections={collections}>
+        <Layout collections={collections} localCartId={localCartId}>
           <Outlet />
         </Layout>
         <ScrollRestoration />

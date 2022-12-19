@@ -1,6 +1,6 @@
 import { getCart } from "~/models/cart.client";
 import { badRequest } from "~/models/utils";
-import type { ActionArgs } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { useState, useEffect } from "react";
 import { Form, useActionData } from "@remix-run/react";
 import { redirect } from "@remix-run/node";
@@ -65,6 +65,12 @@ export const action = async ({ request }: ActionArgs) => {
   }
 
   return redirect("/");
+};
+
+export const loader = async ({ request }: LoaderArgs) => {
+  //How to send the cartId from client to back?
+  //We can reach the cart from many locations => footer,product....
+  return {};
 };
 
 export default function Checkout() {
