@@ -23,32 +23,32 @@ export const createCart = async () => {
   }
 };
 
-export const getCart = async (cartId: string) => {
-  const query = `{
-    cart(id: "Z2lkOi8vc2hvcGlmeS9DYXJ0L2JhZWMwZjRjZTc2ZWExNDdjNDUzMzJjZmExY2IzMDY2") {
-      createdAt
-      estimatedCost {
-        subtotalAmount {
-          amount
-          currencyCode
-        }
-      }
-    }
-  }
-`;
-  try {
-    const variables = {};
-    const response = await runQuery({ query, variables });
-    if (response.errors) {
-      console.log(response.errors);
-    } else {
-      console.log(response.data.cart.estimatedCost.subtotalAmount.amount);
-      return response;
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
+// export const getCart = async (cartId: string) => {
+//   const query = `{
+//     cart(id: "Z2lkOi8vc2hvcGlmeS9DYXJ0L2JhZWMwZjRjZTc2ZWExNDdjNDUzMzJjZmExY2IzMDY2") {
+//       createdAt
+//       estimatedCost {
+//         subtotalAmount {
+//           amount
+//           currencyCode
+//         }
+//       }
+//     }
+//   }
+// `;
+//   try {
+//     const variables = {};
+//     const response = await runQuery({ query, variables });
+//     if (response.errors) {
+//       console.log(response.errors);
+//     } else {
+//       console.log(response.data.cart.estimatedCost.subtotalAmount.amount);
+//       return response;
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 export const addItemToCart = async (
   //stable
@@ -88,32 +88,6 @@ export const addItemToCart = async (
     console.log(error);
   }
 };
-
-// export const createCartAndAdd = async () => {
-//   try {
-//     const response = await postToShopify({
-//       query: queries.createCartAndAddQuery,
-//       variables: {
-//         cartInput: {
-//           lines: [
-//             {
-//               quantity: 1,
-//               merchandiseId:
-//                 "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8zNTQ4MDUzMTczMDU5NQ==",
-//             },
-//           ],
-//         },
-//       },
-//     });
-//     return {
-//       cartId: response.cartCreate.cart.id,
-//       data: response.cartCreate.cart,
-//       cost: response.cartCreate.cart.lines,
-//     };
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
 
 // const queries = {};
 

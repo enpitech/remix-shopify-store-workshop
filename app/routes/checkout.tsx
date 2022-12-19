@@ -1,25 +1,19 @@
-import { type DataFunctionArgs } from "@remix-run/server-runtime";
-import { getCart } from "~/models/cart.server";
+import { getCart } from "~/models/cart.client";
 import { badRequest } from "~/models/utils";
 import type { ActionArgs } from "@remix-run/node";
-
-export async function loader(args: DataFunctionArgs) {
-  const testCart = await getCart(
-    "Z2lkOi8vc2hvcGlmeS9DYXJ0LzAyZDM5NDQ0NTc5MWQwOTM0YjcxNmNhNzNjYmJiNjc3"
-  );
-  console.log(testCart);
-  return {};
-}
+import { useState, useEffect } from "react";
+import { Form, useActionData } from "@remix-run/react";
+import { redirect } from "@remix-run/node";
 
 function validateFirstname(firstName: unknown) {
   if (typeof firstName !== "string" || firstName.length < 3) {
-    return `firstNames must be at least 3 characters long`;
+    return `First Names must be at least 3 characters long`;
   }
 }
 
 function validateLastname(lastName: unknown) {
   if (typeof lastName !== "string" || lastName.length < 3) {
-    return `lastNames must be at least 3 characters long`;
+    return `Last Names must be at least 3 characters long`;
   }
 }
 
@@ -29,15 +23,24 @@ function validatePhone(phone: unknown) {
   }
 }
 
+function validateEmail(phone: unknown) {
+  if (typeof phone !== "string" || phone.length < 6) {
+    return `Email must be at least 6 characters long`;
+  }
+}
+
 export const action = async ({ request }: ActionArgs) => {
   const form = await request.formData();
   const firstName = form.get("firstName");
   const lastName = form.get("lastName");
   const phone = form.get("phone");
+  const email = form.get("email");
+
   if (
     typeof firstName !== "string" ||
     typeof lastName !== "string" ||
-    typeof phone !== "string"
+    typeof phone !== "string" ||
+    typeof email !== "string"
   ) {
     return badRequest({
       fieldErrors: null,
@@ -46,11 +49,12 @@ export const action = async ({ request }: ActionArgs) => {
     });
   }
 
-  const fields = { firstName, lastName, phone };
+  const fields = { firstName, lastName, phone, email };
   const fieldErrors = {
     firstName: validateFirstname(firstName),
     lastName: validateLastname(lastName),
     phone: validatePhone(phone),
+    email: validateEmail(email),
   };
   if (Object.values(fieldErrors).some(Boolean)) {
     return badRequest({
@@ -59,15 +63,45 @@ export const action = async ({ request }: ActionArgs) => {
       formError: null,
     });
   }
+
+  return redirect("/");
 };
 
 export default function Checkout() {
+  const [cartTotal, setCartTotal] = useState("");
+  const data = useActionData();
+  console.log(data);
+
+  useEffect(() => {
+    async function getCartData() {
+      const cartId: string | null = localStorage.getItem("cartId");
+
+      if (!cartId) {
+        return;
+      } else {
+        const data = await getCart(cartId);
+        setCartTotal(data.cart.estimatedCost.subtotalAmount.amount);
+      }
+    }
+    getCartData();
+  }, []);
+
+  function handleBuyNow() {
+    //Delete local storage
+    //set cartTotal to rerender the page
+    setCartTotal("");
+  }
+
   return (
     <div className="bg-gray-50">
-      <div className="mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
+      <div className="mx-auto min-h-screen max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
         <h2 className="sr-only">Checkout</h2>
 
-        <form className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
+        <Form
+          onSubmit={handleBuyNow}
+          method="post"
+          className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16"
+        >
           <div>
             <div>
               <h2 className="text-lg font-medium text-gray-900">
@@ -81,6 +115,8 @@ export default function Checkout() {
                 >
                   Email address
                 </label>
+                <em className="text-red-600">{data?.fieldErrors?.email}</em>
+
                 <div className="mt-1">
                   <input
                     id="email"
@@ -106,6 +142,10 @@ export default function Checkout() {
                   >
                     First name
                   </label>
+                  <em className="text-red-600">
+                    {data?.fieldErrors?.firstName}
+                  </em>
+
                   <div className="mt-1">
                     <input
                       id="firstName"
@@ -124,6 +164,10 @@ export default function Checkout() {
                   >
                     Last name
                   </label>
+                  <em className="text-red-600">
+                    {data?.fieldErrors?.lastName}
+                  </em>
+
                   <div className="mt-1">
                     <input
                       id="lastName"
@@ -142,6 +186,8 @@ export default function Checkout() {
                   >
                     Phone
                   </label>
+                  <em className="text-red-600">{data?.fieldErrors?.phone}</em>
+
                   <div className="mt-1">
                     <input
                       id="phone"
@@ -166,35 +212,36 @@ export default function Checkout() {
               <dl className="space-y-6 border-t border-gray-200 py-6 px-4 sm:px-6">
                 <div className="flex items-center justify-between">
                   <dt className="text-sm">Subtotal</dt>
-                  <dd className="text-sm font-medium text-gray-900">$64.00</dd>
+                  <dd className="text-sm font-medium text-gray-900">
+                    ${cartTotal}
+                  </dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-sm">Shipping</dt>
-                  <dd className="text-sm font-medium text-gray-900">$5.00</dd>
+                  <dd className="text-sm font-medium text-gray-900">$5</dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-sm">Taxes</dt>
-                  <dd className="text-sm font-medium text-gray-900">$5.52</dd>
+                  <dd className="text-sm font-medium text-gray-900">${0}</dd>
                 </div>
                 <div className="flex items-center justify-between border-t border-gray-200 pt-6">
                   <dt className="text-base font-medium">Total</dt>
                   <dd className="text-base font-medium text-gray-900">
-                    $75.52
+                    ${parseInt(cartTotal) + 5}
                   </dd>
                 </div>
               </dl>
-
               <div className="border-t border-gray-200 py-6 px-4 sm:px-6">
                 <button
                   type="submit"
                   className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                 >
-                  Confirm order
+                  Buy Now
                 </button>
               </div>
             </div>
           </div>
-        </form>
+        </Form>
       </div>
     </div>
   );
