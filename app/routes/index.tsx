@@ -18,20 +18,20 @@ export const loader = async () => {
 export default function Home() {
   const { collections, trendingProducts } = useLoaderData<typeof loader>();
 
-  useEffect(() => {
-    // check weather localCartId exists
-    const localCartId = localStorage.getItem("cartId");
+  // useEffect(() => {
+  //   // check weather localCartId exists
+  //   const localCartId = localStorage.getItem("cartId");
 
-    if (!localCartId) {
-      async function makeNewCart() {
-        const newCart = await createCart();
-        localStorage.setItem("cartId", newCart?.cartId);
-      }
-      makeNewCart();
-    }
-    //if cart exists return
-    return;
-  }, []);
+  //   if (!localCartId) {
+  //     async function makeNewCart() {
+  //       const newCart = await createCart();
+  //       localStorage.setItem("cartId", newCart?.cartId);
+  //     }
+  //     makeNewCart();
+  //   }
+  //   //if cart exists return
+  //   return;
+  // }, []);
 
   function Collections() {
     return (

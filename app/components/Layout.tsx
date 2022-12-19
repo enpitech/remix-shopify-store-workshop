@@ -20,7 +20,6 @@ export default function Layout({ collections, children, localCartId }: any) {
         open={headerStatus}
         setOpen={setHeaderStatus}
         collections={collections}
-        localCartId={localCartId}
       />
       <main>{children}</main>
       <Footer />
@@ -287,10 +286,7 @@ function Header({ open, setOpen, collections, localCartId }: HeaderProps) {
   function Cart() {
     return (
       <div className="ml-4 flow-root lg:ml-8">
-        <a
-          href={localCartId ? `cart/${localCartId}` : "/"}
-          className="group -m-2 flex items-center p-2"
-        >
+        <a href={"/cart"} className="group -m-2 flex items-center p-2">
           <ShoppingBagIcon
             className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
             aria-hidden="true"

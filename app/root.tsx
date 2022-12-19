@@ -30,13 +30,6 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 export default function App() {
-  const [localCartId, setLocalCartId] = useState("");
-
-  useEffect(() => {
-    const data = localStorage.getItem("cartId");
-    setLocalCartId(data);
-  }, []);
-
   const collections = useLoaderData();
   return (
     <html lang="en" className="h-full">
@@ -45,7 +38,7 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <Layout collections={collections} localCartId={localCartId}>
+        <Layout collections={collections} >
           <Outlet />
         </Layout>
         <ScrollRestoration />

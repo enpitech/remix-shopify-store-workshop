@@ -1,5 +1,5 @@
 import { runQuery } from "~/models/utils";
-// import { postToShopify } from "~/models/utils";
+import { postToShopify } from "~/models/utils";
 
 export const createCart = async () => {
   const query = `mutation createCart {
@@ -50,6 +50,24 @@ export const createCart = async () => {
 //   }
 // };
 
+export const getCart = async (cartId: string) => {
+  try {
+    const variables = { cartId };
+
+    const response = await postToShopify({
+      query: queries.getCart,
+      variables,
+    });
+    if (response.errors) {
+      console.log(response.errors);
+    } else {
+      return response;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const addItemToCart = async (
   //stable
   cartId: string | null,
@@ -89,6 +107,37 @@ export const addItemToCart = async (
   }
 };
 
-// const queries = {};
+const queries = {
+  getCart: `query getCart($id: ID = "Z2lkOi8vc2hvcGlmeS9DYXJ0L2JhZWMwZjRjZTc2ZWExNDdjNDUzMzJjZmExY2IzMDY2") {
+    cart(id: $id) {
+      estimatedCost {
+        subtotalAmount {
+          amount
+          currencyCode
+        }
+      }
+      lines(first: 100) {
+        edges {
+          node {
+            id
+            merchandise {
+              ... on ProductVariant {
+                id
+                image {
+                  altText
+                  src
+                }
+                title
+                product {
+                  id
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }`,
+};
 
 //variant example : gid://shopify/ProductVariant/35480531730595
