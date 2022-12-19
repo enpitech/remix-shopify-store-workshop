@@ -31,12 +31,6 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 export default function App() {
-  // const [cartId, setCartId] = useState(
-  //   "Z2lkOi8vc2hvcGlmeS9DYXJ0LzU3YjA3NGZjYjBhMmQzNGY1NDIzZWM1ZDAyMzMwYjhl"
-  // );
-
-  const [cartId, setCartId] = useState("none");
-
   const collections = useLoaderData();
   return (
     <html lang="en" className="h-full">
@@ -46,7 +40,7 @@ export default function App() {
       </head>
       <body className="h-full">
         <Layout collections={collections}>
-          <Outlet context={[cartId, setCartId]} />
+          <Outlet />
         </Layout>
         <ScrollRestoration />
         <Scripts />

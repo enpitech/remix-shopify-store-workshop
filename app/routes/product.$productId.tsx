@@ -1,12 +1,10 @@
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import { type LoaderArgs, type LoaderFunction } from "@remix-run/node";
 import { useEffect, useState } from "react";
 import { fetchProductById } from "~/models/product.server";
 import { CheckIcon, StarIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { addItemToCart } from "~/models/cart.server";
-import { useOutletContext } from "@remix-run/react";
-import { createCartAndAdd } from "~/models/cart.server";
 
 export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
   const data = await fetchProductById(params.productId);
@@ -14,35 +12,24 @@ export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
 };
 
 export async function action({ params, request }: LoaderArgs) {
-  console.log("Clicked the backend");
   const body = await request.formData();
   const cartId = body.get("localCartNo");
-  console.log("cartId is (back):");
-  console.log(cartId);
-  if (false) {
-    //Create cart and add
-    const response = await createCartAndAdd();
-    const newCartId = response?.cartId;
-    return newCartId;
-  } else {
-    const response = await addItemToCart(
-      "Z2lkOi8vc2hvcGlmeS9DYXJ0LzdlMTdhN2UzMzdhYzc5NTM1MGEzZjFmZTM1NzM4YzZm",
-      "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8zNTQ4MDUzMTczMDU5NQ=="
-    );
-    console.log(response);
-    return {};
+  const variantId = body.get("variantId");
+
+  if (!cartId) {
+    return { message: "No Cart Found" };
   }
+
+  await addItemToCart(cartId, variantId);
+
+  return { message: "Item added sucessfully" };
 }
 
 export default function Product() {
   const [loading, setLoading] = useState(true);
+  const [localCartId, setLocalCartId] = useState(null);
   const [product, setProduct] = useState(productMock);
   const data = useLoaderData();
-  const actionData = useActionData();
-  const [cartId, setCartId] = useOutletContext();
-
-  console.log("this is the global cart ID");
-  console.log(cartId);
 
   useEffect(() => {
     setProduct({
@@ -51,12 +38,19 @@ export default function Product() {
       name: data.product.title,
       price: `$${data.product.priceRange.minVariantPrice.amount}`,
       imageSrc: data.product.featuredImage.src,
+      variantId: data.product.variants.edges[0].node.id,
     });
+
     setLoading(false);
-    if (actionData) {
-      setCartId(actionData);
+
+    //Get localCartId if exists
+    const cartId: string | null = localStorage.getItem("cartId");
+    if (!cartId) {
+      return;
+    } else {
+      setLocalCartId(cartId);
     }
-  }, [data, actionData]);
+  }, [data]);
 
   if (loading) {
     return <SkeletonLoader />;
@@ -150,7 +144,13 @@ export default function Product() {
                   type="text"
                   name="localCartNo"
                   className="hidden"
-                  defaultValue={cartId}
+                  value={localCartId}
+                />
+                <input
+                  type="text"
+                  name="variantId"
+                  className="hidden"
+                  value={product.variantId}
                 />
                 <div className="mt-4"></div>
                 <div className="mt-10">
@@ -190,6 +190,7 @@ const productMock = {
   price: "Failed to load price ",
   description: "Failed to load description",
   imageSrc: "/",
+  variantId: "Failed to load VariantId",
   imageAlt: "Failed to Load alt Text",
   breadcrumbs: [
     { id: 1, name: "Travel", href: "#" },

@@ -10,6 +10,7 @@ import { createCart } from "~/models/cart.client";
 export const loader = async () => {
   const collections = await getCollections(3);
   const trendingProducts = await getTrendingProducts(8);
+  // console.log(trendingProducts[0].node.variants.edges.node.id);
 
   return json({ collections, trendingProducts });
 };

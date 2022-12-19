@@ -64,6 +64,13 @@ const queries = {
         altText
         src
       }
+      variants(first: 5) {
+        edges {
+          node {
+            id
+          }
+        }
+      }
     }
   }
   `,
