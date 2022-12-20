@@ -10,8 +10,9 @@ import {
 import { navigation } from "mocks/DUMMY_DATA";
 import type { CollectionObj } from "~/types";
 import type { Collection } from "~/types";
+import { useEffect } from "react";
 
-export default function Layout({ collections, children, localCartId }: any) {
+export default function Layout({ collections, children }: any) {
   const [headerStatus, setHeaderStatus] = useState(false);
 
   return (
@@ -33,11 +34,20 @@ interface HeaderProps {
   collections: CollectionObj;
 }
 
-function Header({ open, setOpen, collections, localCartId }: HeaderProps) {
+function Header({ open, setOpen, collections }: HeaderProps) {
+  const [localCartId, setlocalCartId] = useState();
+
+  useEffect(() => {
+    //On any load the navbar will get the localCarId
+    const localCarId: any = localStorage.getItem("cartId");
+    setlocalCartId(localCarId);
+  }, []);
+
   // Header Elements
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
   }
+
   function NavBar() {
     return (
       <nav aria-label="Top">
@@ -286,7 +296,10 @@ function Header({ open, setOpen, collections, localCartId }: HeaderProps) {
   function Cart() {
     return (
       <div className="ml-4 flow-root lg:ml-8">
-        <a href={"/cart"} className="group -m-2 flex items-center p-2">
+        <a
+          href={localCartId ? `/cart/${localCartId}` : "/"}
+          className="group -m-2 flex items-center p-2"
+        >
           <ShoppingBagIcon
             className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
             aria-hidden="true"

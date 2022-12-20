@@ -37,7 +37,6 @@ export default function Cart() {
 
             <ul className="divide-y divide-gray-200 border-t border-b border-gray-200">
               {products.map((product: any) => {
-                console.log(product);
                 const item = {
                   id: product.node.id,
                   name: product.node.merchandise.product.title,
