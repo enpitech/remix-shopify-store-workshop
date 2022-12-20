@@ -5,19 +5,8 @@ export const createCart = async () => {
     query: queries.createCart,
     variables: {},
   };
-
-  try {
-    const response = await postToShopify(params);
-    if (response.errors) {
-      console.log(response.errors);
-      return response;
-    } else {
-      return response;
-    }
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
+  const response = await postToShopify(params);
+  return response;
 };
 
 export const getCart = async (id: string): Promise<any> => {
@@ -25,74 +14,42 @@ export const getCart = async (id: string): Promise<any> => {
     query: queries.getCart,
     variables: { id },
   };
-  // TODO merge postToShopify and fetching logic
-  try {
-    const response = await postToShopify(params);
-
-    if (response.errors) {
-      throw response.errors;
-    }
-
-    return response;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
+  const response = await postToShopify(params);
+  return response;
 };
 
 export const addItemToCart = async (
   cartId: string | null,
   productId: string
 ) => {
-  try {
-    const params = {
-      query: queries.addItemToCart,
-      variables: {
-        cartId,
-        lines: [{ merchandiseId: productId, quantity: 1 }],
-      },
-    };
+  const params = {
+    query: queries.addItemToCart,
+    variables: {
+      cartId,
+      lines: [{ merchandiseId: productId, quantity: 1 }],
+    },
+  };
 
-    const response = await postToShopify(params);
-    if (response.errors) {
-      console.log(response.errors);
-      return response;
-    } else {
-      return {
-        lines: response.cartLinesAdd.cart.lines.edges,
-        cartId: response.cartLinesAdd.cart.id,
-      };
-    }
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
+  const response = await postToShopify(params);
+  return {
+    lines: response.cartLinesAdd.cart.lines.edges,
+    cartId: response.cartLinesAdd.cart.id,
+  };
 };
 
 export const removeItemFromCart = async (
   cartId: string | null,
   productId: string
 ) => {
-  try {
-    const params = {
-      query: queries.removeItemFromCart,
-      variables: {
-        cartId,
-        lines: [{ merchandiseId: productId, quantity: 1 }],
-      },
-    };
-
-    const response = await postToShopify(params);
-    if (response.errors) {
-      console.log(response.errors);
-      return response;
-    } else {
-      return { message: "suceed" };
-    }
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
+  const params = {
+    query: queries.removeItemFromCart,
+    variables: {
+      cartId,
+      lines: [{ merchandiseId: productId, quantity: 1 }],
+    },
+  };
+  const response = await postToShopify(params);
+  return response;
 };
 
 //GraphQl queries object

@@ -7,19 +7,8 @@ export const getProductById = async (productId: string) => {
       id: productId,
     },
   };
-
-  try {
-    const response = await postToShopify(params);
-    if (response.errors) {
-      console.log(response.errors);
-      return response.errors;
-    } else {
-      return response;
-    }
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
+  const response = await postToShopify(params);
+  return response;
 };
 
 export const getTrendingProducts = async (amount: Number) => {
@@ -27,21 +16,9 @@ export const getTrendingProducts = async (amount: Number) => {
     query: queries.getProducts,
     variables: { first: amount },
   };
-
-  try {
-    const response = await postToShopify(params);
-
-    if (response.errors) {
-      console.log(response.errors);
-      return response.errors;
-    } else {
-      const trends = response.products.edges;
-      return trends;
-    }
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
+  const response = await postToShopify(params);
+  const trends = response.products.edges;
+  return trends;
 };
 
 //GraphQl queries object

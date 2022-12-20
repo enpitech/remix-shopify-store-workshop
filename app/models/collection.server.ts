@@ -5,21 +5,9 @@ export const getCollections = async (amount: Number) => {
     query: queries.getCollectionsQuery,
     variables: { first: amount },
   };
-
-  try {
-    const response = await postToShopify(params);
-
-    if (response.errors) {
-      console.log(response.errors);
-      return response;
-    } else {
-      const collections = response.collections.edges;
-      return collections;
-    }
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
+  const response = await postToShopify(params);
+  const collections = response.collections.edges;
+  return collections;
 };
 
 //Global Queries
