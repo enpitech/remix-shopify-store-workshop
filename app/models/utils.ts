@@ -9,34 +9,7 @@ interface QueryParams {
   variables?: { [id: string]: string };
 }
 
-//Deprecated
-export const runQuery = async (
-  params: QueryParams = {
-    query: "",
-    variables: {},
-  }
-) => {
-  const options = {
-    method: "post",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      "X-Shopify-Storefront-Access-Token": storeFrontApiAccessToken,
-    },
-    body: JSON.stringify(params),
-  };
-  try {
-    const response = await fetch(storeFrontApiShopUrl, options);
-    const data = await response.json();
 
-    if (!data) {
-      return data;
-    }
-    return data;
-  } catch (error) {
-    return error;
-  }
-};
 
 interface PostToShopifyParams {
   query: string;
