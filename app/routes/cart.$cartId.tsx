@@ -2,33 +2,38 @@ import { CheckIcon, ClockIcon } from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getCart } from "~/models/cart.server";
-import { useLoaderData } from "@remix-run/react";
-import { type LoaderArgs } from "@remix-run/node";
+import { Form, useLoaderData } from "@remix-run/react";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import { removeItemFromCart } from "~/models/cart.server";
+// import { useTransition } from "@remix-run/react";
 
 export async function loader({ params }: LoaderArgs) {
   const data = await getCart(params.cartId!);
-  //the line number
-  console.log(data.cart.lines.edges[0].node);
+
   return {
     products: data.cart.lines.edges,
     total: data.cart.estimatedCost.subtotalAmount.amount,
   };
 }
 
+export async function action({ request }: ActionArgs) {
+  console.log("check");
+  const formData = await request.formData();
+  const lineNumber: any = Object.fromEntries(formData).lineNumber;
+  const localCartId: any = Object.fromEntries(formData).localCartId;
+  await removeItemFromCart(localCartId, lineNumber);
+  return {};
+}
+
 export default function Cart() {
   const [localCartId, setLocalCartId] = useState("");
   const { products, total } = useLoaderData();
+  // const transition = useTransition();
 
   useEffect(() => {
     const localCartId = localStorage.getItem("cartId");
     setLocalCartId(localCartId!);
   }, []);
-
-  function handleSubmit(lineNumber: any) {
-    console.log("lineNumber");
-    console.log(lineNumber);
-  }
-
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:px-0">
@@ -45,7 +50,7 @@ export default function Cart() {
             <ul className="divide-y divide-gray-200 border-t border-b border-gray-200">
               {products.map((product: any) => {
                 const item = {
-                  id: product.node.id,
+                  id: product.node.merchandise.id,
                   name: product.node.merchandise.product.title,
                   href: "/",
                   price:
@@ -58,7 +63,6 @@ export default function Cart() {
                   size: product.node.merchandise.title,
                   lineNumber: product.node.id,
                 };
-                // console.log(item);
                 return (
                   <li key={item.id} className="flex py-6">
                     <div className="flex-shrink-0">
@@ -109,13 +113,36 @@ export default function Cart() {
                           </span>
                         </p>
                         <div className="ml-4">
-                          <button
-                            onSubmit={handleSubmit.bind(product.lineNumber)}
-                            type="button"
-                            className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                          >
-                            <span>Remove</span>
-                          </button>
+                          <Form method="delete">
+                            <button
+                              onClick={() => {
+                                confirm(
+                                  "Are you sure you want to remove this item? "
+                                );
+                                return;
+                              }}
+                              className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                            >
+                              Remove
+                              {/* {transition.state === "submitting"
+                                ? "Deleting..."
+                                : "Remove"} */}
+                            </button>
+                            <input
+                              className="hidden"
+                              type="text"
+                              name="lineNumber"
+                              value={item.lineNumber}
+                              readOnly
+                            />
+                            <input
+                              className="hidden"
+                              type="text"
+                              name="localCartId"
+                              value={localCartId}
+                              readOnly
+                            />
+                          </Form>
                         </div>
                       </div>
                     </div>
@@ -149,9 +176,11 @@ export default function Cart() {
                 <button
                   type="submit"
                   className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 disabled:opacity-25"
-                  disabled={!localCartId}
+                  disabled={!localCartId || total == 0.0}
                 >
-                  {localCartId ? "Checkout" : "No articles in the cart"}
+                  {localCartId && total != 0.0
+                    ? "Checkout"
+                    : "No articles in the cart"}
                 </button>
               </Link>
             </div>

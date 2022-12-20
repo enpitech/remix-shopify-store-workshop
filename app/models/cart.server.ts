@@ -39,13 +39,13 @@ export const addItemToCart = async (
 
 export const removeItemFromCart = async (
   cartId: string | null,
-  productId: string
+  lineNumber: string
 ) => {
   const params = {
     query: queries.removeItemFromCart,
     variables: {
       cartId,
-      lines: [{ merchandiseId: productId, quantity: 1 }],
+      lineIds: [lineNumber],
     },
   };
   const response = await postToShopify(params);
@@ -126,8 +126,7 @@ const queries = {
     }
   }
 `,
-  removeItemFromCart: `
-  mutation removeItemFromCart($cartId: ID!, $lineIds: [ID!]!) {
+  removeItemFromCart: `mutation removeItemFromCart($cartId: ID!, $lineIds: [ID!]!) {
     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
       cart {
         id
@@ -153,26 +152,8 @@ const queries = {
             }
           }
         }
-        estimatedCost {
-          totalAmount {
-            amount
-            currencyCode
-          }
-          subtotalAmount {
-            amount
-            currencyCode
-          }
-          totalTaxAmount {
-            amount
-            currencyCode
-          }
-          totalDutyAmount {
-            amount
-            currencyCode
-          }
-        }
       }
     }
   }
-`,
+  `,
 };
