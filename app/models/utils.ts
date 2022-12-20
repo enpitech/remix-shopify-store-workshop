@@ -1,4 +1,5 @@
 import { json } from "@remix-run/node";
+import { createCart } from "./cart.client";
 
 // Token & address
 export const storeFrontApiShopUrl = "https://wearjs.myshopify.com/api/graphql";
@@ -46,5 +47,22 @@ export const postToShopify = async ({
   }
 };
 
+//Check weather user have cartId in local storage
+export async function checkLocalCartStatus() {
+  //check if localCartId exists
+  const cartId = localStorage.getItem("cartId");
+
+  // ix exists return the localCarId
+  if (cartId && cartId != "undefined") {
+    return cartId;
+  }
+  // if not => create new localcartId and return
+  if (!cartId) {
+    const response = await createCart();
+    const newCartId = response.cartId;
+    localStorage.setItem("cartId", newCartId);
+    return newCartId;
+  }
+}
 //Validation function for the backend validation
 export const badRequest = <T>(data: T) => json<T>(data, { status: 400 });

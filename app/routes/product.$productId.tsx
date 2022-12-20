@@ -10,7 +10,7 @@ import { getProductById } from "~/models/product.server";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { addItemToCart } from "~/models/cart.server";
-import { createCart } from "~/models/cart.client";
+import { checkLocalCartStatus } from "~/models/utils";
 
 export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
   const data = await getProductById(params.productId!);
@@ -34,40 +34,31 @@ export async function action({ request }: ActionArgs) {
 export default function Product() {
   const [loading, setLoading] = useState(true);
   const [localCartId, setLocalCartId] = useState("undefined");
-  const [product, setProduct] = useState(mock);
   const data = useLoaderData();
 
   useEffect(() => {
-    setProduct({
-      description: data.description,
-      name: data.title,
-      price: `$${data.priceRange.minVariantPrice.amount}`,
-      imageSrc: data.featuredImage.src,
-      imageAlt: data.featuredImage.altText,
-      variantId: data.variants.edges[0].node.id,
-    });
-
-    async function checkCartStatus() {
-      //check if localCartId exists
-      const cartId = localStorage.getItem("cartId");
-
-      // keep the localCarId if exists
-      if (cartId && cartId != "undefined") {
-        setLocalCartId(cartId);
-      }
-      // create new cart if not exists
-      if (!cartId) {
-        const newCartId = await createCart();
-        localStorage.setItem("cartId", newCartId);
-      }
+    //check if user have cartId in local storage
+    async function checkForLocalCart() {
+      const response: any = await checkLocalCartStatus();
+      setLocalCartId(response);
     }
-    checkCartStatus();
+    checkForLocalCart();
+
     setLoading(false);
-  }, [data]);
+  }, []);
 
   if (loading) {
     return <SkeletonLoader />;
   }
+
+  const product = {
+    description: data.description,
+    name: data.title,
+    price: `$${data.priceRange.minVariantPrice.amount}`,
+    imageSrc: data.featuredImage.src,
+    imageAlt: data.featuredImage.altText,
+    variantId: data.variants.edges[0].node.id,
+  };
 
   return (
     <>
@@ -80,12 +71,10 @@ export default function Product() {
                 {product.name}
               </h1>
             </div>
-
             <section aria-labelledby="information-heading" className="mt-4">
               <h2 id="information-heading" className="sr-only">
                 Product information
               </h2>
-
               <div className="flex items-center">
                 <p className="text-lg text-gray-900 sm:text-xl">
                   {product.price}
@@ -99,7 +88,6 @@ export default function Product() {
               <div className="mt-4 space-y-6">
                 <p className="text-base text-gray-500">{product.description}</p>
               </div>
-
               <div className="mt-6 flex items-center">
                 <CheckIcon
                   className="h-5 w-5 flex-shrink-0 text-green-500"
@@ -121,7 +109,6 @@ export default function Product() {
               />
             </div>
           </div>
-
           {/* Product form */}
           <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
             <section aria-labelledby="options-heading">

@@ -6,7 +6,10 @@ export const createCart = async () => {
     variables: {},
   };
   const response = await postToShopify(params);
-  return response;
+  return {
+    cartId: response.cartCreate.cart.id,
+    checkoutUrl: response.cartCreate.cart.id,
+  };
 };
 
 export const queries = {
