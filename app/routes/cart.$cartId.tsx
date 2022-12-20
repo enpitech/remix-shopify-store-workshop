@@ -7,6 +7,8 @@ import { type LoaderArgs } from "@remix-run/node";
 
 export async function loader({ params }: LoaderArgs) {
   const data = await getCart(params.cartId!);
+  //the line number
+  console.log(data.cart.lines.edges[0].node);
   return {
     products: data.cart.lines.edges,
     total: data.cart.estimatedCost.subtotalAmount.amount,
@@ -21,6 +23,11 @@ export default function Cart() {
     const localCartId = localStorage.getItem("cartId");
     setLocalCartId(localCartId!);
   }, []);
+
+  function handleSubmit(lineNumber: any) {
+    console.log("lineNumber");
+    console.log(lineNumber);
+  }
 
   return (
     <div className="bg-white">
@@ -49,7 +56,9 @@ export default function Cart() {
                   imageSrc: product.node.merchandise.image.src,
                   imageAlt: product.node.merchandise.image.altText,
                   size: product.node.merchandise.title,
+                  lineNumber: product.node.id,
                 };
+                // console.log(item);
                 return (
                   <li key={item.id} className="flex py-6">
                     <div className="flex-shrink-0">
@@ -101,6 +110,7 @@ export default function Cart() {
                         </p>
                         <div className="ml-4">
                           <button
+                            onSubmit={handleSubmit.bind(product.lineNumber)}
                             type="button"
                             className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
                           >

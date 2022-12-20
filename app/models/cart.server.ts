@@ -1,55 +1,62 @@
 import { postToShopify } from "~/models/utils";
 
 export const createCart = async () => {
-  try {
-    const variables = {};
-    const response = await postToShopify({
-      query: queries.createCart,
-      variables,
-    });
-    // console.log("response");
-    console.log(response);
-    return response;
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const params = {
+    query: queries.createCart,
+    variables: {},
+  };
 
-export const getCart = async (id: string): Promise<any> => {
   try {
-    const variables = { id };
-
-    const response = await postToShopify({
-      query: queries.getCart,
-      variables,
-    });
-    console.log(JSON.stringify(response, null, 4));
+    const response = await postToShopify(params);
     if (response.errors) {
       console.log(response.errors);
+      return response;
     } else {
       return response;
     }
   } catch (error) {
     console.log(error);
+    return error;
+  }
+};
+
+export const getCart = async (id: string): Promise<any> => {
+  const params = {
+    query: queries.getCart,
+    variables: { id },
+  };
+  // TODO merge postToShopify and fetching logic
+  try {
+    const response = await postToShopify(params);
+
+    if (response.errors) {
+      throw response.errors;
+    }
+
+    return response;
+  } catch (error) {
+    console.log(error);
+    return error;
   }
 };
 
 export const addItemToCart = async (
-  //test
   cartId: string | null,
   productId: string
 ) => {
   try {
-    const variables = {
-      cartId,
-      lines: [{ merchandiseId: productId, quantity: 1 }],
-    };
-    const response = await postToShopify({
+    const params = {
       query: queries.addItemToCart,
-      variables,
-    });
+      variables: {
+        cartId,
+        lines: [{ merchandiseId: productId, quantity: 1 }],
+      },
+    };
+
+    const response = await postToShopify(params);
     if (response.errors) {
       console.log(response.errors);
+      return response;
     } else {
       return {
         lines: response.cartLinesAdd.cart.lines.edges,
@@ -58,9 +65,37 @@ export const addItemToCart = async (
     }
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
+export const removeItemFromCart = async (
+  cartId: string | null,
+  productId: string
+) => {
+  try {
+    const params = {
+      query: queries.removeItemFromCart,
+      variables: {
+        cartId,
+        lines: [{ merchandiseId: productId, quantity: 1 }],
+      },
+    };
+
+    const response = await postToShopify(params);
+    if (response.errors) {
+      console.log(response.errors);
+      return response;
+    } else {
+      return { message: "suceed" };
+    }
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+//GraphQl queries object
 const queries = {
   getCart: `query getCart($id: ID = "Z2lkOi8vc2hvcGlmeS9DYXJ0Lzc2NGYxNDY0ZTYwZTAxN2Q1NTAxZjNiMDMyNjlkZjhh") {
     cart(id: $id) {
@@ -128,6 +163,55 @@ const queries = {
                 }
               }
             }
+          }
+        }
+      }
+    }
+  }
+`,
+  removeItemFromCart: `
+  mutation removeItemFromCart($cartId: ID!, $lineIds: [ID!]!) {
+    cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+      cart {
+        id
+        lines(first: 10) {
+          edges {
+            node {
+              id
+              quantity
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                  priceV2 {
+                    amount
+                    currencyCode
+                  }
+                  product {
+                    title
+                    handle
+                  }
+                }
+              }
+            }
+          }
+        }
+        estimatedCost {
+          totalAmount {
+            amount
+            currencyCode
+          }
+          subtotalAmount {
+            amount
+            currencyCode
+          }
+          totalTaxAmount {
+            amount
+            currencyCode
+          }
+          totalDutyAmount {
+            amount
+            currencyCode
           }
         }
       }

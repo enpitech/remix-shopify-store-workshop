@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-
+// TODO move Admin api to legacy
 // ***** StoreFront API *****
 // Params
 export const storeFrontApiShopUrl = "https://wearjs.myshopify.com/api/graphql";
@@ -61,7 +61,7 @@ export const postToShopify = async ({
       ...params,
       body: JSON.stringify({ query, variables }),
     }).then((res) => res.json());
-
+    // TODO use await
     if (response.errors) {
       console.log({ errors: response.errors });
     } else if (!response || !response.data) {

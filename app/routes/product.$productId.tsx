@@ -6,14 +6,14 @@ import {
   type LoaderFunction,
 } from "@remix-run/node";
 import { useEffect, useState } from "react";
-import { fetchProductById } from "~/models/product.server";
+import { getProductById } from "~/models/product.server";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { addItemToCart } from "~/models/cart.server";
 import { createCart } from "~/models/cart.client";
 
 export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
-  const data = await fetchProductById(params.productId!);
+  const data = await getProductById(params.productId!);
   return data.product;
 };
 

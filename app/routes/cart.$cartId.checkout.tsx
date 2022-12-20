@@ -3,6 +3,7 @@ import { badRequest } from "~/models/utils";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/node";
+import { useTransition } from "@remix-run/react";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const data = await getCart(params.cartId!);
@@ -75,6 +76,9 @@ export const action = async ({ request }: ActionArgs) => {
 export default function Checkout() {
   const cost = useLoaderData();
   const error = useActionData();
+  const transition = useTransition();
+
+  const text = transition.state === "submitting" ? "Processing..." : "Buy Now";
 
   return (
     <div className="bg-gray-50">
@@ -216,7 +220,7 @@ export default function Checkout() {
                   type="submit"
                   className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                 >
-                  Buy Now
+                  {text}
                 </button>
               </div>
             </div>

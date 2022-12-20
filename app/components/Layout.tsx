@@ -8,7 +8,6 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { navigation } from "mocks/DUMMY_DATA";
-import type { CollectionObj } from "~/types";
 import type { Collection } from "~/types";
 import { useEffect } from "react";
 
@@ -31,14 +30,14 @@ export default function Layout({ collections, children }: any) {
 interface HeaderProps {
   open: boolean;
   setOpen: any;
-  collections: CollectionObj;
+  collections: [];
 }
 
 function Header({ open, setOpen, collections }: HeaderProps) {
   const [localCartId, setlocalCartId] = useState();
 
   useEffect(() => {
-    //On any load the navbar will get the localCarId
+    //On any load the navbar will get the localCarId for routing purposes
     const localCarId: any = localStorage.getItem("cartId");
     setlocalCartId(localCarId);
   }, []);

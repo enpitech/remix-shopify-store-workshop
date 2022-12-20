@@ -1,5 +1,6 @@
 import { postToShopify } from "~/models/utils";
 
+//We use this function on the product page
 export const createCart = async () => {
   try {
     const variables = {};
@@ -13,25 +14,25 @@ export const createCart = async () => {
   }
 };
 
-export const getCart = async (cartId: string) => {
-  try {
-    const variables = { cartId };
+// export const getCart = async (cartId: string) => {
+//   try {
+//     const variables = { cartId };
 
-    const response = await postToShopify({
-      query: queries.getCart,
-      variables,
-    });
-    if (response.errors) {
-      console.log(response.errors);
-    } else {
-      return response;
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
+//     const response = await postToShopify({
+//       query: queries.getCart,
+//       variables,
+//     });
+//     if (response.errors) {
+//       console.log(response.errors);
+//     } else {
+//       return response;
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
-const queries = {
+export const queries = {
   getCart: `query getCart($id: ID = "Z2lkOi8vc2hvcGlmeS9DYXJ0L2JhZWMwZjRjZTc2ZWExNDdjNDUzMzJjZmExY2IzMDY2") {
     cart(id: $id) {
       createdAt

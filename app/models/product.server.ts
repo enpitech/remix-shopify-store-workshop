@@ -1,27 +1,50 @@
 import { postToShopify } from "./utils";
 
-export const fetchProductById = async (productId: string) => {
-  console.log(productId);
-  const result = await postToShopify({
+export const getProductById = async (productId: string) => {
+  const params = {
     query: queries.getProductById,
     variables: {
       id: productId,
     },
-  });
-  return result;
+  };
+
+  try {
+    const response = await postToShopify(params);
+    if (response.errors) {
+      console.log(response.errors);
+      return response.errors;
+    } else {
+      return response;
+    }
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 };
 
 export const getTrendingProducts = async (amount: Number) => {
-  const response = await postToShopify({
+  const params = {
     query: queries.getProducts,
     variables: { first: amount },
-  });
-  // console.log(response.products.edges);
-  const trends = response.products.edges;
-  return trends;
+  };
+
+  try {
+    const response = await postToShopify(params);
+
+    if (response.errors) {
+      console.log(response.errors);
+      return response.errors;
+    } else {
+      const trends = response.products.edges;
+      return trends;
+    }
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 };
 
-//Global queries
+//GraphQl queries object
 const queries = {
   getProducts: `query getProducts($first: Int = 10) {
     products(first: $first) {

@@ -1,16 +1,21 @@
 import { postToShopify } from "./utils";
 
 export const getCollections = async (amount: Number) => {
-  const variables = { first: amount };
+  const params = {
+    query: queries.getCollectionsQuery,
+    variables: { first: amount },
+  };
+
   try {
-    const response = await postToShopify({
-      query: queries.getCollectionsQuery,
-      variables,
-    });
+    const response = await postToShopify(params);
 
-    const collections = response.collections.edges;
-
-    return collections;
+    if (response.errors) {
+      console.log(response.errors);
+      return response;
+    } else {
+      const collections = response.collections.edges;
+      return collections;
+    }
   } catch (error) {
     console.log(error);
     return error;
