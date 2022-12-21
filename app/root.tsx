@@ -1,4 +1,4 @@
-import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -6,12 +6,13 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getCollections } from "./models/collection.server";
 import Layout from "./components/Layout";
+import { useEffect } from "react";
+import { useState } from "react";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
@@ -23,13 +24,17 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
-export async function loader({ request }: LoaderArgs) {
-  const collections = await getCollections(10);
-  return collections;
-}
-
 export default function App() {
-  const collections = useLoaderData();
+  const [collections, setCollections] = useState<[] | undefined>();
+
+  useEffect(() => {
+    async function getCollectionData() {
+      const data = await getCollections(10);
+      setCollections(data);
+    }
+    getCollectionData();
+  }, [collections]);
+
   return (
     <html lang="en" className="h-full">
       <head>
@@ -37,7 +42,7 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <Layout collections={collections} >
+        <Layout collections={collections}>
           <Outlet />
         </Layout>
         <ScrollRestoration />
