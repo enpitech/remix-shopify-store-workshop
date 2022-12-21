@@ -62,8 +62,8 @@ export default function Product() {
 
   return (
     <>
-      <div className="bg-white">
-        <div className=" mx-auto h-screen max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
+      <div className=" bg-white">
+        <div className=" mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
           {/* Product details */}
           <div className="lg:max-w-lg lg:self-end">
             <div className="mt-4">
@@ -165,15 +165,6 @@ export default function Product() {
     </>
   );
 }
-
-const mock = {
-  description: "data.description",
-  name: "data.title",
-  price: "data.priceRange.minVariantPrice.amount",
-  imageSrc: "data.featuredImage.src",
-  imageAlt: "data.featuredImage.altText",
-  variantId: "data.variants.edges[0].node.id",
-};
 
 const SkeletonLoader = () => {
   return (
