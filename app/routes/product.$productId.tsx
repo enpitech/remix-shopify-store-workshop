@@ -64,9 +64,9 @@ export default function Product() {
     // return redirect("/");
   }
 
-  // if (loading) {
-  //   return <SkeletonLoader />;
-  // }
+  if (loading) {
+    return <SkeletonLoader />;
+  }
 
   return (
     <>
