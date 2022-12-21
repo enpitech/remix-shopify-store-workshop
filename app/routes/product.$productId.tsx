@@ -1,64 +1,81 @@
-import { Form, Link, useLoaderData } from "@remix-run/react";
-import {
-  redirect,
-  type LoaderArgs,
-  type ActionArgs,
-  type LoaderFunction,
-} from "@remix-run/node";
+import { Form, Link } from "@remix-run/react";
+import { redirect, type ActionArgs } from "@remix-run/node";
 import { useEffect, useState } from "react";
-import { getProductById } from "~/models/product.server";
+import { getProductById } from "~/models/product.client";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
-import { addItemToCart } from "~/models/cart.server";
+import { addItemToCart } from "~/models/cart.client";
 import { checkLocalCartStatus } from "~/models/utils";
+import { useParams } from "react-router-dom";
 
-export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
-  const data = await getProductById(params.productId!);
-  return data.product;
-};
-
-export async function action({ request }: ActionArgs) {
-  const body = await request.formData();
-  const cartId: any | null = body.get("localCartNo");
-  const variantId: any = body.get("variantId");
-
-  if (!cartId) {
-    return { message: "No Cart Found" };
-  }
-
-  await addItemToCart(cartId, variantId);
-
-  return redirect(`/cart/${cartId}`);
+interface productObj {
+  description: string;
+  name: string;
+  price: string;
+  imageSrc: string;
+  imageAlt: string;
+  variantId: string;
 }
+
+// *************************
 
 export default function Product() {
   const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState<productObj>();
   const [localCartId, setLocalCartId] = useState("undefined");
-  const data = useLoaderData();
+  let { productId } = useParams();
 
   useEffect(() => {
-    //check if user have cartId in local storage
+    async function getData() {
+      const data = await getProductById(productId!);
+      const productData = data.product;
+      console.log(
+        "🚀 ~ file: product.$productId.tsx:32 ~ getData ~ productData",
+        productData
+      );
+
+      //for easier object drilling
+      //below we will use only the "product" refrence
+      const productObj = {
+        description: productData.description,
+        name: productData.title,
+        price: productData.priceRange.minVariantPrice.amount,
+        imageSrc: productData.featuredImage.src,
+        imageAlt: productData.featuredImage.altText,
+        variantId: productData.variants.edges[0].node.id,
+      };
+      setProduct(productObj);
+    }
     async function checkForLocalCart() {
       const response: any = await checkLocalCartStatus();
       setLocalCartId(response);
     }
+
+    //getting the product details
+    getData();
+    //check if user have cartId in local storage
     checkForLocalCart();
 
+    //change the loading state
     setLoading(false);
   }, []);
+
+  async function handleAddToBag(e: any) {
+    e.preventDefault();
+    console.log("clicked");
+
+    if (!localCartId) {
+      return { message: "No Cart Found" };
+    }
+
+    await addItemToCart(localCartId, product?.variantId!);
+    //TODO redirect user
+    // return redirect("/");
+  }
 
   if (loading) {
     return <SkeletonLoader />;
   }
-
-  const product = {
-    description: data.description,
-    name: data.title,
-    price: `$${data.priceRange.minVariantPrice.amount}`,
-    imageSrc: data.featuredImage.src,
-    imageAlt: data.featuredImage.altText,
-    variantId: data.variants.edges[0].node.id,
-  };
 
   return (
     <>
@@ -68,7 +85,7 @@ export default function Product() {
           <div className="lg:max-w-lg lg:self-end">
             <div className="mt-4">
               <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                {product.name}
+                {product?.name}
               </h1>
             </div>
             <section aria-labelledby="information-heading" className="mt-4">
@@ -77,7 +94,7 @@ export default function Product() {
               </h2>
               <div className="flex items-center">
                 <p className="text-lg text-gray-900 sm:text-xl">
-                  {product.price}
+                  ${product?.price}
                 </p>
 
                 <div className="ml-4 border-l border-gray-300 pl-4">
@@ -86,7 +103,9 @@ export default function Product() {
               </div>
 
               <div className="mt-4 space-y-6">
-                <p className="text-base text-gray-500">{product.description}</p>
+                <p className="text-base text-gray-500">
+                  {product?.description}
+                </p>
               </div>
               <div className="mt-6 flex items-center">
                 <CheckIcon
@@ -103,8 +122,8 @@ export default function Product() {
           <div className="mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center">
             <div className="aspect-w-1 aspect-h-1 overflow-hidden rounded-lg">
               <img
-                src={product.imageSrc}
-                alt={product.imageAlt}
+                src={product?.imageSrc}
+                alt={product?.imageAlt}
                 className="h-full w-full object-cover object-center"
               />
             </div>
@@ -126,16 +145,17 @@ export default function Product() {
                   type="text"
                   name="variantId"
                   className="hidden"
-                  value={product.variantId}
+                  value={product?.variantId}
                 />
                 <div className="mt-4"></div>
                 <div className="mt-10">
-                  <button
-                    type="submit"
+                  <Link
+                    to={`/cart/${localCartId}`}
+                    onClick={handleAddToBag}
                     className="mb-5 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                   >
                     Add to bag
-                  </button>
+                  </Link>
                   <Link
                     className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                     to="/"

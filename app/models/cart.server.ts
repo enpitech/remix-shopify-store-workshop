@@ -66,6 +66,7 @@ const queries = {
         edges {
           node {
             id
+            quantity
             merchandise {
               ... on ProductVariant {
                 id

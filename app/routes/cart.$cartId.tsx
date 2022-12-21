@@ -1,40 +1,36 @@
 import { CheckIcon, ClockIcon } from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getCart } from "~/models/cart.server";
-import { Form, useLoaderData } from "@remix-run/react";
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
-import { removeItemFromCart } from "~/models/cart.server";
-// import { useTransition } from "@remix-run/react";
-
-export async function loader({ params }: LoaderArgs) {
-  const data = await getCart(params.cartId!);
-
-  return {
-    products: data.cart.lines.edges,
-    total: data.cart.estimatedCost.subtotalAmount.amount,
-  };
-}
-
-export async function action({ request }: ActionArgs) {
-  console.log("check");
-  const formData = await request.formData();
-  const lineNumber: any = Object.fromEntries(formData).lineNumber;
-  const localCartId: any = Object.fromEntries(formData).localCartId;
-  await removeItemFromCart(localCartId, lineNumber);
-  return {};
-}
+import { getCart } from "~/models/cart.client";
+import { Form } from "@remix-run/react";
+import { removeItemFromCart } from "~/models/cart.client";
 
 export default function Cart() {
+  const [products, setProducts] = useState([]);
+  const [total, setTotal] = useState(0);
   const [localCartId, setLocalCartId] = useState("");
-  const { products, total } = useLoaderData();
 
   useEffect(() => {
     const localCartId = localStorage.getItem("cartId");
+    if (!localCartId) return;
     setLocalCartId(localCartId!);
-  }, []);
+
+    async function getData() {
+      const data = await getCart(localCartId!);
+      setProducts(data.cart.lines.edges);
+      setTotal(+data.cart.estimatedCost.subtotalAmount.amount);
+    }
+    getData();
+  }, [products]);
+
+  async function handleDelete(e: any) {
+    e.preventDefault();
+    const lineNumber = e.target.name;
+    confirm("Are you sure you want to remove this item? ");
+    await removeItemFromCart(localCartId, lineNumber);
+  }
   return (
-    <div className="bg-white h-screen">
+    <div className="h-screen bg-white">
       <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:px-0">
         <h1 className="text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
           Shopping Cart
@@ -47,7 +43,7 @@ export default function Cart() {
             </h2>
 
             <ul className="divide-y divide-gray-200 border-t border-b border-gray-200">
-              {products.map((product: any) => {
+              {products?.map((product: any) => {
                 const item = {
                   id: product.node.merchandise.id,
                   name: product.node.merchandise.product.title,
@@ -61,6 +57,7 @@ export default function Cart() {
                   imageAlt: product.node.merchandise.image.altText,
                   size: product.node.merchandise.title,
                   lineNumber: product.node.id,
+                  quantity: product.node.quantity,
                 };
                 return (
                   <li key={item.id} className="flex py-6">
@@ -90,6 +87,9 @@ export default function Cart() {
                         <p className="mt-1 text-sm text-gray-500">
                           {item.size}
                         </p>
+                        <p className="mt-1 text-sm text-gray-500">
+                          Quantity : {item.quantity}
+                        </p>
                       </div>
 
                       <div className="mt-4 flex flex-1 items-end justify-between">
@@ -114,31 +114,17 @@ export default function Cart() {
                         <div className="ml-4">
                           <Form method="delete">
                             <button
-                              onClick={() => {
-                                confirm(
-                                  "Are you sure you want to remove this item? "
-                                );
-                                return;
-                              }}
+                              name={item.lineNumber}
+                              onClick={handleDelete}
                               className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
                             >
                               Remove
-                              {/* {transition.state === "submitting"
-                                ? "Deleting..."
-                                : "Remove"} */}
                             </button>
                             <input
                               className="hidden"
                               type="text"
                               name="lineNumber"
                               value={item.lineNumber}
-                              readOnly
-                            />
-                            <input
-                              className="hidden"
-                              type="text"
-                              name="localCartId"
-                              value={localCartId}
                               readOnly
                             />
                           </Form>
@@ -177,7 +163,7 @@ export default function Cart() {
                   className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 disabled:opacity-25"
                   disabled={!localCartId || total == 0.0}
                 >
-                  {localCartId && total != 0.0
+                  {localCartId && total != 0
                     ? "Checkout"
                     : "No articles in the cart"}
                 </button>
