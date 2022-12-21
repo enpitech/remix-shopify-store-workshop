@@ -36,11 +36,12 @@ function validateEmail(phone: unknown) {
 }
 
 export const action = async ({ request }: ActionArgs) => {
-  const form = await request.formData();
-  const firstName = form.get("firstName");
-  const lastName = form.get("lastName");
-  const phone = form.get("phone");
-  const email = form.get("email");
+  const formBody = await request.formData();
+  const form = Object.fromEntries(formBody);
+  const firstName = form.firstName;
+  const lastName = form.lastName;
+  const phone = form.phone;
+  const email = form.email;
 
   if (
     typeof firstName !== "string" ||
@@ -78,7 +79,9 @@ export default function Checkout() {
   const error = useActionData();
   const transition = useTransition();
 
-  const text = transition.state === "submitting" ? "Processing..." : "Buy Now";
+  function handleClick() {
+    confirm("Thank you for buying in WearJS!");
+  }
 
   return (
     <div className="bg-gray-50">
@@ -211,16 +214,19 @@ export default function Checkout() {
                 <div className="flex items-center justify-between border-t border-gray-200 pt-6">
                   <dt className="text-base font-medium">Total</dt>
                   <dd className="text-base font-medium text-gray-900">
-                    ${parseInt(cost) + 5}
+                    ${+cost + 5}
                   </dd>
                 </div>
               </dl>
               <div className="border-t border-gray-200 py-6 px-4 sm:px-6">
                 <button
+                  onClick={handleClick}
                   type="submit"
                   className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                 >
-                  {text}
+                  {transition.state === "submitting"
+                    ? "Processing..."
+                    : "Buy Now"}
                 </button>
               </div>
             </div>

@@ -28,14 +28,13 @@ export async function action({ request }: ActionArgs) {
 export default function Cart() {
   const [localCartId, setLocalCartId] = useState("");
   const { products, total } = useLoaderData();
-  // const transition = useTransition();
 
   useEffect(() => {
     const localCartId = localStorage.getItem("cartId");
     setLocalCartId(localCartId!);
   }, []);
   return (
-    <div className="bg-white">
+    <div className="bg-white h-screen">
       <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:px-0">
         <h1 className="text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
           Shopping Cart
