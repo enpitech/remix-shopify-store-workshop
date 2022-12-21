@@ -1,19 +1,22 @@
 import { Link } from "@remix-run/react";
-import { getCollections } from "~/models/collection.server";
+import { getCollections } from "~/models/collection.client";
 import type { CollectionObj, Collection, ProductObj, Product } from "~/types";
-import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import { getTrendingProducts } from "~/models/product.server";
-
-export const loader = async () => {
-  const collections = await getCollections(3);
-  const trendingProducts = await getTrendingProducts(8);
-
-  return json({ collections, trendingProducts });
-};
+import { getTrendingProducts } from "~/models/product.client";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const { collections, trendingProducts } = useLoaderData<typeof loader>();
+  const [collections, setCollections] = useState<[]>();
+  const [trendingProducts, setTrendingProducts] = useState<[]>();
+
+  useEffect(() => {
+    async function getData() {
+      const collectionsData = await getCollections(3);
+      const trendingProductsData = await getTrendingProducts(8);
+      setCollections(collectionsData);
+      setTrendingProducts(trendingProductsData);
+    }
+    getData();
+  }, []);
 
   function Collections() {
     return (
@@ -27,7 +30,7 @@ export default function Home() {
             Collections
           </h2>
           <div className="mx-auto grid max-w-md grid-cols-1 gap-y-6 px-4 sm:max-w-7xl sm:grid-cols-3 sm:gap-y-0 sm:gap-x-6 sm:px-6 lg:gap-x-8 lg:px-8">
-            {collections.slice(0, 3).map((collection: Collection) => {
+            {collections?.map((collection: Collection) => {
               const CollectionObj: CollectionObj = {
                 key: collection.node.products.edges[0].node.id,
                 name: collection.node.title,
@@ -99,7 +102,7 @@ export default function Home() {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 md:gap-y-0 lg:gap-x-8">
-              {trendingProducts.map((product: Product) => {
+              {trendingProducts?.map((product: Product) => {
                 const productObj: ProductObj = {
                   name: product.node.title,
                   key: product.node.id,
