@@ -1,5 +1,4 @@
 import { Form, Link } from "@remix-run/react";
-import { redirect, type ActionArgs } from "@remix-run/node";
 import { useEffect, useState } from "react";
 import { getProductById } from "~/models/product.client";
 import { CheckIcon } from "@heroicons/react/20/solid";
@@ -34,8 +33,8 @@ export default function Product() {
         productData
       );
 
-      //for easier object drilling
-      //below we will use only the "product" refrence
+      //easier object properties drilling
+      //we will use only the "product" refrence
       const productObj = {
         description: productData.description,
         name: productData.title,
@@ -62,8 +61,6 @@ export default function Product() {
 
   async function handleAddToBag(e: any) {
     e.preventDefault();
-    console.log("clicked");
-
     if (!localCartId) {
       return { message: "No Cart Found" };
     }

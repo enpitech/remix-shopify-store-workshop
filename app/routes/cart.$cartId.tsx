@@ -29,6 +29,7 @@ export default function Cart() {
     confirm("Are you sure you want to remove this item? ");
     await removeItemFromCart(localCartId, lineNumber);
   }
+
   return (
     <div className="h-screen bg-white">
       <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:px-0">
