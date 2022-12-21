@@ -28,10 +28,6 @@ export default function Product() {
     async function getData() {
       const data = await getProductById(productId!);
       const productData = data.product;
-      console.log(
-        "🚀 ~ file: product.$productId.tsx:32 ~ getData ~ productData",
-        productData
-      );
 
       //easier object properties drilling
       //we will use only the "product" refrence
@@ -57,7 +53,7 @@ export default function Product() {
 
     //change the loading state
     setLoading(false);
-  }, []);
+  }, [productId]);
 
   async function handleAddToBag(e: any) {
     e.preventDefault();
@@ -70,14 +66,14 @@ export default function Product() {
     // return redirect("/");
   }
 
-  if (loading) {
-    return <SkeletonLoader />;
-  }
+  // if (loading) {
+  //   return <SkeletonLoader />;
+  // }
 
   return (
     <>
       <div className=" bg-white">
-        <div className=" mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
+        <div className=" mx-auto  h-screen max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
           {/* Product details */}
           <div className="lg:max-w-lg lg:self-end">
             <div className="mt-4">
