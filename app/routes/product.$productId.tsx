@@ -16,8 +16,6 @@ interface productObj {
   variantId: string;
 }
 
-// *************************
-
 export default function Product() {
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState<productObj>();
