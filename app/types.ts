@@ -60,3 +60,8 @@ export interface Product {
     };
   };
 }
+
+export interface PostToShopifyParams {
+  query: string;
+  variables?: {};
+}
