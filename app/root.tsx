@@ -9,7 +9,7 @@ import {
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
-import { getCollections } from "./models/collection.server";
+import { getCollections } from "./models/collection.client";
 import Layout from "./components/Layout";
 import { useEffect } from "react";
 import { useState } from "react";
