@@ -1,72 +1,40 @@
-import { Form, Link } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { getProductById } from "~/models/product.client";
+import { useParams, useNavigate } from "react-router-dom";
+import { Form, Link } from "@remix-run/react";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { addItemToCart } from "~/models/cart.client";
-import { checkLocalCartStatus } from "~/models/utils";
-import { useParams } from "react-router-dom";
+import type { ProductObj } from "~/types";
+import { useProduct } from "~/hooks/useProduct";
+import { useCart } from "~/hooks/useCart";
 
-interface productObj {
-  description: string;
-  name: string;
-  price: string;
-  imageSrc: string;
-  imageAlt: string;
-  variantId: string;
-}
-
-export default function Product() {
+export default function ProductPage() {
   const [loading, setLoading] = useState(true);
-  const [product, setProduct] = useState<productObj>();
-  const [localCartId, setLocalCartId] = useState("undefined");
-  let { productId } = useParams();
+  const { productId } = useParams();
+  const product = useProduct(productId);
+  const [cartId] = useCart();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    async function getData() {
-      const data = await getProductById(productId!);
-      const productData = data.product;
+  const productObj: ProductObj = {
+    description: "product?.description",
+    name: product?.title,
+    price: product?.priceRange.minVariantPrice.amount,
+    imageSrc: product?.featuredImage.src,
+    imageAlt: product?.featuredImage.altText,
+    variantId: product?.variants.edges[0].node.id,
+  };
 
-      //easier object properties drilling
-      //we will use only the "product" refrence
-      const productObj = {
-        description: productData.description,
-        name: productData.title,
-        price: productData.priceRange.minVariantPrice.amount,
-        imageSrc: productData.featuredImage.src,
-        imageAlt: productData.featuredImage.altText,
-        variantId: productData.variants.edges[0].node.id,
-      };
-      setProduct(productObj);
-    }
-    async function checkForLocalCart() {
-      const response: any = await checkLocalCartStatus();
-      setLocalCartId(response);
-    }
-
-    //getting the product details
-    getData();
-    //check if user have cartId in local storage
-    checkForLocalCart();
-
-    //change the loading state
-    setLoading(false);
-  }, [productId]);
-
-  async function handleAddToBag(e: any) {
-    e.preventDefault();
-    if (!localCartId) {
-      return { message: "No Cart Found" };
-    }
-
-    await addItemToCart(localCartId, product?.variantId!);
-    //TODO redirect user
-    // return redirect("/");
+  async function handleAddToBag() {
+    console.log("clicked");
+    await addItemToCart(cartId, productObj.variantId);
+    navigate("/");
   }
 
-  if (loading) {
-    return <SkeletonLoader />;
-  }
+  // TODO ADD add product++ (use intent as name) for
+
+  // if (loading) {
+  //   return <SkeletonLoader />;
+  // }
 
   return (
     <>
@@ -76,7 +44,7 @@ export default function Product() {
           <div className="lg:max-w-lg lg:self-end">
             <div className="mt-4">
               <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                {product?.name}
+                {productObj?.name}
               </h1>
             </div>
             <section aria-labelledby="information-heading" className="mt-4">
@@ -85,7 +53,7 @@ export default function Product() {
               </h2>
               <div className="flex items-center">
                 <p className="text-lg text-gray-900 sm:text-xl">
-                  ${product?.price}
+                  ${productObj?.price}
                 </p>
 
                 <div className="ml-4 border-l border-gray-300 pl-4">
@@ -95,7 +63,7 @@ export default function Product() {
 
               <div className="mt-4 space-y-6">
                 <p className="text-base text-gray-500">
-                  {product?.description}
+                  {productObj?.description}
                 </p>
               </div>
               <div className="mt-6 flex items-center">
@@ -113,8 +81,8 @@ export default function Product() {
           <div className="mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center">
             <div className="aspect-w-1 aspect-h-1 overflow-hidden rounded-lg">
               <img
-                src={product?.imageSrc}
-                alt={product?.imageAlt}
+                src={productObj?.imageSrc}
+                alt={productObj?.imageAlt}
                 className="h-full w-full object-cover object-center"
               />
             </div>
@@ -130,18 +98,19 @@ export default function Product() {
                   type="text"
                   name="localCartNo"
                   className="hidden"
-                  value={localCartId!}
+                  // value={cartId!}
                 />
                 <input
                   type="text"
                   name="variantId"
                   className="hidden"
-                  value={product?.variantId}
+                  value={productObj?.variantId}
                 />
                 <div className="mt-4"></div>
                 <div className="mt-10">
                   <Link
-                    to={`/cart/${localCartId}`}
+                    to="#"
+                    // to={`/cart/${cartId}`}
                     onClick={handleAddToBag}
                     className="mb-5 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                   >

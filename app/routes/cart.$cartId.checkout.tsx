@@ -11,8 +11,8 @@ export default function Checkout() {
 
   useEffect(() => {
     async function getData() {
-      const data = await getCart(cartId!);
-      const cost = data?.cart.estimatedCost.subtotalAmount.amount;
+      const response = await getCart(cartId!);
+      const cost = response?.cart.estimatedCost.subtotalAmount.amount;
       setCost(cost);
     }
     getData();

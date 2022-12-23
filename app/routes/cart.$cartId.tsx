@@ -1,33 +1,17 @@
 import { CheckIcon, ClockIcon } from "@heroicons/react/20/solid";
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getCart } from "~/models/cart.client";
 import { Form } from "@remix-run/react";
+import { useCart } from "~/hooks/useCart";
 import { removeItemFromCart } from "~/models/cart.client";
 
 export default function Cart() {
-  const [products, setProducts] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [localCartId, setLocalCartId] = useState("");
-
-  useEffect(() => {
-    const localCartId = localStorage.getItem("cartId");
-    if (!localCartId) return;
-    setLocalCartId(localCartId!);
-
-    async function getData() {
-      const data = await getCart(localCartId!);
-      setProducts(data.cart.lines.edges);
-      setTotal(+data.cart.estimatedCost.subtotalAmount.amount);
-    }
-    getData();
-  }, [products]);
+  const [cartId, products, total] = useCart();
 
   async function handleDelete(e: any) {
     e.preventDefault();
     const lineNumber = e.target.name;
     confirm("Are you sure you want to remove this item? ");
-    await removeItemFromCart(localCartId, lineNumber);
+    await removeItemFromCart(cartId, lineNumber);
   }
 
   return (
@@ -60,6 +44,7 @@ export default function Cart() {
                   lineNumber: product.node.id,
                   quantity: product.node.quantity,
                 };
+                console.log(product.node.merchandise.id);
                 return (
                   <li key={item.id} className="flex py-6">
                     <div className="flex-shrink-0">
@@ -158,13 +143,13 @@ export default function Cart() {
               </p>
             </div>
             <div className="mt-10">
-              <Link to={`/cart/${localCartId}/checkout`}>
+              <Link to={`/cart/${cartId}/checkout`}>
                 <button
                   type="submit"
                   className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 disabled:opacity-25"
-                  disabled={!localCartId || total == 0.0}
+                  disabled={!cartId || total == 0.0}
                 >
-                  {localCartId && total != 0
+                  {cartId && total != 0
                     ? "Checkout"
                     : "No articles in the cart"}
                 </button>
