@@ -38,25 +38,33 @@ export interface Collection {
 }
 
 export interface ProductObj {
-  description: string;
-  name: string;
-  price: string;
-  imageSrc: string;
-  imageAlt: string;
-  variantId: string;
-  key: string;
-  altTxt: string;
+  name?: string;
+  imageSrc?: string;
+  variantId?: string | undefined;
+  key?: string;
+  altTxt?: string | undefined | null;
+  description?: string;
+  price?: string;
 }
 
 export interface Product {
   node: {
     id: string;
     title: string;
+    variants: {
+      edges: [
+        {
+          node: {
+            id: string;
+          };
+        }
+      ];
+    };
     images: {
       edges: [
         {
           node: {
-            altText: string | undefined;
+            altText: null;
             src: string;
           };
         }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Form, Link } from "@remix-run/react";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
@@ -7,34 +7,33 @@ import { addItemToCart } from "~/models/cart.client";
 import type { ProductObj } from "~/types";
 import { useProduct } from "~/hooks/useProduct";
 import { useCart } from "~/hooks/useCart";
+import { SkeletonLoader } from "~/components/SkeletonLoader";
 
 export default function ProductPage() {
   const [loading, setLoading] = useState(true);
   const { productId } = useParams();
-  const product = useProduct(productId);
+  const product = useProduct(productId!);
   const [cartId] = useCart();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const productObj: ProductObj = {
-    description: "product?.description",
+    description: product?.description,
     name: product?.title,
     price: product?.priceRange.minVariantPrice.amount,
     imageSrc: product?.featuredImage.src,
-    imageAlt: product?.featuredImage.altText,
+    altTxt: product?.featuredImage.altText,
     variantId: product?.variants.edges[0].node.id,
   };
 
   async function handleAddToBag() {
-    console.log("clicked");
     await addItemToCart(cartId, productObj.variantId);
-    navigate("/");
   }
 
-  // TODO ADD add product++ (use intent as name) for
+  useEffect(() => setLoading(false));
 
-  // if (loading) {
-  //   return <SkeletonLoader />;
-  // }
+  if (loading) {
+    return <SkeletonLoader />;
+  }
 
   return (
     <>
@@ -82,7 +81,7 @@ export default function ProductPage() {
             <div className="aspect-w-1 aspect-h-1 overflow-hidden rounded-lg">
               <img
                 src={productObj?.imageSrc}
-                alt={productObj?.imageAlt}
+                alt={productObj?.altTxt}
                 className="h-full w-full object-cover object-center"
               />
             </div>
@@ -94,23 +93,11 @@ export default function ProductPage() {
                 Product options
               </h2>
               <Form method="post">
-                <input
-                  type="text"
-                  name="localCartNo"
-                  className="hidden"
-                  // value={cartId!}
-                />
-                <input
-                  type="text"
-                  name="variantId"
-                  className="hidden"
-                  value={productObj?.variantId}
-                />
+                <input type="text" name="localCartNo" className="hidden" />
                 <div className="mt-4"></div>
                 <div className="mt-10">
                   <Link
-                    to="#"
-                    // to={`/cart/${cartId}`}
+                    to={`/cart/${cartId}`}
                     onClick={handleAddToBag}
                     className="mb-5 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                   >
@@ -145,37 +132,3 @@ export default function ProductPage() {
     </>
   );
 }
-
-const SkeletonLoader = () => {
-  return (
-    <div className="bg-white">
-      <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
-        <div
-          role="status"
-          className="animate-pulse space-y-8 md:flex md:items-center md:space-y-0 md:space-x-8"
-        >
-          <div className="w-full">
-            <div className="mb-4 h-2.5 w-48 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-            <div className="mb-2.5 h-2 max-w-[480px] rounded-full bg-gray-200 dark:bg-gray-700"></div>
-            <div className="mb-2.5 h-2 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-            <div className="mb-2.5 h-2 max-w-[440px] rounded-full bg-gray-200 dark:bg-gray-700"></div>
-            <div className="mb-2.5 h-2 max-w-[460px] rounded-full bg-gray-200 dark:bg-gray-700"></div>
-            <div className="h-2 max-w-[360px] rounded-full bg-gray-200 dark:bg-gray-700"></div>
-          </div>
-          <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700 sm:w-96">
-            <svg
-              className="h-12 w-12 text-gray-200"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-              fill="currentColor"
-              viewBox="0 0 640 512"
-            >
-              <path d="M480 80C480 35.82 515.8 0 560 0C604.2 0 640 35.82 640 80C640 124.2 604.2 160 560 160C515.8 160 480 124.2 480 80zM0 456.1C0 445.6 2.964 435.3 8.551 426.4L225.3 81.01C231.9 70.42 243.5 64 256 64C268.5 64 280.1 70.42 286.8 81.01L412.7 281.7L460.9 202.7C464.1 196.1 472.2 192 480 192C487.8 192 495 196.1 499.1 202.7L631.1 419.1C636.9 428.6 640 439.7 640 450.9C640 484.6 612.6 512 578.9 512H55.91C25.03 512 .0006 486.1 .0006 456.1L0 456.1z" />
-            </svg>
-          </div>
-          <span className="sr-only">Loading...</span>
-        </div>
-      </div>
-    </div>
-  );
-};

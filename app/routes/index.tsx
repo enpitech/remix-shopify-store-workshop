@@ -20,7 +20,7 @@ export default function Home() {
           </h2>
           <div className="mx-auto grid max-w-md grid-cols-1 gap-y-6 px-4 sm:max-w-7xl sm:grid-cols-3 sm:gap-y-0 sm:gap-x-6 sm:px-6 lg:gap-x-8 lg:px-8">
             {collections?.map((collection: Collection) => {
-              //Better properties drilling
+              //Properties drilling
               const CollectionObj: CollectionObj = {
                 key: collection.node.products.edges[0].node.id,
                 name: collection.node.title,
@@ -93,6 +93,7 @@ export default function Home() {
 
             <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 md:gap-y-0 lg:gap-x-8">
               {trendingProducts?.map((product: Product) => {
+                console.log(product);
                 const productObj: ProductObj = {
                   name: product.node.title,
                   key: product.node.id,
@@ -100,7 +101,6 @@ export default function Home() {
                   altTxt: "",
                   variantId: product.node.variants.edges[0].node.id,
                 };
-                console.log(productObj);
                 return (
                   <div key={productObj.key} className="group relative">
                     <div className="h-56 w-full overflow-hidden rounded-md group-hover:opacity-75 lg:h-72 xl:h-80">

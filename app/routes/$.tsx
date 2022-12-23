@@ -1,4 +1,4 @@
-export default function Example() {
+export default function Page404() {
   return (
     <>
       <div className="flex min-h-full flex-col bg-white pt-16 pb-12">

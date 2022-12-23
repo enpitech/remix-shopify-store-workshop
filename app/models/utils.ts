@@ -19,10 +19,6 @@ export const postToShopify = async ({
     },
     body: JSON.stringify({ query, variables }),
   };
-  //TODO in SSR create err handelling using the cache
-  //  ?? https://remix.run/docs/en/v1/guides/errors
-
-  // TODO ErrorBoundry will handle both
 
   try {
     const response: any = await fetch(storeFrontApiShopUrl, fetchingParams);
@@ -43,22 +39,5 @@ export const postToShopify = async ({
   }
 };
 
-//Check weather user have cartId in local storage
-// export async function getLocalCartId() {
-//   //check if localCartId exists
-//   const cartId = localStorage.getItem("cartId");
-
-//   // return the localCartId
-//   if (cartId && cartId != "undefined") {
-//     return cartId;
-//   }
-//   // if not exists => create new localcartId and return
-//   const response = await createCart();
-//   const newCartId = response.cartCreate.cart.id;
-//   localStorage.setItem("cartId", newCartId);
-//   console.log(newCartId);
-
-//   return newCartId;
-// }
 //Validation function for the backend validation
 export const badRequest = <T>(data: T) => json<T>(data, { status: 400 });

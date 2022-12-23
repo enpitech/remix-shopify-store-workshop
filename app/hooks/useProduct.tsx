@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { getProductById } from "~/models/product.client";
 
 export function useProduct(productId: string) {
-  const [product, setProduct] = useState<[] | undefined>();
+  const [product, setProduct] = useState();
 
   useEffect(() => {
     async function getProductData() {
@@ -10,7 +10,8 @@ export function useProduct(productId: string) {
       setProduct(data.product);
     }
     getProductData();
-  }, []);
+    return () => {};
+  }, [productId]);
 
   return product;
 }
