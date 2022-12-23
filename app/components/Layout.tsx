@@ -10,37 +10,32 @@ import {
 import { navigation } from "mocks/DUMMY_DATA";
 import type { Collection } from "~/types";
 import { useEffect } from "react";
+import { useCollections } from "~/hooks/useCollections";
+import type { HeaderProps } from "~/types";
 
-export default function Layout({ collections, children }: any) {
+export default function Layout({ children }: any) {
   const [headerStatus, setHeaderStatus] = useState(false);
 
   return (
     <>
-      <Header
-        open={headerStatus}
-        setOpen={setHeaderStatus}
-        collections={collections}
-      />
+      <Header open={headerStatus} setOpen={setHeaderStatus} />
       <main>{children}</main>
       <Footer />
     </>
   );
 }
 
-interface HeaderProps {
-  open: boolean;
-  setOpen: any;
-  collections: [];
-}
-
-function Header({ open, setOpen, collections }: HeaderProps) {
+function Header({ open, setOpen }: HeaderProps) {
   const [localCartId, setlocalCartId] = useState();
+  const collections = useCollections();
 
   useEffect(() => {
     //On any load the navbar will get the localCarId for routing purposes
     const localCarId: any = localStorage.getItem("cartId");
     setlocalCartId(localCarId);
   }, []);
+
+  // TODO useCart i.e cart.client?
 
   // Header Elements
   function classNames(...classes: string[]) {
@@ -326,7 +321,7 @@ function Footer() {
   return (
     <footer>
       <img
-        src="https://media.licdn.com/dms/image/C4D1BAQGKMh1Xw_Lbfg/company-background_10000/0/1637829460479?e=1671778800&v=beta&t=8WQG2Q0Hox7iZrr7RPsVjbkp2ebTwjpfYWUhD30s4RU"
+        src="https://media.licdn.com/dms/image/C4D1BAQGKMh1Xw_Lbfg/company-background_10000/0/1637829460479?e=1672394400&v=beta&t=97XC8nVjmK8dHQFzeLIjlNo0vISreP0afrzFzL5VNpY"
         alt=""
       />
     </footer>

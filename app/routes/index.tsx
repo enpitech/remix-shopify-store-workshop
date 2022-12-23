@@ -1,22 +1,11 @@
 import { Link } from "@remix-run/react";
-import { getCollections } from "~/models/collection.client";
 import type { CollectionObj, Collection, ProductObj, Product } from "~/types";
-import { getTrendingProducts } from "~/models/product.client";
-import { useEffect, useState } from "react";
+import { useTrendingProducts } from "~/hooks/useTrendingProducts";
+import { useCollections } from "~/hooks/useCollections";
 
 export default function Home() {
-  const [collections, setCollections] = useState<[]>();
-  const [trendingProducts, setTrendingProducts] = useState<[]>();
-
-  useEffect(() => {
-    async function getData() {
-      const collectionsData = await getCollections(3);
-      const trendingProductsData = await getTrendingProducts(8);
-      setCollections(collectionsData);
-      setTrendingProducts(trendingProductsData);
-    }
-    getData();
-  }, []);
+  const trendingProducts = useTrendingProducts(8);
+  const collections = useCollections(3);
 
   function Collections() {
     return (
@@ -31,6 +20,7 @@ export default function Home() {
           </h2>
           <div className="mx-auto grid max-w-md grid-cols-1 gap-y-6 px-4 sm:max-w-7xl sm:grid-cols-3 sm:gap-y-0 sm:gap-x-6 sm:px-6 lg:gap-x-8 lg:px-8">
             {collections?.map((collection: Collection) => {
+              //Better properties drilling
               const CollectionObj: CollectionObj = {
                 key: collection.node.products.edges[0].node.id,
                 name: collection.node.title,
@@ -106,14 +96,16 @@ export default function Home() {
                 const productObj: ProductObj = {
                   name: product.node.title,
                   key: product.node.id,
-                  imgSrc: product.node.images.edges[0].node.src,
+                  imageSrc: product.node.images.edges[0].node.src,
                   altTxt: "",
+                  variantId: product.node.variants.edges[0].node.id,
                 };
+                console.log(productObj);
                 return (
                   <div key={productObj.key} className="group relative">
                     <div className="h-56 w-full overflow-hidden rounded-md group-hover:opacity-75 lg:h-72 xl:h-80">
                       <img
-                        src={productObj.imgSrc}
+                        src={productObj.imageSrc}
                         alt={productObj.altTxt}
                         className="h-full w-full object-cover object-center"
                       />

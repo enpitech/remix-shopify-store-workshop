@@ -52,6 +52,26 @@ export const removeItemFromCart = async (
   return response;
 };
 
+export const cartLinesUpdate = async (
+  cartId: string | null,
+  id: string,
+  merchandiseId: string,
+  quantity: number
+) => {
+  const params = {
+    query: queries.cartLinesUpdate,
+    variables: {
+      cartId,
+      id,
+      merchandiseId,
+      quantity,
+    },
+  };
+  const response = await postToShopify(params);
+  console.log("🚀 ~ file: cart.client.ts:52 ~ response", response);
+  return response;
+};
+
 //GraphQl queries object
 const queries = {
   getCart: `query getCart($id: ID = "Z2lkOi8vc2hvcGlmeS9DYXJ0Lzc2NGYxNDY0ZTYwZTAxN2Q1NTAxZjNiMDMyNjlkZjhh") {
@@ -157,4 +177,14 @@ const queries = {
     }
   }
   `,
+  cartLinesUpdate: `mutation MyMutation($cartId: ID = "Z2lkOi8vc2hvcGlmeS9DYXJ0L2Y5MWM1MjM1ZDdkY2Q5MGYyMTVkNTQ1NjBkYTM5YjZi", $id: ID = "Z2lkOi8vc2hvcGlmeS9DYXJ0TGluZS9jYzQ1MmNhMi0zM2FiLTQwZWYtYThjYi02YTVkYmZjMTkyM2E/Y2FydD1mOTFjNTIzNWQ3ZGNkOTBmMjE1ZDU0NTYwZGEzOWI2Yg==", $merchandiseId: ID = "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8zNTU1NjUyMTcwNTYzNQ==", $quantity: Int = 5) {
+    cartLinesUpdate(
+      cartId: $cartId
+      lines: {id: $id, quantity: $quantity, merchandiseId: $merchandiseId}
+    ) {
+      cart {
+        checkoutUrl
+      }
+    }
+  }`,
 };
