@@ -38,10 +38,14 @@ export interface Collection {
 }
 
 export interface ProductObj {
-  key: string;
+  description: string;
   name: string;
-  imgSrc: string;
-  altTxt: string | undefined;
+  price: string;
+  imageSrc: string;
+  imageAlt: string;
+  variantId: string;
+  key: string;
+  altTxt: string;
 }
 
 export interface Product {
@@ -64,4 +68,9 @@ export interface Product {
 export interface PostToShopifyParams {
   query: string;
   variables?: {};
+}
+
+export interface HeaderProps {
+  open: boolean;
+  setOpen: any;
 }

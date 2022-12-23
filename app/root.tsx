@@ -9,10 +9,9 @@ import {
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
-import { getCollections } from "./models/collection.client";
-import Layout from "./components/Layout";
-import { useEffect } from "react";
-import { useState } from "react";
+import Layout from "~/components/Layout";
+import { useCollections } from "~/hooks/useCollections";
+import Error from "./components/Error";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
@@ -25,15 +24,7 @@ export const meta: MetaFunction = () => ({
 });
 
 export default function App() {
-  const [collections, setCollections] = useState<[] | undefined>();
-
-  useEffect(() => {
-    async function getCollectionData() {
-      const data = await getCollections(10);
-      setCollections(data);
-    }
-    getCollectionData();
-  }, [collections]);
+  const collections = useCollections(10);
 
   return (
     <html lang="en" className="h-full">
@@ -48,6 +39,24 @@ export default function App() {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
+      </body>
+    </html>
+  );
+}
+
+export function ErrorBoundary({ error }) {
+  return (
+    <html lang="en" className="h-full">
+      <head>
+        <title>Something went wrong!</title>
+        <Meta />
+        <Links />
+      </head>
+      <body className="h-full">
+        <Layout>
+          <Error error={error} />
+        </Layout>
+        <Scripts />
       </body>
     </html>
   );
