@@ -6,16 +6,17 @@ import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { addItemToCart } from "~/models/cart.client";
 import type { ProductObj } from "~/types";
 import { useProduct } from "~/hooks/useProduct";
-import { useCart } from "~/hooks/useCart";
+import { useCartId } from "~/hooks/useCartId";
 import { SkeletonLoader } from "~/components/SkeletonLoader";
+import type { ProductById } from "~/types";
 
 export default function ProductPage() {
   const [loading, setLoading] = useState(true);
+  const cartId = useCartId();
   const { productId } = useParams();
-  const product = useProduct(productId!);
-  const [cartId] = useCart();
-  // const navigate = useNavigate();
+  const product: ProductById | any = useProduct(productId!);
 
+  //Props drilling
   const productObj: ProductObj = {
     description: product?.description,
     name: product?.title,
@@ -26,10 +27,12 @@ export default function ProductPage() {
   };
 
   async function handleAddToBag() {
-    await addItemToCart(cartId, productObj.variantId);
+    await addItemToCart(cartId, productObj.variantId!);
   }
 
-  useEffect(() => setLoading(false));
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   if (loading) {
     return <SkeletonLoader />;

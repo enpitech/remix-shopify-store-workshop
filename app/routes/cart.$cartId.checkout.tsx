@@ -1,22 +1,13 @@
-import { getCart } from "~/models/cart.client";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useState, useEffect } from "react";
-import { useParams } from "@remix-run/react";
+import { useState } from "react";
+import { useCart } from "~/hooks/useCart";
 
 export default function Checkout() {
   const [error, setError] = useState<any>();
-  const { cartId } = useParams();
-  const [cost, setCost] = useState();
+  const { total } = useCart();
 
-  useEffect(() => {
-    async function getData() {
-      const response = await getCart(cartId!);
-      const cost = response?.cart.estimatedCost.subtotalAmount.amount;
-      setCost(cost);
-    }
-    getData();
-  });
+  console.log(total);
 
   const formik = useFormik({
     initialValues: {
@@ -198,7 +189,9 @@ export default function Checkout() {
               <dl className="space-y-6 border-t border-gray-200 py-6 px-4 sm:px-6">
                 <div className="flex items-center justify-between">
                   <dt className="text-sm">Subtotal</dt>
-                  <dd className="text-sm font-medium text-gray-900">${cost}</dd>
+                  <dd className="text-sm font-medium text-gray-900">
+                    ${+total!}
+                  </dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-sm">Shipping</dt>
@@ -211,7 +204,7 @@ export default function Checkout() {
                 <div className="flex items-center justify-between border-t border-gray-200 pt-6">
                   <dt className="text-base font-medium">Total</dt>
                   <dd className="text-base font-medium text-gray-900">
-                    ${+cost! + 5}
+                    ${+total! + 5}
                   </dd>
                 </div>
               </dl>

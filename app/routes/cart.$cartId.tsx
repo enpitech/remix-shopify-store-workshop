@@ -6,8 +6,8 @@ import { CheckIcon, ClockIcon } from "@heroicons/react/20/solid";
 import { cartLinesUpdate } from "~/models/cart.client";
 import { useCartId } from "~/hooks/useCartId";
 
-export default function Example() {
-  const [, products, total] = useCart();
+export default function Cart() {
+  const { products, total } = useCart();
   const cartId = useCartId();
 
   async function handleDelete(e: any) {
@@ -18,13 +18,10 @@ export default function Example() {
   }
 
   async function handleChangeQuantity(e: any) {
-    async function updateLines() {
-      const quantity = e.target.value;
-      const lineNumber = e.target.name;
-      const merchandiseId = e.target.id;
-      await cartLinesUpdate(cartId, lineNumber, merchandiseId, +quantity);
-    }
-    updateLines();
+    const quantity = e.target.value;
+    const lineNumber = e.target.name;
+    const merchandiseId = e.target.id;
+    await cartLinesUpdate(cartId, lineNumber, merchandiseId, +quantity);
   }
 
   return (
@@ -89,7 +86,7 @@ export default function Example() {
                           </div>
 
                           <p className="text-right text-sm font-medium text-gray-900">
-                            Total : ${+item.price * +item.quantity}
+                            Total : ${(+item.price * +item.quantity).toFixed(2)}
                           </p>
                         </div>
 
@@ -156,7 +153,7 @@ export default function Example() {
                 <dl className="-my-4 divide-y divide-gray-200 text-sm">
                   <div className="flex items-center justify-between py-4">
                     <dt className="text-gray-600">Subtotal</dt>
-                    <dd className="font-medium text-gray-900">{+total}</dd>
+                    <dd className="font-medium text-gray-900">{+total!}</dd>
                   </div>
                   <div className="flex items-center justify-between py-4">
                     <dt className="text-gray-600">Shipping</dt>
@@ -167,7 +164,7 @@ export default function Example() {
                       Order total
                     </dt>
                     <dd className="text-base font-medium text-gray-900">
-                      {(+total + 5).toFixed(2)}
+                      {(+total! + 5).toFixed(2)}
                     </dd>
                   </div>
                 </dl>

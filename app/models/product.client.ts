@@ -49,7 +49,7 @@ const queries = {
     }
   }
   `,
-  getProductById: `query getProductById($id: ID = "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzU1MjMxODQ1NTAwNTE=") {
+  getProductById: `query getProductById($id: ID!) {
     product(id: $id) {
       title
       id

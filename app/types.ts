@@ -5,6 +5,57 @@ export interface Props {
   collections: [];
 }
 
+export interface ProductById {
+  title: string| undefined;
+  id: string| undefined;
+  priceRange: {
+    minVariantPrice: {
+      amount: string| undefined;
+      currencyCode: string;
+    };
+  };
+  description: string| undefined;
+  featuredImage: {
+    altText: string | undefined;
+    src: string| undefined;
+  };
+  variants: {
+    edges: [
+      {
+        node: {
+          id: string| undefined;
+        };
+      }
+    ];
+  };
+}
+
+export interface Product {
+  node: {
+    id: string;
+    title: string;
+    variants: {
+      edges: [
+        {
+          node: {
+            id: string;
+          };
+        }
+      ];
+    };
+    images: {
+      edges: [
+        {
+          node: {
+            altText: null;
+            src: string;
+          };
+        }
+      ];
+    };
+  };
+}
+
 export interface CollectionObj {
   key: string;
   name: string;
@@ -38,39 +89,13 @@ export interface Collection {
 }
 
 export interface ProductObj {
-  name?: string;
-  imageSrc?: string;
+  name?: string | undefined;
+  imageSrc?: string | undefined;
   variantId?: string | undefined;
-  key?: string;
+  key?: string | undefined;
   altTxt?: string | undefined;
-  description?: string;
-  price?: string;
-}
-
-export interface Product {
-  node: {
-    id: string;
-    title: string;
-    variants: {
-      edges: [
-        {
-          node: {
-            id: string;
-          };
-        }
-      ];
-    };
-    images: {
-      edges: [
-        {
-          node: {
-            altText: null;
-            src: string;
-          };
-        }
-      ];
-    };
-  };
+  description?: string | undefined;
+  price?: string | undefined;
 }
 
 export interface PostToShopifyParams {

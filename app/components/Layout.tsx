@@ -9,23 +9,21 @@ import {
 } from "@heroicons/react/24/outline";
 import type { Collection } from "~/types";
 import { useCollections } from "~/hooks/useCollections";
-import type { HeaderProps } from "~/types";
 import { useCartId } from "~/hooks/useCartId";
 import type { FooterCollection } from "~/types";
 
 export default function Layout({ children }: any) {
-  const [headerStatus, setHeaderStatus] = useState(false);
-
   return (
     <>
-      <Header open={headerStatus} setOpen={setHeaderStatus} />
+      <Header />
       <main>{children}</main>
       <Footer />
     </>
   );
 }
 
-function Header({ open, setOpen }: HeaderProps) {
+function Header() {
+  const [open, setOpen] = useState(false);
   const collections = useCollections(6);
   const cartId = useCartId();
 
@@ -49,7 +47,6 @@ function Header({ open, setOpen }: HeaderProps) {
                     {collections
                       ?.slice(0, 5)
                       .map((collection: FooterCollection) => {
-                        console.log(collection);
                         return (
                           <a
                             key={collection?.node.title}

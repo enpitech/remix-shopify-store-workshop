@@ -68,13 +68,12 @@ export const cartLinesUpdate = async (
     },
   };
   const response = await postToShopify(params);
-  console.log("🚀 ~ file: cart.client.ts:52 ~ response", response);
   return response;
 };
 
 //GraphQl queries object
 const queries = {
-  getCart: `query getCart($id: ID = "Z2lkOi8vc2hvcGlmeS9DYXJ0Lzc2NGYxNDY0ZTYwZTAxN2Q1NTAxZjNiMDMyNjlkZjhh") {
+  getCart: `query getCart($id: ID!) {
     cart(id: $id) {
       estimatedCost {
         subtotalAmount {
@@ -122,7 +121,7 @@ const queries = {
     }
   }
 `,
-  addItemToCart: `mutation MyMutation($cartId: ID = "Z2lkOi8vc2hvcGlmeS9DYXJ0Lzc2NGYxNDY0ZTYwZTAxN2Q1NTAxZjNiMDMyNjlkZjhh", $lines: [CartLineInput!] = {merchandiseId: "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8zNTU1NjQwNjEwMDEzMQ==", quantity: 1}) {
+  addItemToCart: `mutation MyMutation($cartId: ID!, $lines: [CartLineInput!] = {merchandiseId: "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8zNTU1NjQwNjEwMDEzMQ==", quantity: 1}) {
     cartLinesAdd(cartId: $cartId, lines: $lines) {
       cart {
         id
