@@ -1,4 +1,3 @@
-import { json } from "@remix-run/node";
 import type { PostToShopifyParams } from "~/types";
 
 // Tokens
@@ -39,5 +38,3 @@ export const postToShopify = async ({
   }
 };
 
-//Validation function for the backend validation
-export const badRequest = <T>(data: T) => json<T>(data, { status: 400 });

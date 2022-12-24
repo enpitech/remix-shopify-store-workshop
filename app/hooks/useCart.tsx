@@ -8,15 +8,15 @@ export function useCart() {
   const [total, setTotal] = useState<[] | undefined>();
   const cartId = useCartId();
 
-  const getCartData = useCallback(async () => {
+  const fetchCartData = useCallback(async () => {
     const response = await getCart(cartId);
     setProducts(response.cart.lines.edges);
     setTotal(response.cart.estimatedCost.subtotalAmount.amount);
   }, [cartId]);
 
   useEffect(() => {
-    getCartData();
-  }, [getCartData]);
+    fetchCartData();
+  }, [fetchCartData, cartId]);
 
-  return { products, total };
+  return { products, total, getCartData: fetchCartData };
 }

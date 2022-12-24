@@ -7,8 +7,6 @@ export default function Checkout() {
   const [error, setError] = useState<any>();
   const { total } = useCart();
 
-  console.log(total);
-
   const formik = useFormik({
     initialValues: {
       lastName: "",
@@ -35,7 +33,7 @@ export default function Checkout() {
         .required("Required")
         .email("Please enter valid email"),
     }),
-    onSubmit: async (values) => {
+    onSubmit: async () => {
       try {
         confirm("Thank you for buying in WearJS!");
       } catch (error: any) {

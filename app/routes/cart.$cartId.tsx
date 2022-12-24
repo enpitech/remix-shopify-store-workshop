@@ -7,14 +7,15 @@ import { cartLinesUpdate } from "~/models/cart.client";
 import { useCartId } from "~/hooks/useCartId";
 
 export default function Cart() {
-  const { products, total } = useCart();
   const cartId = useCartId();
+  const { products, total, getCartData } = useCart();
 
   async function handleDelete(e: any) {
     e.preventDefault();
     const lineNumber = e.target.value;
     confirm("Are you sure you want to remove this item? ");
     await removeItemFromCart(cartId, lineNumber);
+    getCartData();
   }
 
   async function handleChangeQuantity(e: any) {
@@ -22,6 +23,7 @@ export default function Cart() {
     const lineNumber = e.target.name;
     const merchandiseId = e.target.id;
     await cartLinesUpdate(cartId, lineNumber, merchandiseId, +quantity);
+    getCartData();
   }
 
   return (
