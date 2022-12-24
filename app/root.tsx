@@ -1,4 +1,7 @@
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import tailwindStylesheetUrl from "./styles/tailwind.css";
+import Layout from "~/components/Layout";
+import Error from "./components/Error";
 import {
   Links,
   LiveReload,
@@ -8,24 +11,7 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
-import tailwindStylesheetUrl from "./styles/tailwind.css";
-import Layout from "~/components/Layout";
-import { useCollections } from "~/hooks/useCollections";
-import Error from "./components/Error";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
-};
-
-export const meta: MetaFunction = () => ({
-  charset: "utf-8",
-  title: "Wear JS Workshop",
-  viewport: "width=device-width,initial-scale=1",
-});
-
 export default function App() {
-  const collections = useCollections(10);
-
   return (
     <html lang="en" className="h-full">
       <head>
@@ -33,7 +19,7 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <Layout collections={collections}>
+        <Layout>
           <Outlet />
         </Layout>
         <ScrollRestoration />
@@ -44,7 +30,7 @@ export default function App() {
   );
 }
 
-export function ErrorBoundary({ error }) {
+export function ErrorBoundary({ error }: any) {
   return (
     <html lang="en" className="h-full">
       <head>
@@ -54,10 +40,20 @@ export function ErrorBoundary({ error }) {
       </head>
       <body className="h-full">
         <Layout>
-          <Error error={error} />
+          <Error error={error.message} />
         </Layout>
         <Scripts />
       </body>
     </html>
   );
 }
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
+};
+
+export const meta: MetaFunction = () => ({
+  charset: "utf-8",
+  title: "Wear JS Workshop",
+  viewport: "width=device-width,initial-scale=1",
+});
