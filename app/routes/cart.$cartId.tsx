@@ -5,7 +5,6 @@ import { getCart } from "~/models/cart.server";
 import { Form, useLoaderData } from "@remix-run/react";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { removeItemFromCart } from "~/models/cart.server";
-// import { useTransition } from "@remix-run/react";
 
 export async function loader({ params }: LoaderArgs) {
   const data = await getCart(params.cartId!);
@@ -34,7 +33,7 @@ export default function Cart() {
     setLocalCartId(localCartId!);
   }, []);
   return (
-    <div className="bg-white h-screen">
+    <div className="h-screen bg-white">
       <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:px-0">
         <h1 className="text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
           Shopping Cart
