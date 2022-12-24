@@ -42,7 +42,7 @@ export interface ProductObj {
   imageSrc?: string;
   variantId?: string | undefined;
   key?: string;
-  altTxt?: string | undefined | null;
+  altTxt?: string | undefined;
   description?: string;
   price?: string;
 }
@@ -81,4 +81,29 @@ export interface PostToShopifyParams {
 export interface HeaderProps {
   open: boolean;
   setOpen: any;
+}
+
+export interface FooterCollection {
+  node: {
+    title: string;
+    products: {
+      edges: [
+        {
+          node: {
+            id: string;
+            images: {
+              edges: [
+                {
+                  node: {
+                    altText: null | string | undefined;
+                    src: string;
+                  };
+                }
+              ];
+            };
+          };
+        }
+      ];
+    };
+  };
 }

@@ -11,6 +11,7 @@ import type { Collection } from "~/types";
 import { useCollections } from "~/hooks/useCollections";
 import type { HeaderProps } from "~/types";
 import { useCartId } from "~/hooks/useCartId";
+import type { FooterCollection } from "~/types";
 
 export default function Layout({ children }: any) {
   const [headerStatus, setHeaderStatus] = useState(false);
@@ -26,17 +27,7 @@ export default function Layout({ children }: any) {
 
 function Header({ open, setOpen }: HeaderProps) {
   const collections = useCollections(6);
-  console.log(
-    collections?.map((collection) =>
-      console.log("colleciton", collection.node.title)
-    )
-  );
   const cartId = useCartId();
-
-  // Header Elements
-  function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(" ");
-  }
 
   function NavBar() {
     return (
@@ -55,18 +46,20 @@ function Header({ open, setOpen }: HeaderProps) {
                 {/* Flyout menus */}
                 <Popover.Group className="inset-x-0 bottom-0 px-4">
                   <div className="flex h-full justify-center space-x-8">
-                    {collections?.slice(0, 5).map((collection) => {
-                      return (
-                        <a
-                          key={collection?.node.title}
-                          href={"/"}
-                          className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
-                        >
-                          {collection?.node.title}
-                        </a>
-                      );
-                    })}
-                    {console.log(collections)}
+                    {collections
+                      ?.slice(0, 5)
+                      .map((collection: FooterCollection) => {
+                        console.log(collection);
+                        return (
+                          <a
+                            key={collection?.node.title}
+                            href={"/"}
+                            className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
+                          >
+                            {collection?.node.title}
+                          </a>
+                        );
+                      })}
                   </div>
                 </Popover.Group>
               </div>
