@@ -21,17 +21,18 @@ export async function loader({ params }: LoaderArgs) {
 export async function action({ request }: ActionArgs) {
   if (request.method === "POST") {
     const body = await request.formData();
-
     const { cartId, quantity, merchandiseId, lineNumber } =
       Object.fromEntries(body);
-
-    await cartLinesUpdate(cartId, lineNumber, merchandiseId, +quantity);
+    await cartLinesUpdate(
+      cartId.toString(),
+      lineNumber.toString(),
+      merchandiseId.toString(),
+      +quantity
+    );
   } else if (request.method === "DELETE") {
     const body = await request.formData();
-
     const { cartId, lineNumber } = Object.fromEntries(body);
-
-    await removeItemFromCart(cartId, lineNumber);
+    await removeItemFromCart(cartId.toString(), lineNumber.toString());
   }
   return {};
 }
@@ -93,32 +94,32 @@ export default function Cart() {
                           <label htmlFor={`${item.id}`} className="sr-only">
                             Quantity, {item.quantity}
                           </label>
-                          <select
-                            name="intent"
-                            value={item.quantity}
-                            onChange={(e) => {
-                              fetcher.submit(
-                                {
-                                  cartId: cartId,
-                                  quantity: e.target.value,
-                                  merchandiseId: item.id!,
-                                  lineNumber: item.lineNumber!,
-                                },
-                                { method: "post" }
-                              );
-                            }}
-                            id={`${item.id}`}
-                            className="block max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
-                          >
-                            <option value={1}>1</option>
-                            <option value={2}>2</option>
-                            <option value={3}>3</option>
-                            <option value={4}>4</option>
-                            <option value={5}>5</option>
-                            <option value={6}>6</option>
-                            <option value={7}>7</option>
-                            <option value={8}>8</option>
-                          </select>
+
+                          <Form>
+                            <select
+                              name="intent"
+                              value={item.quantity}
+                              onChange={(e) => {
+                                fetcher.submit(
+                                  {
+                                    cartId: cartId,
+                                    quantity: e.target.value,
+                                    merchandiseId: item.id!,
+                                    lineNumber: item.lineNumber!,
+                                  },
+                                  { method: "post" }
+                                );
+                              }}
+                              id={`${item.id}`}
+                              className="block max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+                            >
+                              <option value={1}>1</option>
+                              <option value={2}>2</option>
+                              <option value={3}>3</option>
+                              <option value={4}>4</option>
+                            </select>
+                          </Form>
+
                           {/* delete </button> */}
                           <button
                             type="button"
@@ -137,20 +138,6 @@ export default function Cart() {
                           >
                             Remove
                           </button>
-                          <input
-                            className="hidden"
-                            type="text"
-                            name="lineNumber"
-                            value={item.lineNumber}
-                            readOnly
-                          />
-                          <input
-                            className="hidden"
-                            type="text"
-                            name="cartId"
-                            value={cartId}
-                            readOnly
-                          />
                         </div>
                       </div>
 

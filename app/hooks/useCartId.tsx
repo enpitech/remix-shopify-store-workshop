@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { createCart } from "~/models/cart.server";
 
 export function useCartId() {
-  const [cartId, setCartId] = useState<any>();
+  const [cartId, setCartId] = useState("undefined");
 
   useEffect(() => {
     async function localCartId() {

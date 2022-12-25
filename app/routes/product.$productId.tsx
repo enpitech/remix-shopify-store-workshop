@@ -24,7 +24,7 @@ export async function action({ request }: ActionArgs) {
     return { message: "No Cart Found" };
   }
 
-  await addItemToCart(cartId, variantId);
+  await addItemToCart(cartId.toString(), variantId.toString());
   return redirect(`/cart/${cartId}`);
 }
 
