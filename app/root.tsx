@@ -29,7 +29,7 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 export default function App() {
-  const collections = useLoaderData();
+  const collections = useLoaderData<typeof loader>();
 
   return (
     <html lang="en" className="h-full">

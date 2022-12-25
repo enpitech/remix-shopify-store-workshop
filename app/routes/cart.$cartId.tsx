@@ -20,17 +20,17 @@ export async function loader({ params }: LoaderArgs) {
 
 export async function action({ request }: ActionArgs) {
   if (request.method === "POST") {
-    const formData = await request.formData();
-    //think about destruction
-    const cartId = Object.fromEntries(formData).cartId;
-    const quantity = Object.fromEntries(formData).quantity;
-    const merchandiseId = Object.fromEntries(formData).merchandiseId;
-    const lineNumber = Object.fromEntries(formData).lineNumber;
+    const body = await request.formData();
+
+    const { cartId, quantity, merchandiseId, lineNumber } =
+      Object.fromEntries(body);
+
     await cartLinesUpdate(cartId, lineNumber, merchandiseId, +quantity);
   } else if (request.method === "DELETE") {
-    const formData = await request.formData();
-    const lineNumber: any = Object.fromEntries(formData).lineNumber;
-    const cartId: any = Object.fromEntries(formData).cartId;
+    const body = await request.formData();
+
+    const { cartId, lineNumber } = Object.fromEntries(body);
+
     await removeItemFromCart(cartId, lineNumber);
   }
   return {};
@@ -107,7 +107,6 @@ export default function Cart() {
                                 { method: "post" }
                               );
                             }}
-                            form="changeQuantity"
                             id={`${item.id}`}
                             className="block max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
                           >
@@ -143,7 +142,6 @@ export default function Cart() {
                             type="text"
                             name="lineNumber"
                             value={item.lineNumber}
-                            onChange={() => {}}
                             readOnly
                           />
                           <input

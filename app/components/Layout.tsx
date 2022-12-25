@@ -10,7 +10,6 @@ import {
 import type { ShopifyCollection, CollectionsArray, Props } from "~/types";
 import { useCartId } from "~/hooks/useCartId";
 import { getCollections } from "~/models/collection.server";
-import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 
 export const loader = async () => {
@@ -18,9 +17,12 @@ export const loader = async () => {
   return json({ collections });
 };
 
-export default function Layout({ children }: Props) {
+interface CollectionProps extends Props {
+  collections: [];
+}
+
+export default function Layout({ children, collections }: CollectionProps) {
   const [open, setOpen] = useState<boolean>(false);
-  const { collections } = useLoaderData<typeof loader>();
 
   return (
     <>

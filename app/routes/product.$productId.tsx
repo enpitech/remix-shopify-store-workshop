@@ -17,10 +17,8 @@ export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
 };
 
 export async function action({ request }: ActionArgs) {
-  //use Object.....
   const body = await request.formData();
-  const cartId: any | null = body.get("localCartNo");
-  const variantId: any = body.get("variantId");
+  const { cartId, variantId } = Object.fromEntries(body);
 
   if (!cartId) {
     return { message: "No Cart Found" };
@@ -32,7 +30,7 @@ export async function action({ request }: ActionArgs) {
 
 export default function Product() {
   const data = useLoaderData();
-  const localCartId = useCartId();
+  const cartId = useCartId();
 
   //Name shortening
   const product = {
@@ -101,9 +99,9 @@ export default function Product() {
             <Form method="post">
               <input
                 type="text"
-                name="localCartNo"
+                name="cartId"
                 className="hidden"
-                value={localCartId!}
+                value={cartId!}
               />
               <input
                 type="text"
