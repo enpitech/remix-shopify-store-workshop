@@ -324,11 +324,16 @@ function Header({ open, setOpen, collections }: HeaderProps) {
 
 function Footer() {
   return (
-    <footer>
-      <img
-        src="https://media.licdn.com/dms/image/C4D1BAQGKMh1Xw_Lbfg/company-background_10000/0/1637829460479?e=1671778800&v=beta&t=8WQG2Q0Hox7iZrr7RPsVjbkp2ebTwjpfYWUhD30s4RU"
-        alt=""
-      />
+    <footer className="bg-white">
+      <div className="mx-auto max-w-7xl py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
+        <div className="flex justify-center space-x-6 md:order-2">
+          <img
+            src="https://media.licdn.com/dms/image/C4D1BAQGKMh1Xw_Lbfg/company-background_10000/0/1637829460479?e=1672394400&v=beta&t=97XC8nVjmK8dHQFzeLIjlNo0vISreP0afrzFzL5VNpY"
+            alt=""
+          />
+        </div>
+        <div className="mt-8 md:order-1 md:mt-0"></div>
+      </div>
     </footer>
   );
 }

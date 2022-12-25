@@ -8,7 +8,6 @@ import { getTrendingProducts } from "~/models/product.server";
 export const loader = async () => {
   const collections = await getCollections(3);
   const trendingProducts = await getTrendingProducts(8);
-
   return json({ collections, trendingProducts });
 };
 

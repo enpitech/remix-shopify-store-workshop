@@ -19,7 +19,7 @@ export const links: LinksFunction = () => {
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
-  title: "Wear JS Workshop",
+  title: "Remix Workshop",
   viewport: "width=device-width,initial-scale=1",
 });
 
@@ -30,6 +30,7 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function App() {
   const collections = useLoaderData();
+
   return (
     <html lang="en" className="h-full">
       <head>
@@ -37,7 +38,7 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <Layout collections={collections} >
+        <Layout collections={collections}>
           <Outlet />
         </Layout>
         <ScrollRestoration />
