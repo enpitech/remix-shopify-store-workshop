@@ -1,61 +1,8 @@
 import type { ReactNode } from "react";
 
-export interface Props {
-  children: ReactNode;
-  collections: [];
-}
+//Collections types
 
-export interface ProductById {
-  title: string| undefined;
-  id: string| undefined;
-  priceRange: {
-    minVariantPrice: {
-      amount: string| undefined;
-      currencyCode: string;
-    };
-  };
-  description: string| undefined;
-  featuredImage: {
-    altText: string | undefined;
-    src: string| undefined;
-  };
-  variants: {
-    edges: [
-      {
-        node: {
-          id: string| undefined;
-        };
-      }
-    ];
-  };
-}
-
-export interface Product {
-  node: {
-    id: string;
-    title: string;
-    variants: {
-      edges: [
-        {
-          node: {
-            id: string;
-          };
-        }
-      ];
-    };
-    images: {
-      edges: [
-        {
-          node: {
-            altText: null;
-            src: string;
-          };
-        }
-      ];
-    };
-  };
-}
-
+export type CollectionsArray = [] | undefined;
 export interface CollectionObj {
   key: string;
   name: string;
@@ -88,6 +35,63 @@ export interface Collection {
   };
 }
 
+//React props
+export interface Props {
+  children: ReactNode;
+}
+
+//Products types
+export interface ProductById {
+  title: string | undefined;
+  id: string | undefined;
+  priceRange: {
+    minVariantPrice: {
+      amount: string | undefined;
+      currencyCode: string;
+    };
+  };
+  description: string | undefined;
+  featuredImage: {
+    altText: string | undefined;
+    src: string | undefined;
+  };
+  variants: {
+    edges: [
+      {
+        node: {
+          id: string | undefined;
+        };
+      }
+    ];
+  };
+}
+
+export interface Product {
+  node: {
+    id: string;
+    title: string;
+    variants: {
+      edges: [
+        {
+          node: {
+            id: string;
+          };
+        }
+      ];
+    };
+    images: {
+      edges: [
+        {
+          node: {
+            altText: null;
+            src: string;
+          };
+        }
+      ];
+    };
+  };
+}
+
 export interface ProductObj {
   name?: string | undefined;
   imageSrc?: string | undefined;
@@ -98,37 +102,14 @@ export interface ProductObj {
   price?: string | undefined;
 }
 
+//Global function interface
 export interface PostToShopifyParams {
   query: string;
   variables?: {};
 }
 
-export interface HeaderProps {
-  open: boolean;
-  setOpen: any;
-}
-
-export interface FooterCollection {
-  node: {
-    title: string;
-    products: {
-      edges: [
-        {
-          node: {
-            id: string;
-            images: {
-              edges: [
-                {
-                  node: {
-                    altText: null | string | undefined;
-                    src: string;
-                  };
-                }
-              ];
-            };
-          };
-        }
-      ];
-    };
-  };
-}
+//Layout component props
+// export interface LayoutProps {
+//   open: boolean;
+//   setOpen: any;
+// }
