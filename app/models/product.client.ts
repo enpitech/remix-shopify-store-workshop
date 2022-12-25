@@ -21,7 +21,7 @@ export const getTrendingProducts = async (amount: Number) => {
   return trends;
 };
 
-//GraphQl queries object
+//GraphQL queries object
 const queries = {
   getTrendsProducts: `query getProducts($first: Int = 10) {
     products(first: $first) {

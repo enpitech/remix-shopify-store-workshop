@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { getTrendingProducts } from "~/models/product.client";
 
-export function useTrendingProducts(amount: number) {
-  const [trendingProducts, setTrendingProducts] = useState<[] | undefined>();
+export function useTrendingProducts(quantity: number) {
+  const [trendingProducts, setTrendingProducts] = useState([]);
 
   useEffect(() => {
     async function getProducts() {
-      const data = await getTrendingProducts(amount);
+      const data = await getTrendingProducts(quantity);
       setTrendingProducts(data);
     }
     getProducts();
-  }, [amount]);
+  }, [quantity]);
 
   return trendingProducts;
 }

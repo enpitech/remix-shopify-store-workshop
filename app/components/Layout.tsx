@@ -7,7 +7,7 @@ import {
   ShoppingBagIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import type { Collection, CollectionsArray, Props } from "~/types";
+import type { ShopifyCollection, CollectionsArray, Props } from "~/types";
 import { useCollections } from "~/hooks/useCollections";
 import { useCartId } from "~/hooks/useCartId";
 
@@ -50,17 +50,19 @@ function NavBar({
               {/* Flyout menus */}
               <Popover.Group className="inset-x-0 bottom-0 px-4">
                 <div className="flex h-full justify-center space-x-8">
-                  {collections?.slice(0, 5).map((collection: Collection) => {
-                    return (
-                      <a
-                        key={collection?.node.title}
-                        href={"/"}
-                        className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
-                      >
-                        {collection?.node.title}
-                      </a>
-                    );
-                  })}
+                  {collections
+                    ?.slice(0, 5)
+                    .map((collection: ShopifyCollection) => {
+                      return (
+                        <a
+                          key={collection?.node.title}
+                          href={"/"}
+                          className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
+                        >
+                          {collection?.node.title}
+                        </a>
+                      );
+                    })}
                 </div>
               </Popover.Group>
             </div>
@@ -175,7 +177,7 @@ function MobileMenu({
               </div>
               {/* Links */}
               <div className="space-y-6 border-t border-gray-200 py-6 px-4">
-                {collections?.map((collection: Collection) => (
+                {collections?.map((collection: ShopifyCollection) => (
                   <div key={collection.node.title} className="flow-root">
                     <a
                       href={"/"}

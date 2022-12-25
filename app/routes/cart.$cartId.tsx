@@ -5,17 +5,18 @@ import { removeItemFromCart } from "~/models/cart.client";
 import { CheckIcon, ClockIcon } from "@heroicons/react/20/solid";
 import { cartLinesUpdate } from "~/models/cart.client";
 import { useCartId } from "~/hooks/useCartId";
+import type { CartProduct } from "~/types";
 
 export default function Cart() {
   const cartId = useCartId();
-  const { products, total, getCartData } = useCart();
+  const { products, total, fetchCartData } = useCart();
 
   async function handleDelete(e: any) {
     e.preventDefault();
     const lineNumber = e.target.value;
     confirm("Are you sure you want to remove this item? ");
     await removeItemFromCart(cartId, lineNumber);
-    getCartData();
+    fetchCartData();
   }
 
   async function handleChangeQuantity(e: any) {
@@ -23,7 +24,7 @@ export default function Cart() {
     const lineNumber = e.target.name;
     const merchandiseId = e.target.id;
     await cartLinesUpdate(cartId, lineNumber, merchandiseId, +quantity);
-    getCartData();
+    fetchCartData();
   }
 
   return (
@@ -38,23 +39,8 @@ export default function Cart() {
             <h2 className="sr-only">Items in your shopping cart</h2>
 
             <ul className="divide-y divide-gray-200 border-t border-b border-gray-200">
-              {products?.map((product: any) => {
-                const item = {
-                  id: product.node.merchandise.id,
-                  name: product.node.merchandise.product.title,
-                  href: `product/${product.node.merchandise.id}`,
-                  price:
-                    product.node.merchandise.product.priceRange.minVariantPrice
-                      .amount,
-                  color: "TBD",
-                  inStock: true,
-                  imageSrc: product.node.merchandise.image.src,
-                  imageAlt: product.node.merchandise.image.altText,
-                  size: product.node.merchandise.title,
-                  lineNumber: product.node.id,
-                  quantity: product.node.quantity,
-                };
-
+              {products?.map((product: CartProduct) => {
+                const item = parseProduct(product);
                 return (
                   <li key={item.id} className="flex py-6 sm:py-10">
                     <div className="flex-shrink-0">
@@ -80,7 +66,7 @@ export default function Cart() {
                             <p className="mt-1 text-sm text-gray-500">
                               Unit Price: ${item.price}
                             </p>
-                            {product.size ? (
+                            {item.size ? (
                               <p className="mt-1 text-sm text-gray-500">
                                 {item.size}
                               </p>
@@ -88,7 +74,8 @@ export default function Cart() {
                           </div>
 
                           <p className="text-right text-sm font-medium text-gray-900">
-                            Total : ${(+item.price * +item.quantity).toFixed(2)}
+                            Total : $
+                            {(+item.price! * +item.quantity!).toFixed(2)}
                           </p>
                         </div>
 
@@ -125,7 +112,7 @@ export default function Cart() {
                       </div>
 
                       <p className="mt-4 flex space-x-2 text-sm text-gray-700">
-                        {product.inStock ? (
+                        {item.inStock ? (
                           <CheckIcon
                             className="h-5 w-5 flex-shrink-0 text-green-500"
                             aria-hidden="true"
@@ -199,4 +186,21 @@ export default function Cart() {
       </div>
     </div>
   );
+}
+
+function parseProduct(product: CartProduct) {
+  return {
+    id: product.node?.merchandise?.id,
+    name: product.node?.merchandise?.product?.title,
+    href: `product/${product.node?.merchandise?.id}`,
+    price:
+      product.node?.merchandise?.product?.priceRange?.minVariantPrice?.amount,
+    color: "TBD",
+    inStock: true,
+    imageSrc: product.node?.merchandise?.image?.src,
+    imageAlt: product.node?.merchandise?.image?.altText || "",
+    size: product.node?.merchandise?.title,
+    lineNumber: product.node?.id,
+    quantity: product.node?.quantity,
+  };
 }

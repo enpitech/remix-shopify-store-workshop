@@ -17,7 +17,7 @@ export default function Checkout() {
     validationSchema: Yup.object({
       firstName: Yup.string()
         .max(20, "Must be 20 characters or less")
-        .min(4, "first name must be more then 4 characters")
+        .min(4, "First name must be more then 4 characters")
         .required("Required"),
       lastName: Yup.string()
         .max(15, "Must be 15 characters or less")

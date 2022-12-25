@@ -3,14 +3,14 @@ import type { ReactNode } from "react";
 //Collections types
 
 export type CollectionsArray = [] | undefined;
-export interface CollectionObj {
+export interface Collection {
   key: string;
   name: string;
   imgSrc: string;
-  altTxt: string | undefined;
+  altTxt?: string;
 }
 
-export interface Collection {
+export interface ShopifyCollection {
   node: {
     title: string;
     products: {
@@ -22,7 +22,7 @@ export interface Collection {
               edges: [
                 {
                   node: {
-                    altText: string | undefined;
+                    altText?: string;
                     src: string;
                   };
                 }
@@ -41,32 +41,58 @@ export interface Props {
 }
 
 //Products types
-export interface ProductById {
-  title: string | undefined;
-  id: string | undefined;
+export interface Product {
+  title?: string;
+  id?: string;
   priceRange: {
     minVariantPrice: {
-      amount: string | undefined;
+      amount?: string;
       currencyCode: string;
     };
   };
-  description: string | undefined;
+  description?: string;
   featuredImage: {
-    altText: string | undefined;
-    src: string | undefined;
+    altText?: string;
+    src?: string;
   };
   variants: {
     edges: [
       {
         node: {
-          id: string | undefined;
+          id?: string;
         };
       }
     ];
   };
 }
 
-export interface Product {
+export interface CartProduct {
+  node?: {
+    id?: string;
+    quantity?: number | string;
+    merchandise?: {
+      id?: string;
+      image?: {
+        altText?: null;
+        src?: string;
+      };
+      title?: string;
+      product?: {
+        id?: string;
+        description?: string;
+        title?: string;
+        priceRange?: {
+          minVariantPrice?: {
+            amount?: string | number;
+            currencyCode?: string;
+          };
+        };
+      };
+    };
+  };
+}
+
+export interface TrendingProduct {
   node: {
     id: string;
     title: string;
@@ -93,13 +119,13 @@ export interface Product {
 }
 
 export interface ProductObj {
-  name?: string | undefined;
-  imageSrc?: string | undefined;
-  variantId?: string | undefined;
-  key?: string | undefined;
-  altTxt?: string | undefined;
-  description?: string | undefined;
-  price?: string | undefined;
+  name?: string;
+  imageSrc?: string;
+  variantId?: string;
+  key?: string;
+  altTxt?: string;
+  description?: string;
+  price?: string;
 }
 
 //Global function interface
@@ -107,9 +133,3 @@ export interface PostToShopifyParams {
   query: string;
   variables?: {};
 }
-
-//Layout component props
-// export interface LayoutProps {
-//   open: boolean;
-//   setOpen: any;
-// }

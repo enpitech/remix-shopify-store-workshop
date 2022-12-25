@@ -10,7 +10,6 @@ export function useProduct(productId: string) {
       setProduct(data.product);
     }
     getProductData();
-    return () => {};
   }, [productId]);
 
   return product;
