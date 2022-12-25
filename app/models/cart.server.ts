@@ -54,7 +54,7 @@ export const removeItemFromCart = async (
 
 export const cartLinesUpdate = async (
   cartId: string | null,
-  id: string,
+  lineId: string,
   merchandiseId: string,
   quantity: number
 ) => {
@@ -62,7 +62,7 @@ export const cartLinesUpdate = async (
     query: queries.cartLinesUpdate,
     variables: {
       cartId,
-      id,
+      lineId,
       merchandiseId,
       quantity,
     },
@@ -71,7 +71,7 @@ export const cartLinesUpdate = async (
   return response;
 };
 
-//GraphQl queries object
+//GraphQL queries object
 const queries = {
   getCart: `query getCart($id: ID!) {
     cart(id: $id) {
@@ -176,10 +176,10 @@ const queries = {
     }
   }
   `,
-  cartLinesUpdate: `mutation MyMutation($cartId: ID = "Z2lkOi8vc2hvcGlmeS9DYXJ0L2Y5MWM1MjM1ZDdkY2Q5MGYyMTVkNTQ1NjBkYTM5YjZi", $id: ID = "Z2lkOi8vc2hvcGlmeS9DYXJ0TGluZS9jYzQ1MmNhMi0zM2FiLTQwZWYtYThjYi02YTVkYmZjMTkyM2E/Y2FydD1mOTFjNTIzNWQ3ZGNkOTBmMjE1ZDU0NTYwZGEzOWI2Yg==", $merchandiseId: ID = "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8zNTU1NjUyMTcwNTYzNQ==", $quantity: Int = 5) {
+  cartLinesUpdate: `mutation MyMutation($cartId: ID!, $lineId: ID!, $merchandiseId: ID!, $quantity: Int!) {
     cartLinesUpdate(
       cartId: $cartId
-      lines: {id: $id, quantity: $quantity, merchandiseId: $merchandiseId}
+      lines: {id: $lineId, quantity: $quantity, merchandiseId: $merchandiseId}
     ) {
       cart {
         checkoutUrl

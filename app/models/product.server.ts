@@ -13,7 +13,7 @@ export const getProductById = async (productId: string) => {
 
 export const getTrendingProducts = async (amount: Number) => {
   const params = {
-    query: queries.getProducts,
+    query: queries.getTrendsProducts,
     variables: { first: amount },
   };
   const response = await postToShopify(params);
@@ -21,15 +21,15 @@ export const getTrendingProducts = async (amount: Number) => {
   return trends;
 };
 
-//GraphQl queries object
+//GraphQL queries object
 const queries = {
-  getProducts: `query getProducts($first: Int = 10) {
+  getTrendsProducts: `query getProducts($first: Int = 10) {
     products(first: $first) {
       edges {
         node {
           id
           title
-          variants(first: 10) {
+          variants(first: 1) {
             edges {
               node {
                 id
@@ -49,7 +49,7 @@ const queries = {
     }
   }
   `,
-  getProductById: `query getProductById($id: ID = "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzU1MjMxODQ1NTAwNTE=") {
+  getProductById: `query getProductById($id: ID!) {
     product(id: $id) {
       title
       id

@@ -7,6 +7,7 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import { cartLinesUpdate } from "~/models/cart.server";
 import { removeItemFromCart } from "~/models/cart.server";
+import type { CartProduct } from "~/types";
 
 export async function loader({ params }: LoaderArgs) {
   const parsedCartData = await getCart(params.cartId!);
@@ -20,6 +21,7 @@ export async function loader({ params }: LoaderArgs) {
 export async function action({ request }: ActionArgs) {
   if (request.method === "POST") {
     const formData = await request.formData();
+    //think about destruction
     const cartId = Object.fromEntries(formData).cartId;
     const quantity = Object.fromEntries(formData).quantity;
     const merchandiseId = Object.fromEntries(formData).merchandiseId;
@@ -49,23 +51,8 @@ export default function Cart() {
           <div>
             <h2 className="sr-only">Items in your shopping cart</h2>
             <ul className="divide-y divide-gray-200 border-t border-b border-gray-200">
-              {products?.map((product: any) => {
-                const item = {
-                  id: product.node.merchandise.id,
-                  name: product.node.merchandise.product.title,
-                  href: `product/${product.node.merchandise.id}`,
-                  price:
-                    product.node.merchandise.product.priceRange.minVariantPrice
-                      .amount,
-                  color: "TBD",
-                  inStock: true,
-                  imageSrc: product.node.merchandise.image.src,
-                  imageAlt: product.node.merchandise.image.altText,
-                  size: product.node.merchandise.title,
-                  lineNumber: product.node.id,
-                  quantity: product.node.quantity,
-                };
-
+              {products?.map((product: CartProduct) => {
+                const item = parseProduct(product);
                 return (
                   <li key={item.id} className="flex py-6 sm:py-10">
                     <div className="flex-shrink-0">
@@ -91,14 +78,15 @@ export default function Cart() {
                             <p className="mt-1 text-sm text-gray-500">
                               Unit Price: ${item.price}
                             </p>
-                            {product.size ? (
+                            {item.size ? (
                               <p className="mt-1 text-sm text-gray-500">
                                 {item.size}
                               </p>
                             ) : null}
                           </div>
                           <p className="text-right text-sm font-medium text-gray-900">
-                            Total : ${(+item.price * +item.quantity).toFixed(2)}
+                            Total : $
+                            {(+item.price! * +item.quantity!).toFixed(2)}
                           </p>
                         </div>
                         <div className="mt-4 flex items-center sm:absolute sm:top-0 sm:left-1/2 sm:mt-0 sm:block">
@@ -113,8 +101,8 @@ export default function Cart() {
                                 {
                                   cartId: cartId,
                                   quantity: e.target.value,
-                                  merchandiseId: item.id,
-                                  lineNumber: item.lineNumber,
+                                  merchandiseId: item.id!,
+                                  lineNumber: item.lineNumber!,
                                 },
                                 { method: "post" }
                               );
@@ -142,7 +130,7 @@ export default function Cart() {
                               fetcher.submit(
                                 {
                                   cartId: cartId,
-                                  lineNumber: item.lineNumber,
+                                  lineNumber: item.lineNumber!,
                                 },
                                 { method: "delete" }
                               );
@@ -169,7 +157,7 @@ export default function Cart() {
                       </div>
 
                       <p className="mt-4 flex space-x-2 text-sm text-gray-700">
-                        {product.inStock ? (
+                        {item.inStock ? (
                           <CheckIcon
                             className="h-5 w-5 flex-shrink-0 text-green-500"
                             aria-hidden="true"
@@ -243,4 +231,21 @@ export default function Cart() {
       </div>
     </div>
   );
+}
+
+function parseProduct(product: CartProduct) {
+  return {
+    id: product.node?.merchandise?.id,
+    name: product.node?.merchandise?.product?.title,
+    href: `product/${product.node?.merchandise?.id}`,
+    price:
+      product.node?.merchandise?.product?.priceRange?.minVariantPrice?.amount,
+    color: "TBD",
+    inStock: true,
+    imageSrc: product.node?.merchandise?.image?.src,
+    imageAlt: product.node?.merchandise?.image?.altText || "",
+    size: product.node?.merchandise?.title,
+    lineNumber: product.node?.id,
+    quantity: product.node?.quantity,
+  };
 }

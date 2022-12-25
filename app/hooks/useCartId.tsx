@@ -5,10 +5,10 @@ export function useCartId() {
   const [cartId, setCartId] = useState<any>();
 
   useEffect(() => {
-    async function getLocalCartId() {
-      const ExistingCart = localStorage.getItem("cartId");
-      if (ExistingCart && ExistingCart != "undefined" && ExistingCart != "") {
-        setCartId(ExistingCart);
+    async function localCartId() {
+      const existingCart = localStorage.getItem("cartId");
+      if (existingCart && existingCart !== "undefined" && existingCart !== "") {
+        setCartId(existingCart);
         return cartId;
       }
       const response = await createCart();
@@ -16,7 +16,7 @@ export function useCartId() {
       localStorage.setItem("cartId", newCartId);
       setCartId(newCartId);
     }
-    getLocalCartId();
+    localCartId();
   }, [cartId]);
 
   return cartId;
