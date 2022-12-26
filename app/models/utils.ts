@@ -37,4 +37,3 @@ export const postToShopify = async ({
     return error;
   }
 };
-

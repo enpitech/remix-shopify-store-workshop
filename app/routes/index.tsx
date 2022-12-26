@@ -1,12 +1,15 @@
-import { Link } from "@remix-run/react";
-import type {
-  Collection,
-  ShopifyCollection,
-  ProductObj,
-  TrendingProduct,
-} from "~/types";
-import { useTrendingProducts } from "~/hooks/useTrendingProducts";
-import { useCollections } from "~/hooks/useCollections";
+// import { Link } from "@remix-run/react";
+// import type {
+//   Collection,
+//   ShopifyCollection,
+//   ProductObj,
+//   TrendingProduct,
+// } from "~/types";
+// import { useTrendingProducts } from "~/hooks/useTrendingProducts";
+
+// import { useCollections } from "~/hooks/useCollections";
+
+
 
 export default function Home() {
   return (
@@ -65,7 +68,7 @@ function BackgroundImage() {
 }
 
 function Collections() {
-  const collections = useCollections(3);
+  // const collections = useCollections(3);
 
   return (
     <div className="relative">
@@ -78,7 +81,9 @@ function Collections() {
           Collections
         </h2>
         <div className="mx-auto grid max-w-md grid-cols-1 gap-y-6 px-4 sm:max-w-7xl sm:grid-cols-3 sm:gap-y-0 sm:gap-x-6 sm:px-6 lg:gap-x-8 lg:px-8">
-          {collections?.map((collection: ShopifyCollection) => {
+          {/* TODO render the fetched data (collections)  */}
+
+          {/* {collections?.map((collection: ShopifyCollection) => {
             //Properties drilling
             const CollectionObj: Collection = {
               key: collection.node.products.edges[0].node.id,
@@ -122,7 +127,7 @@ function Collections() {
                 </div>
               </div>
             );
-          })}
+          })} */}
         </div>
       </section>
     </div>
@@ -130,7 +135,7 @@ function Collections() {
 }
 
 function Trending() {
-  const trendingProducts = useTrendingProducts(8);
+  // const trendingProducts = useTrendingProducts(8);
 
   return (
     <section aria-labelledby="trending-heading">
@@ -152,7 +157,9 @@ function Trending() {
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 md:gap-y-0 lg:gap-x-8">
-          {trendingProducts?.map((product: TrendingProduct) => {
+          {/* TODO render the fetched trending products  */}
+
+          {/* {trendingProducts?.map((product: TrendingProduct) => {
             const productObj: ProductObj = {
               name: product.node.title,
               key: product.node.id,
@@ -177,7 +184,7 @@ function Trending() {
                 </h3>
               </div>
             );
-          })}
+          })} */}
         </div>
 
         <div className="mt-8 text-sm md:hidden">

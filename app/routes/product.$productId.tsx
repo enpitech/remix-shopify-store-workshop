@@ -6,27 +6,37 @@ import { addItemToCart } from "~/models/cart.client";
 import { useProduct } from "~/hooks/useProduct";
 import { useCartId } from "~/hooks/useCartId";
 import type { Product } from "~/types";
+import invariant from "tiny-invariant";
 
 export default function ProductPage() {
   const cartId = useCartId();
   const { productId } = useParams();
-  const parsedProduct: Product = useProduct(productId!);
+
+  invariant(productId, "Product id must be defined");
+
+  const parsedProduct: Product = useProduct(productId);
 
   //Properties names shortening
   const product = {
     description: parsedProduct?.description,
     name: parsedProduct?.title,
-    price: parsedProduct?.priceRange.minVariantPrice.amount,
-    imageSrc: parsedProduct?.featuredImage.src,
-    altTxt: parsedProduct?.featuredImage.altText,
-    variantId: parsedProduct?.variants.edges[0].node.id,
+    price: parsedProduct?.priceRange?.minVariantPrice?.amount,
+    imageSrc: parsedProduct?.featuredImage?.src,
+    altTxt: parsedProduct?.featuredImage?.altText,
+    variantId: parsedProduct?.variants?.edges
+      ? parsedProduct?.variants?.edges[0]?.node?.id
+      : undefined,
   };
 
   function handleAddToBag() {
     addItemToCart(cartId, product.variantId!);
   }
 
-  return parsedProduct ? (
+  if (!parsedProduct) {
+    return null;
+  }
+
+  return (
     <div className="bg-white">
       <div className=" -w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
         {/* Product details */}
@@ -114,5 +124,5 @@ export default function ProductPage() {
         </div>
       </div>
     </div>
-  ) : null;
+  );
 }
