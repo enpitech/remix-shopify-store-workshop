@@ -1,4 +1,5 @@
 import type { PostToShopifyParams } from "~/types";
+import { json } from "@remix-run/node";
 
 // Tokens
 // TODO use .env file.
@@ -38,3 +39,4 @@ export const postToShopify = async ({
   }
 };
 
+export const badRequest = <T>(data: T) => json<T>(data, { status: 400 });
