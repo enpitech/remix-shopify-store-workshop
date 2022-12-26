@@ -1,3 +1,5 @@
+//PR Version
+
 import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
 import {
   Links,
@@ -8,6 +10,7 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
+import Error from "~/components/Error";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getCollections } from "./models/collection.server";
@@ -44,6 +47,25 @@ export default function App() {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
+      </body>
+    </html>
+  );
+}
+
+export function ErrorBoundary({ error }: any) {
+  return (
+    <html lang="en" className="h-full">
+      <head>
+        <title>Something went wrong!</title>
+        <Meta />
+        <Links />
+      </head>
+      <body className="h-full">
+        <Layout>
+          // TODO dont display the error message
+          <Error error={error.message ?? "Something went wrong"} />
+        </Layout>
+        <Scripts />
       </body>
     </html>
   );
