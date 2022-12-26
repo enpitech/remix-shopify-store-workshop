@@ -1,131 +1,132 @@
-// const { total } = useCart();
-// import { useCart } from "~/hooks/useCart";
-// import { useFormik } from "formik";
-// import * as Yup from "yup";
-// import { useState } from "react";
+import { useCart } from "~/hooks/useCart";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useState } from "react";
+import { Form } from "@remix-run/react";
 
-import { badRequest } from "~/models/utils";
-import { getCart } from "~/models/cart.server";
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
-import { redirect } from "@remix-run/node";
+// import { useActionData } from "@remix-run/react";
+// import { useLoaderData } from "@remix-run/react";
+// import { badRequest } from "~/models/utils";
+// import { getCart } from "~/models/cart.server";
+// import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+// import { redirect } from "@remix-run/node";
 
-export const loader = async ({ params }: LoaderArgs) => {
-  const data = await getCart(params.cartId!);
-  const total = data?.cart.estimatedCost.subtotalAmount.amount;
-  return total;
-};
+// export const loader = async ({ params }: LoaderArgs) => {
+//   const data = await getCart(params.cartId!);
+//   const total = data?.cart.estimatedCost.subtotalAmount.amount;
+//   return total;
+// };
 
-function validateFirstname(firstName: unknown) {
-  if (typeof firstName !== "string" || firstName.length < 3) {
-    return `First Names must be at least 3 characters long`;
-  }
-}
+// function validateFirstname(firstName: unknown) {
+//   if (typeof firstName !== "string" || firstName.length < 3) {
+//     return `First Names must be at least 3 characters long`;
+//   }
+// }
 
-function validateLastname(lastName: unknown) {
-  if (typeof lastName !== "string" || lastName.length < 3) {
-    return `Last Names must be at least 3 characters long`;
-  }
-}
+// function validateLastname(lastName: unknown) {
+//   if (typeof lastName !== "string" || lastName.length < 3) {
+//     return `Last Names must be at least 3 characters long`;
+//   }
+// }
 
-function validatePhone(phone: unknown) {
-  if (typeof phone !== "string" || phone.length < 6) {
-    return `Phone must be at least 6 characters long`;
-  }
-}
+// function validatePhone(phone: unknown) {
+//   if (typeof phone !== "string" || phone.length < 6) {
+//     return `Phone must be at least 6 characters long`;
+//   }
+// }
 
-function validateEmail(phone: unknown) {
-  if (typeof phone !== "string" || phone.length < 6) {
-    return `Email must be at least 6 characters long`;
-  }
-}
+// function validateEmail(phone: unknown) {
+//   if (typeof phone !== "string" || phone.length < 6) {
+//     return `Email must be at least 6 characters long`;
+//   }
+// }
 
-export const action = async ({ request }: ActionArgs) => {
-  const formBody = await request.formData();
-  const form = Object.fromEntries(formBody);
-  const firstName = form.firstName;
-  const lastName = form.lastName;
-  const phone = form.phone;
-  const email = form.email;
+// export const action = async ({ request }: ActionArgs) => {
+//   const formBody = await request.formData();
+//   const form = Object.fromEntries(formBody);
+//   const firstName = form.firstName;
+//   const lastName = form.lastName;
+//   const phone = form.phone;
+//   const email = form.email;
 
-  if (
-    typeof firstName !== "string" ||
-    typeof lastName !== "string" ||
-    typeof phone !== "string" ||
-    typeof email !== "string"
-  ) {
-    return badRequest({
-      fieldErrors: null,
-      fields: null,
-      formError: `Form not submitted correctly.`,
-    });
-  }
+//   if (
+//     typeof firstName !== "string" ||
+//     typeof lastName !== "string" ||
+//     typeof phone !== "string" ||
+//     typeof email !== "string"
+//   ) {
+//     return badRequest({
+//       fieldErrors: null,
+//       fields: null,
+//       formError: `Form not submitted correctly.`,
+//     });
+//   }
 
-  const fields = { firstName, lastName, phone, email };
-  const fieldErrors = {
-    firstName: validateFirstname(firstName),
-    lastName: validateLastname(lastName),
-    phone: validatePhone(phone),
-    email: validateEmail(email),
-  };
-  if (Object.values(fieldErrors).some(Boolean)) {
-    return badRequest({
-      fieldErrors,
-      fields,
-      formError: null,
-    });
-  }
+//   const fields = { firstName, lastName, phone, email };
+//   const fieldErrors = {
+//     firstName: validateFirstname(firstName),
+//     lastName: validateLastname(lastName),
+//     phone: validatePhone(phone),
+//     email: validateEmail(email),
+//   };
+//   if (Object.values(fieldErrors).some(Boolean)) {
+//     return badRequest({
+//       fieldErrors,
+//       fields,
+//       formError: null,
+//     });
+//   }
 
-  return redirect("/success");
-};
+//   return redirect("/success");
+// };
 
 export default function Checkout() {
-  // const [error, setError] = useState<any>();
-  const cost = useLoaderData();
-  const error = useActionData();
+  // const error = useActionData();
 
-  // const formik = useFormik({
-  //   initialValues: {
-  //     lastName: "",
-  //     firstName: "",
-  //     phone: "",
-  //     email: "",
-  //   },
-  //   validationSchema: Yup.object({
-  //     firstName: Yup.string()
-  //       .max(20, "Must be 20 characters or less")
-  //       .min(4, "First name must be more then 4 characters")
-  //       .required("Required"),
-  //     lastName: Yup.string()
-  //       .max(15, "Must be 15 characters or less")
-  //       .min(1, "Username must be more then 1 characters")
-  //       .required("Required"),
-  //     phone: Yup.string()
-  //       .max(20, "Must be 20 characters or less")
-  //       .min(4, "Password must be more then 4 characters")
-  //       .required("Required"),
-  //     email: Yup.string()
-  //       .max(20, "Must be 20 characters or less")
-  //       .min(4, "Password must be more then 4 characters")
-  //       .required("Required")
-  //       .email("Please enter valid email"),
-  //   }),
-  //   onSubmit: async () => {
-  //     try {
-  //       confirm("Thank you for buying in WearJS!");
-  //     } catch (error: any) {
-  //       setError(error.response.data.message);
-  //     }
-  //   },
-  // });
+  const [error, setError] = useState<any>();
+  // const cost = useLoaderData();
+  const { total } = useCart();
+
+  const formik = useFormik({
+    initialValues: {
+      lastName: "",
+      firstName: "",
+      phone: "",
+      email: "",
+    },
+    validationSchema: Yup.object({
+      firstName: Yup.string()
+        .max(20, "Must be 20 characters or less")
+        .min(4, "First name must be more then 4 characters")
+        .required("Required"),
+      lastName: Yup.string()
+        .max(15, "Must be 15 characters or less")
+        .min(1, "Username must be more then 1 characters")
+        .required("Required"),
+      phone: Yup.string()
+        .max(20, "Must be 20 characters or less")
+        .min(4, "Password must be more then 4 characters")
+        .required("Required"),
+      email: Yup.string()
+        .max(20, "Must be 20 characters or less")
+        .min(4, "Password must be more then 4 characters")
+        .required("Required")
+        .email("Please enter valid email"),
+    }),
+    onSubmit: async () => {
+      try {
+        confirm("Thank you for buying in WearJS!");
+      } catch (error: any) {
+        setError(error.response.data.message);
+      }
+    },
+  });
 
   return (
     <div className="bg-gray-50">
       <div className="mx-auto min-h-screen max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
         <h2 className="sr-only">Checkout</h2>
 
-        {/*
-        
         <Form
           onSubmit={formik.handleSubmit}
           method="post"
@@ -297,8 +298,7 @@ export default function Checkout() {
           </div>
         </Form>
 
-       */}
-
+        {/*
         <Form
           method="post"
           className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16"
@@ -403,7 +403,7 @@ export default function Checkout() {
             </div>
           </div>
 
-          {/* Order summary */}
+        
           <div className=" mt-10 lg:mt-0">
             <h2 className=" text-lg font-medium text-gray-900">
               Order summary
@@ -441,6 +441,7 @@ export default function Checkout() {
             </div>
           </div>
         </Form>
+        */}
       </div>
     </div>
   );

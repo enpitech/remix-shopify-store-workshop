@@ -1,5 +1,5 @@
-// import { useTrendingProducts } from "~/hooks/useTrendingProducts";
-// import { useCollections } from "~/hooks/useCollections";
+import { useTrendingProducts } from "~/hooks/useTrendingProducts";
+import { useCollections } from "~/hooks/useCollections";
 
 import { Link } from "@remix-run/react";
 import type {
@@ -9,16 +9,16 @@ import type {
   TrendingProduct,
 } from "~/types";
 
-import { useLoaderData } from "@remix-run/react";
-import { getTrendingProducts } from "~/models/product.server";
-import { getCollections } from "~/models/collection.server";
-import { json } from "@remix-run/node";
+// import { useLoaderData } from "@remix-run/react";
+// import { getTrendingProducts } from "~/models/product.server";
+// import { getCollections } from "~/models/collection.server";
+// import { json } from "@remix-run/node";
 
-export const loader = async () => {
-  const collections = await getCollections(3);
-  const trendingProducts = await getTrendingProducts(8);
-  return json({ collections, trendingProducts });
-};
+// export const loader = async () => {
+//   const collections = await getCollections(3);
+//   const trendingProducts = await getTrendingProducts(8);
+//   return json({ collections, trendingProducts });
+// };
 
 export default function Home() {
   return (
@@ -77,8 +77,8 @@ function BackgroundImage() {
 }
 
 function Collections() {
-  // const collections = useCollections(3);
-  const { collections } = useLoaderData<typeof loader>();
+  const collections = useCollections(3);
+  // const { collections } = useLoaderData<typeof loader>();
 
   return (
     <div className="relative">
@@ -143,9 +143,9 @@ function Collections() {
 }
 
 function Trending() {
-  // const trendingProducts = useTrendingProducts(8);
+  const trendingProducts = useTrendingProducts(8);
 
-  const { trendingProducts } = useLoaderData<typeof loader>();
+  // const { trendingProducts } = useLoaderData<typeof loader>();
 
   return (
     <section aria-labelledby="trending-heading">

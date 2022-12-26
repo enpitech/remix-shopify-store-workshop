@@ -1,68 +1,69 @@
-// import { useCart } from "~/hooks/useCart";
-// import { removeItemFromCart } from "~/models/cart.client";
-// import { cartLinesUpdate } from "~/models/cart.client";
-
-import { useCartId } from "~/hooks/useCartId";
-import { Link } from "react-router-dom";
-import { Form, useLoaderData } from "@remix-run/react";
+import { useCart } from "~/hooks/useCart";
+import { removeItemFromCart } from "~/models/cart.client";
+import { cartLinesUpdate } from "~/models/cart.client";
 import { CheckIcon, ClockIcon } from "@heroicons/react/20/solid";
 import type { CartProduct } from "~/types";
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
-import { getCart } from "~/models/cart.server";
-import { cartLinesUpdate } from "~/models/cart.server";
-import { removeItemFromCart } from "~/models/cart.server";
-import { useFetcher } from "@remix-run/react";
+import { useCartId } from "~/hooks/useCartId";
+import { Link } from "react-router-dom";
+import { Form } from "@remix-run/react";
 
-export async function loader({ params }: LoaderArgs) {
-  const parsedCartData = await getCart(params.cartId!);
+// import { useLoaderData } from "@remix-run/react";
+// import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+// import { getCart } from "~/models/cart.server";
+// import { cartLinesUpdate } from "~/models/cart.server";
+// import { removeItemFromCart } from "~/models/cart.server";
+// import { useFetcher } from "@remix-run/react";
 
-  return {
-    products: parsedCartData.cart.lines.edges,
-    total: parsedCartData.cart.estimatedCost.subtotalAmount.amount,
-  };
-}
+// export async function loader({ params }: LoaderArgs) {
+//   const parsedCartData = await getCart(params.cartId!);
 
-export async function action({ request }: ActionArgs) {
-  if (request.method === "POST") {
-    const body = await request.formData();
-    const { cartId, quantity, merchandiseId, lineNumber } =
-      Object.fromEntries(body);
-    await cartLinesUpdate(
-      cartId.toString(),
-      lineNumber.toString(),
-      merchandiseId.toString(),
-      +quantity
-    );
-  } else if (request.method === "DELETE") {
-    const body = await request.formData();
-    const { cartId, lineNumber } = Object.fromEntries(body);
-    await removeItemFromCart(cartId.toString(), lineNumber.toString());
-  }
-  return {};
-}
+//   return {
+//     products: parsedCartData.cart.lines.edges,
+//     total: parsedCartData.cart.estimatedCost.subtotalAmount.amount,
+//   };
+// }
+
+// export async function action({ request }: ActionArgs) {
+//   if (request.method === "POST") {
+//     const body = await request.formData();
+//     const { cartId, quantity, merchandiseId, lineNumber } =
+//       Object.fromEntries(body);
+//     await cartLinesUpdate(
+//       cartId.toString(),
+//       lineNumber.toString(),
+//       merchandiseId.toString(),
+//       +quantity
+//     );
+//   } else if (request.method === "DELETE") {
+//     const body = await request.formData();
+//     const { cartId, lineNumber } = Object.fromEntries(body);
+//     await removeItemFromCart(cartId.toString(), lineNumber.toString());
+//   }
+//   return {};
+// }
 
 export default function Cart() {
-  // const { products, total, fetchCartData } = useCart();
+  const { products, total, fetchCartData } = useCart();
 
-  // async function handleDelete(e: any) {
-  //   e.preventDefault();
-  //   const lineNumber = e.target.value;
-  //   confirm("Are you sure you want to remove this item? ");
-  //   await removeItemFromCart(cartId, lineNumber);
-  //   fetchCartData();
-  // }
+  async function handleDelete(e: any) {
+    e.preventDefault();
+    const lineNumber = e.target.value;
+    confirm("Are you sure you want to remove this item? ");
+    await removeItemFromCart(cartId, lineNumber);
+    fetchCartData();
+  }
 
-  // async function handleChangeQuantity(e: any) {
-  //   const quantity = e.target.value;
-  //   const lineNumber = e.target.name;
-  //   const merchandiseId = e.target.id;
-  //   await cartLinesUpdate(cartId, lineNumber, merchandiseId, +quantity);
-  //   fetchCartData();
-  // }
+  async function handleChangeQuantity(e: any) {
+    const quantity = e.target.value;
+    const lineNumber = e.target.name;
+    const merchandiseId = e.target.id;
+    await cartLinesUpdate(cartId, lineNumber, merchandiseId, +quantity);
+    fetchCartData();
+  }
 
   const cartId = useCartId();
-  const { products, total } = useLoaderData();
-  const fetcher = useFetcher();
+  // const { products, total } = useLoaderData();
+  // const fetcher = useFetcher();
 
   return (
     <div className="bg-white">
@@ -120,7 +121,7 @@ export default function Cart() {
                           <label htmlFor={`${item.id}`} className="sr-only">
                             Quantity, {item.quantity}
                           </label>
-                          {/* <select
+                          <select
                             value={item.quantity}
                             onChange={handleChangeQuantity}
                             id={`${item.id}`}
@@ -135,9 +136,9 @@ export default function Cart() {
                             <option value={6}>6</option>
                             <option value={7}>7</option>
                             <option value={8}>8</option>
-                          </select> */}
+                          </select>
 
-                          <select
+                          {/* <select
                             name="intent"
                             value={item.quantity}
                             onChange={(e) => {
@@ -158,9 +159,9 @@ export default function Cart() {
                             <option value={2}>2</option>
                             <option value={3}>3</option>
                             <option value={4}>4</option>
-                          </select>
+                          </select> */}
 
-                          {/* <button
+                          <button
                             onClick={handleDelete}
                             type="button"
                             className="ml-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:ml-0 sm:mt-3"
@@ -168,9 +169,9 @@ export default function Cart() {
                             value={item.lineNumber}
                           >
                             Remove{" "}
-                          </button> */}
+                          </button>
 
-                          <button
+                          {/* <button
                             type="button"
                             className="ml-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:ml-0 sm:mt-3"
                             name={item.lineNumber}
@@ -186,7 +187,7 @@ export default function Cart() {
                             }}
                           >
                             Remove
-                          </button>
+                          </button> */}
                         </div>
                       </div>
 

@@ -44,21 +44,21 @@ export interface Props {
 export interface Product {
   title?: string;
   id?: string;
-  priceRange: {
-    minVariantPrice: {
+  priceRange?: {
+    minVariantPrice?: {
       amount?: string;
-      currencyCode: string;
+      currencyCode?: string;
     };
   };
   description?: string;
-  featuredImage: {
+  featuredImage?: {
     altText?: string;
     src?: string;
   };
-  variants: {
-    edges: [
+  variants?: {
+    edges?: [
       {
-        node: {
+        node?: {
           id?: string;
         };
       }
