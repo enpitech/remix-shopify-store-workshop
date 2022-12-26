@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { getProductById } from "~/models/product.client";
 
 export function useProduct(productId: string) {
-  const [product, setProduct] = useState();
+  const [product, setProduct] = useState({});
 
   useEffect(() => {
     async function getProductData() {

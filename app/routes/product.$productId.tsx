@@ -7,6 +7,7 @@ import { Form, Link, useLoaderData } from "@remix-run/react";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { useCartId } from "~/hooks/useCartId";
+import invariant from "tiny-invariant";
 // import { getProductById } from "~/models/product.server";
 // import { addItemToCart } from "~/models/cart.server";
 // import {
@@ -35,6 +36,8 @@ import { useCartId } from "~/hooks/useCartId";
 
 export default function ProductPage() {
   const { productId } = useParams();
+
+  invariant(productId, "Product id must be defined")
   const parsedProduct: Product = useProduct(productId);
 
   const cartId = useCartId();
@@ -43,13 +46,13 @@ export default function ProductPage() {
 
   //Properties names shortening
   const product = {
-    description: parsedProduct?.description,
-    name: parsedProduct?.title,
-    price: parsedProduct?.priceRange?.minVariantPrice?.amount,
-    imageSrc: parsedProduct?.featuredImage?.src,
-    altTxt: parsedProduct?.featuredImage?.altText,
-    variantId: parsedProduct?.variants?.edges
-      ? parsedProduct?.variants?.edges[0]?.node?.id
+    description: parsedProduct.description,
+    name: parsedProduct.title,
+    price: parsedProduct.priceRange?.minVariantPrice?.amount,
+    imageSrc: parsedProduct.featuredImage?.src,
+    altTxt: parsedProduct.featuredImage?.altText,
+    variantId: parsedProduct.variants?.edges
+      ? parsedProduct.variants?.edges[0]?.node?.id
       : undefined,
   };
 
