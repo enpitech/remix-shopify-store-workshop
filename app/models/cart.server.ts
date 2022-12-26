@@ -1,8 +1,15 @@
 import { postToShopify } from "~/models/utils";
+import {
+  getCartQuery,
+  removeItemFromCartQuery,
+  cartLinesUpdateQuery,
+  createCartQuery,
+  addItemToCartQuery,
+} from "./cart.graphql";
 
 export const createCart = async () => {
   const params = {
-    query: queries.createCart,
+    query: createCartQuery,
     variables: {},
   };
   const response = await postToShopify(params);
@@ -11,7 +18,7 @@ export const createCart = async () => {
 
 export const getCart = async (id: string): Promise<any> => {
   const params = {
-    query: queries.getCart,
+    query: getCartQuery,
     variables: { id },
   };
   const response = await postToShopify(params);
@@ -23,7 +30,7 @@ export const addItemToCart = async (
   productId: string
 ) => {
   const params = {
-    query: queries.addItemToCart,
+    query: addItemToCartQuery,
     variables: {
       cartId,
       lines: [{ merchandiseId: productId, quantity: 1 }],
@@ -42,7 +49,7 @@ export const removeItemFromCart = async (
   lineNumber: string
 ) => {
   const params = {
-    query: queries.removeItemFromCart,
+    query: removeItemFromCartQuery,
     variables: {
       cartId,
       lineIds: [lineNumber],
@@ -59,7 +66,7 @@ export const cartLinesUpdate = async (
   quantity: number
 ) => {
   const params = {
-    query: queries.cartLinesUpdate,
+    query: cartLinesUpdateQuery,
     variables: {
       cartId,
       lineId,
@@ -69,121 +76,4 @@ export const cartLinesUpdate = async (
   };
   const response = await postToShopify(params);
   return response;
-};
-
-//GraphQL queries object
-const queries = {
-  getCart: `query getCart($id: ID!) {
-    cart(id: $id) {
-      estimatedCost {
-        subtotalAmount {
-          amount
-          currencyCode
-        }
-      }
-      lines(first: 100) {
-        edges {
-          node {
-            id
-            quantity
-            merchandise {
-              ... on ProductVariant {
-                id
-                image {
-                  altText
-                  src
-                }
-                title
-                product {
-                  id
-                  description
-                  title
-                  priceRange {
-                    minVariantPrice {
-                      amount
-                      currencyCode
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }`,
-  createCart: `mutation createCart {
-    cartCreate {
-      cart {
-        id
-        checkoutUrl
-      }
-    }
-  }
-`,
-  addItemToCart: `mutation MyMutation($cartId: ID!, $lines: [CartLineInput!] = {merchandiseId: "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8zNTU1NjQwNjEwMDEzMQ==", quantity: 1}) {
-    cartLinesAdd(cartId: $cartId, lines: $lines) {
-      cart {
-        id
-        lines(first: 100) {
-          edges {
-            node {
-              id
-              quantity
-              merchandise {
-                ... on ProductVariant {
-                  id
-                  priceV2 {
-                    amount
-                  }
-                  title
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`,
-  removeItemFromCart: `mutation removeItemFromCart($cartId: ID!, $lineIds: [ID!]!) {
-    cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
-      cart {
-        id
-        lines(first: 10) {
-          edges {
-            node {
-              id
-              quantity
-              merchandise {
-                ... on ProductVariant {
-                  id
-                  title
-                  priceV2 {
-                    amount
-                    currencyCode
-                  }
-                  product {
-                    title
-                    handle
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  `,
-  cartLinesUpdate: `mutation MyMutation($cartId: ID!, $lineId: ID!, $merchandiseId: ID!, $quantity: Int!) {
-    cartLinesUpdate(
-      cartId: $cartId
-      lines: {id: $lineId, quantity: $quantity, merchandiseId: $merchandiseId}
-    ) {
-      cart {
-        checkoutUrl
-      }
-    }
-  }`,
 };
