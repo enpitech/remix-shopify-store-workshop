@@ -1,16 +1,45 @@
-import { useParams } from "react-router-dom";
-import { Form, Link } from "@remix-run/react";
+// import { useParams } from "react-router-dom";
+// import { addItemToCart } from "~/models/cart.client";
+// import { useProduct } from "~/hooks/useProduct";
+// import type { Product } from "~/types";
+
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
-import { addItemToCart } from "~/models/cart.client";
-import { useProduct } from "~/hooks/useProduct";
 import { useCartId } from "~/hooks/useCartId";
-import type { Product } from "~/types";
+import { getProductById } from "~/models/product.server";
+import { addItemToCart } from "~/models/cart.server";
+import {
+  redirect,
+  type LoaderArgs,
+  type ActionArgs,
+  type LoaderFunction,
+} from "@remix-run/node";
+
+export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
+  const data = await getProductById(params.productId!);
+  return data.product;
+};
+
+export async function action({ request }: ActionArgs) {
+  const body = await request.formData();
+  const { cartId, variantId } = Object.fromEntries(body);
+
+  if (!cartId) {
+    return { message: "No Cart Found" };
+  }
+
+  await addItemToCart(cartId.toString(), variantId.toString());
+  return redirect(`/cart/${cartId}`);
+}
 
 export default function ProductPage() {
+  // const { productId } = useParams();
+  // const parsedProduct: Product = useProduct(productId!);
+
   const cartId = useCartId();
-  const { productId } = useParams();
-  const parsedProduct: Product = useProduct(productId!);
+
+  const parsedProduct = useLoaderData();
 
   //Properties names shortening
   const product = {
