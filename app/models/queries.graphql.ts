@@ -1,4 +1,4 @@
-//GraphQL queries object
+//GraphQL cart queries
 
 export const getCartQuery = `query getCart($id: ID!) {
     cart(id: $id) {
@@ -117,3 +117,86 @@ export const addItemToCartQuery = `mutation MyMutation($cartId: ID!, $lines: [Ca
         }
       }
     `;
+
+//GraphQL product queries
+
+export const getTrendsProductsQuery = `query getProducts($first: Int = 10) {
+    products(first: $first) {
+      edges {
+        node {
+          id
+          title
+          variants(first: 1) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+          images(first: 10) {
+            edges {
+              node {
+                altText
+                src
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  `;
+
+export const getProductByIdQuery = `query getProductById($id: ID!) {
+    product(id: $id) {
+      title
+      id
+      priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+      description
+      featuredImage {
+        altText
+        src
+      }
+      variants(first: 5) {
+        edges {
+          node {
+            id
+          }
+        }
+      }
+    }
+  }
+  `;
+
+//GraphQL collection queries
+
+export const getCollectionsQuery = `query getCollections($first: Int = 10) {
+    collections(first: $first) {
+      edges {
+        node {
+          title
+          products(first: 1) {
+            edges {
+              node {
+                id
+                images(first: 1) {
+                  edges {
+                    node {
+                      altText
+                      src
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+ `;

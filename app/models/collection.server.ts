@@ -1,40 +1,12 @@
 import { postToShopify } from "./utils";
+import { getCollectionsQuery } from "~/models/queries.graphql";
 
 export const getCollections = async (amount: Number) => {
   const params = {
-    query: queries.getCollectionsQuery,
+    query: getCollectionsQuery,
     variables: { first: amount },
   };
   const response = await postToShopify(params);
   const collections = response.collections.edges;
   return collections;
-};
-
-//Global Queries
-const queries = {
-  getCollectionsQuery: `query getCollections($first: Int = 10) {
-    collections(first: $first) {
-      edges {
-        node {
-          title
-          products(first: 1) {
-            edges {
-              node {
-                id
-                images(first: 1) {
-                  edges {
-                    node {
-                      altText
-                      src
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
- `,
 };

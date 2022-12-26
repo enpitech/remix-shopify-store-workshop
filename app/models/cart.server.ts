@@ -5,7 +5,7 @@ import {
   cartLinesUpdateQuery,
   createCartQuery,
   addItemToCartQuery,
-} from "./cart.graphql";
+} from "./queries.graphql";
 
 export const createCart = async () => {
   const params = {
