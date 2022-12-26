@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createCart } from "~/models/cart.server";
+import { createCart } from "~/models/cart.client";
 
 export function useCartId() {
   const [cartId, setCartId] = useState("undefined");
