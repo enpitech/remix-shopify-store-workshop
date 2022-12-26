@@ -1,3 +1,6 @@
+// import { useTrendingProducts } from "~/hooks/useTrendingProducts";
+// import { useCollections } from "~/hooks/useCollections";
+
 import { Link } from "@remix-run/react";
 import type {
   Collection,
@@ -5,8 +8,6 @@ import type {
   ProductObj,
   TrendingProduct,
 } from "~/types";
-// import { useTrendingProducts } from "~/hooks/useTrendingProducts";
-// import { useCollections } from "~/hooks/useCollections";
 
 import { useLoaderData } from "@remix-run/react";
 import { getTrendingProducts } from "~/models/product.server";
@@ -91,7 +92,7 @@ function Collections() {
         </h2>
         <div className="mx-auto grid max-w-md grid-cols-1 gap-y-6 px-4 sm:max-w-7xl sm:grid-cols-3 sm:gap-y-0 sm:gap-x-6 sm:px-6 lg:gap-x-8 lg:px-8">
           {collections?.map((collection: ShopifyCollection) => {
-            //Properties drilling
+            //Names shortening
             const CollectionObj: Collection = {
               key: collection.node.products.edges[0].node.id,
               name: collection.node.title,

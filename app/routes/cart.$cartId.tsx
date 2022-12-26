@@ -42,9 +42,6 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function Cart() {
-  const cartId = useCartId();
-  const { products, total } = useLoaderData();
-  const fetcher = useFetcher();
   // const { products, total, fetchCartData } = useCart();
 
   // async function handleDelete(e: any) {
@@ -62,6 +59,10 @@ export default function Cart() {
   //   await cartLinesUpdate(cartId, lineNumber, merchandiseId, +quantity);
   //   fetchCartData();
   // }
+
+  const cartId = useCartId();
+  const { products, total } = useLoaderData();
+  const fetcher = useFetcher();
 
   return (
     <div className="bg-white">
