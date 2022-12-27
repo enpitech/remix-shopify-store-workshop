@@ -5,7 +5,7 @@ import { CheckIcon, ClockIcon } from "@heroicons/react/20/solid";
 import type { CartProduct } from "~/types";
 import { useCartId } from "~/hooks/useCartId";
 import { Link } from "react-router-dom";
-import { Form, useTransition } from "@remix-run/react";
+import { Form } from "@remix-run/react";
 
 // import { useLoaderData } from "@remix-run/react";
 // import type { ActionArgs, LoaderArgs } from "@remix-run/node";
@@ -24,21 +24,27 @@ import { Form, useTransition } from "@remix-run/react";
 // }
 
 // export async function action({ request }: ActionArgs) {
-//   if (request.method === "POST") {
-//     const body = await request.formData();
-//     const { cartId, quantity, merchandiseId, lineNumber } =
-//       Object.fromEntries(body);
-//     await cartLinesUpdate(
-//       cartId.toString(),
-//       lineNumber.toString(),
-//       merchandiseId.toString(),
-//       +quantity
-//     );
-//   } else if (request.method === "DELETE") {
-//     const body = await request.formData();
-//     const { cartId, lineNumber } = Object.fromEntries(body);
-//     await removeItemFromCart(cartId.toString(), lineNumber.toString());
-//   }
+// const body = await request.formData();
+// const { cartId, lineNumber, intent } = Object.fromEntries(body);
+// if (intent === "delete") {
+//   await removeItemFromCart(cartId.toString(), lineNumber.toString());
+// }
+
+// if (request.method === "POST") {
+//   const body = await request.formData();
+//   const { cartId, quantity, merchandiseId, lineNumber } =
+//     Object.fromEntries(body);
+//   await cartLinesUpdate(
+//     cartId.toString(),
+//     lineNumber.toString(),
+//     merchandiseId.toString(),
+//     +quantity
+//   );
+// } else if (request.method === "DELETE") {
+//   const body = await request.formData();
+//   const { cartId, lineNumber } = Object.fromEntries(body);
+//   await removeItemFromCart(cartId.toString(), lineNumber.toString());
+// }
 //   return {};
 // }
 
@@ -77,6 +83,7 @@ export default function Cart() {
         </h1>
 
         <form className="mt-12">
+          {/* <Form className="mt-12" method="post"> */}
           <div>
             <h2 className="sr-only">Items in your shopping cart</h2>
 
@@ -175,20 +182,17 @@ export default function Cart() {
                             Remove{" "}
                           </button>
 
-                          {/* <button
-                            type="button"
-                            className="ml-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:ml-0 sm:mt-3"
-                            name={item.lineNumber}
+                          {/* <input type="hidden" name="cartId" value={cartId} />
+                          <input
+                            type="hidden"
+                            name="lineNumber"
                             value={item.lineNumber}
-                            onClick={(e) => {
-                              fetcher.submit(
-                                {
-                                  cartId: cartId,
-                                  lineNumber: item.lineNumber!,
-                                },
-                                { method: "delete" }
-                              );
-                            }}
+                          />
+                          <button
+                            type="submit"
+                            className="ml-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:ml-0 sm:mt-3"
+                            name="intent"
+                            value="delete"
                           >
                             Remove
                           </button> */}
@@ -216,57 +220,59 @@ export default function Cart() {
               })}
             </ul>
           </div>
+          {/* </Form> */}
+        </form>
 
-          {/* Order summary */}
-          <div className="mt-10 sm:ml-32 sm:pl-6">
-            <div className="rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:p-8">
-              <h2 className="sr-only">Order summary</h2>
+        {/* Order summary */}
+        <div className="mt-10 sm:ml-32 sm:pl-6">
+          <div className="rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:p-8">
+            <h2 className="sr-only">Order summary</h2>
 
-              <div className="flow-root">
-                <dl className="-my-4 divide-y divide-gray-200 text-sm">
-                  <div className="flex items-center justify-between py-4">
-                    <dt className="text-gray-600">Subtotal</dt>
-                    <dd className="font-medium text-gray-900">{+total!}</dd>
-                  </div>
-                  <div className="flex items-center justify-between py-4">
-                    <dt className="text-gray-600">Shipping</dt>
-                    <dd className="font-medium text-gray-900">$5.00</dd>
-                  </div>
-                  <div className="flex items-center justify-between py-4">
-                    <dt className="text-base font-medium text-gray-900">
-                      Order total
-                    </dt>
-                    <dd className="text-base font-medium text-gray-900">
-                      {(+total! + 5).toFixed(2)}
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-            </div>
-            <div className="mt-10">
-              <Link to={`/cart/${cartId}/checkout`}>
-                <button
-                  type="submit"
-                  className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
-                >
-                  Checkout
-                </button>
-              </Link>
-            </div>
-
-            <div className="mt-6 text-center text-sm text-gray-500">
-              <p>
-                <Link
-                  to="/"
-                  className="font-medium text-indigo-600 hover:text-indigo-500"
-                >
-                  Continue Shopping
-                  <span aria-hidden="true"> &rarr;</span>
-                </Link>
-              </p>
+            <div className="flow-root">
+              <dl className="-my-4 divide-y divide-gray-200 text-sm">
+                <div className="flex items-center justify-between py-4">
+                  <dt className="text-gray-600">Subtotal</dt>
+                  <dd className="font-medium text-gray-900">{+total!}</dd>
+                </div>
+                <div className="flex items-center justify-between py-4">
+                  <dt className="text-gray-600">Shipping</dt>
+                  <dd className="font-medium text-gray-900">$5.00</dd>
+                </div>
+                <div className="flex items-center justify-between py-4">
+                  <dt className="text-base font-medium text-gray-900">
+                    Order total
+                  </dt>
+                  <dd className="text-base font-medium text-gray-900">
+                    {(+total! + 5).toFixed(2)}
+                  </dd>
+                </div>
+              </dl>
             </div>
           </div>
-        </form>
+          <div className="mt-10">
+            <Link
+              to={`/cart/${cartId}/checkout`}
+              className="w-full rounded-md border border-transparent bg-indigo-600
+            py-3 px-4 text-base font-medium text-white shadow-sm
+            hover:bg-indigo-700 focus:outline-none focus:ring-2
+            focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+            >
+              Checkout
+            </Link>
+          </div>
+
+          <div className="mt-6 text-center text-sm text-gray-500">
+            <p>
+              <Link
+                to="/"
+                className="font-medium text-indigo-600 hover:text-indigo-500"
+              >
+                Continue Shopping
+                <span aria-hidden="true"> &rarr;</span>
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
