@@ -1,4 +1,6 @@
-## Introduction
+Put link to the repo in Frontendistim
+
+## Introduction - 40 minutes
 
 @nir:
 https://www.figma.com/proto/tc6hv0MlTMw57uG8s1C0u2/Enpitech?node-id=357%3A44&scaling=scale-down&page-id=348%3A1702&starting-point-node-id=357%3A44
@@ -16,13 +18,13 @@ https://www.figma.com/file/tc6hv0MlTMw57uG8s1C0u2/Enpitech?node-id=348%3A1702&t=
 - How are we going to do it:
   We are going to rebuild wearjs.com using shopify api (storefront), Remix and GraphQL
   https://shopify.dev/api/storefront
-- show wearjs.com, show shopify storefront api, show tailwind, show remix
+- show wearjs.com, show shopify storefront api, show tailwind, show remix (who knows? how much? who have experince? next? react?)
 
 - @rotem:
 - Go through the stack code (and cli)
 - Explain about Remix data flow + routing (+$ sign)
 
-## Workshop
+## Workshop - 30 minutes
 
 - Our target: remixing CSR & SSR
 - @nir Demo: Working branch in CSR (talk about the CSR way)
@@ -37,16 +39,16 @@ https://www.figma.com/file/tc6hv0MlTMw57uG8s1C0u2/Enpitech?node-id=348%3A1702&t=
 - talk about the loaders + implement
 - talk about the useLoaderData hook
 
-## Exercise turn Product page from CSR to SSR (without add to cart):
+## Exercise turn Product page from CSR to SSR (without add to cart): - 1 hour
 
 - @nir: Instructions: render the subroute /product/$productId, use the params,
   implement the loader and implement the product.server
   (snippets: product.server, productPage UI, loader)
 - @nir: show the solution and Talk about tiny-invariant
 
-## Exercise:
+## Exercise: - 1 hour
 
-- @rotem: Introdue the action function
+- @rotem: Introduce the action function
 - Instructions: implement the add to cart logic
 
 - @nir: Break: people will probably struggle with the form, lets talk about Remix's Form
@@ -56,7 +58,7 @@ https://www.figma.com/file/tc6hv0MlTMw57uG8s1C0u2/Enpitech?node-id=348%3A1702&t=
 - User will need to create a new cart, they can use the "useCart()" hook to do that
   it will create one and store the id in the localstorage.
 
-## Exercise - Implement the Cart page
+## Exercise - Implement the Cart page - 1 hour
 
 - Instructions: Turn the Cart page to SSR using Remix architecture (loader, action, UI, cart.client -> cart.server)
 - Implement the loader
@@ -73,31 +75,27 @@ https://www.figma.com/file/tc6hv0MlTMw57uG8s1C0u2/Enpitech?node-id=348%3A1702&t=
   Posibble solutions:
 
 1.  use Outlet context
-2.  put it in the params
-3.  make a GET request to /cart
-4.  just use the hook and dont use SSR
+2.  hidden input
+3.  put it in the params
+4.  make a GET request to /cart
+5.  just use the hook and dont use SSR
 
-# Exercise - Implement checkout page and use validation: client/server
+# Talk about Outlet
 
-- @rotem - talk about validations (client + server)
-- Exercise - Implement the checkout Form and TRY TO ADD CLIENT VALIDATION (give them the validations snippet)
-- @rotem Demo - add client validation with Formik
-  (snippets - checkout page, client validation in the checkout page)
-- Exercise - add server validation
+# Demo - Implement checkout page and use validation: client/server - 30 minutes
+
+- @rotem - talk about validations (client + server) and show client validation with Formik
+- @rotem Demo
+- add server validation
   (snippets - server validation)
 
-OPTIONAL:
+# Demo - Optimistic UI - 15 minutes
 
-# Exercise - Implement loading skeleton
+- Implement optimistic UI to the checkout form
 
-- @nir: Introduce the transition hook
-- add it wherever you like
-
-# Exercise - Add error handling
+# Demo - Add error handling - 15 minutes
 
 - @rotem: Intorduce ErrorBoundary/CatchBoundry - https://remix.run/docs/en/v1/route/error-boundary
 - exercise: Add error boundary to the root and to the cart?
 
-# Demo - Optimistic UI
-
-- Implement optimistic UI to the checkout form
+# Demo - Talk about prefetching
