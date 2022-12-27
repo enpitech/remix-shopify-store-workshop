@@ -7,7 +7,6 @@ import { Form, Link, useLoaderData, useTransition } from "@remix-run/react";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { useCartId } from "~/hooks/useCartId";
-import invariant from "tiny-invariant";
 import { useState } from "react";
 // import { getProductById } from "~/models/product.server";
 // import { addItemToCart } from "~/models/cart.server";
@@ -39,29 +38,29 @@ export default function ProductPage() {
   const { productId } = useParams();
 
   const parsedProduct: Product = useProduct(productId);
-  // const [updating, setUpdating] = useState(false);
-  // const cartId = useCartId();
+  const [updating, setUpdating] = useState(false);
+  const cartId = useCartId();
 
-  // const parsedProduct = useLoaderData();
-
-  //Properties names shortening
+  // Properties names shortening
   const product = {
-    description: parsedProduct.description,
-    name: parsedProduct.title,
-    price: parsedProduct.priceRange?.minVariantPrice?.amount,
-    imageSrc: parsedProduct.featuredImage?.src,
-    altTxt: parsedProduct.featuredImage?.altText,
-    variantId: parsedProduct.variants?.edges
-      ? parsedProduct.variants?.edges[0]?.node?.id
+    description: parsedProduct?.description,
+    name: parsedProduct?.title,
+    price: parsedProduct?.priceRange?.minVariantPrice?.amount,
+    imageSrc: parsedProduct?.featuredImage?.src,
+    altTxt: parsedProduct?.featuredImage?.altText,
+    variantId: parsedProduct?.variants?.edges
+      ? parsedProduct?.variants?.edges[0]?.node?.id
       : undefined,
   };
 
-  // function handleAddToBag() {
-  //   setUpdating(true);
-  //   addItemToCart(cartId, product.variantId!).then(() => {
-  //     setUpdating(false);
-  //   });
-  // }
+  function handleAddToBag(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    setUpdating(true);
+    addItemToCart(cartId, product.variantId!).then(() => {
+      setUpdating(false);
+    });
+  }
+
   // const transition = useTransition();
   // if(transition.state === "loading") return <div>Loading...</div>;
   // const updating = transition.state === "submitting";
@@ -125,9 +124,12 @@ export default function ProductPage() {
               <input type="text" name="localCartNo" className="hidden" />
               <div className="mt-4"></div>
               <div className="mt-10">
-                <div className="mb-5 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
-                  Add to bag
-                </div>
+                <button
+                  onClick={handleAddToBag}
+                  className="mb-5 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                >
+                  {updating ? "Updating.." : "Add to bag"}
+                </button>
                 {/* <Link
                   to={`/cart/${cartId}`}
                   onClick={handleAddToBag}
