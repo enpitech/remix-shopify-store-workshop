@@ -3,11 +3,12 @@ import { addItemToCart } from "~/models/cart.client";
 import { useProduct } from "~/hooks/useProduct";
 import type { Product } from "~/types";
 
-import { Form, Link, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData, useTransition } from "@remix-run/react";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { useCartId } from "~/hooks/useCartId";
 import invariant from "tiny-invariant";
+import { useState } from "react";
 // import { getProductById } from "~/models/product.server";
 // import { addItemToCart } from "~/models/cart.server";
 // import {
@@ -37,10 +38,9 @@ import invariant from "tiny-invariant";
 export default function ProductPage() {
   const { productId } = useParams();
 
-  invariant(productId, "Product id must be defined")
   const parsedProduct: Product = useProduct(productId);
-
-  const cartId = useCartId();
+  // const [updating, setUpdating] = useState(false);
+  // const cartId = useCartId();
 
   // const parsedProduct = useLoaderData();
 
@@ -56,11 +56,18 @@ export default function ProductPage() {
       : undefined,
   };
 
-  function handleAddToBag() {
-    addItemToCart(cartId, product.variantId!);
-  }
+  // function handleAddToBag() {
+  //   setUpdating(true);
+  //   addItemToCart(cartId, product.variantId!).then(() => {
+  //     setUpdating(false);
+  //   });
+  // }
+  // const transition = useTransition();
+  // if(transition.state === "loading") return <div>Loading...</div>;
+  // const updating = transition.state === "submitting";
+  if (!parsedProduct) return <div>Loading...</div>;
 
-  return parsedProduct ? (
+  return (
     <div className="bg-white">
       <div className=" -w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
         {/* Product details */}
@@ -114,19 +121,22 @@ export default function ProductPage() {
             <h2 id="options-heading" className="sr-only">
               Product options
             </h2>
-            <Form method="post">
+            <form>
               <input type="text" name="localCartNo" className="hidden" />
               <div className="mt-4"></div>
               <div className="mt-10">
-                <Link
+                <div className="mb-5 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
+                  Add to bag
+                </div>
+                {/* <Link
                   to={`/cart/${cartId}`}
                   onClick={handleAddToBag}
                   className="mb-5 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                 >
-                  Add to bag
-                </Link>
+                  {updating ? "Upadting.." : "Add to bag"}
+                </Link> */}
                 <Link
-                  className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                  className="mt-4 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                   to="/"
                 >
                   Continue Shopping
@@ -143,10 +153,10 @@ export default function ProductPage() {
                   </span>
                 </a>
               </div>
-            </Form>
+            </form>
           </section>
         </div>
       </div>
     </div>
-  ) : null;
+  );
 }
