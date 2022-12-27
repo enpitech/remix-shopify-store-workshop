@@ -48,9 +48,13 @@ export default function Cart() {
   async function handleDelete(e: any) {
     e.preventDefault();
     const lineNumber = e.target.value;
-    confirm("Are you sure you want to remove this item? ");
-    await removeItemFromCart(cartId, lineNumber);
-    fetchCartData();
+    const userConfirmation = confirm(
+      "Are you sure you want to remove this item? "
+    );
+    if (userConfirmation) {
+      await removeItemFromCart(cartId, lineNumber);
+      fetchCartData();
+    }
   }
 
   async function handleChangeQuantity(e: any) {
@@ -72,7 +76,7 @@ export default function Cart() {
           Shopping Cart
         </h1>
 
-        <Form className="mt-12">
+        <form className="mt-12">
           <div>
             <h2 className="sr-only">Items in your shopping cart</h2>
 
@@ -262,7 +266,7 @@ export default function Cart() {
               </p>
             </div>
           </div>
-        </Form>
+        </form>
       </div>
     </div>
   );
