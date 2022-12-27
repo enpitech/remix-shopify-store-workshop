@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Form } from "@remix-run/react";
 import { useCart } from "~/hooks/useCart";
 import { removeItemFromCart } from "~/models/cart.client";
 import { CheckIcon, ClockIcon } from "@heroicons/react/20/solid";
@@ -14,9 +13,13 @@ export default function Cart() {
   async function handleDelete(e: any) {
     e.preventDefault();
     const lineNumber = e.target.value;
-    confirm("Are you sure you want to remove this item? ");
-    await removeItemFromCart(cartId, lineNumber);
-    fetchCartData();
+    const userConfirmation = confirm(
+      "Are you sure you want to remove this item? "
+    );
+    if (userConfirmation) {
+      await removeItemFromCart(cartId, lineNumber);
+      fetchCartData();
+    }
   }
 
   async function handleChangeQuantity(e: any) {
@@ -34,7 +37,7 @@ export default function Cart() {
           Shopping Cart
         </h1>
 
-        <Form className="mt-12">
+        <form className="mt-12">
           <div>
             <h2 className="sr-only">Items in your shopping cart</h2>
 
@@ -132,57 +135,55 @@ export default function Cart() {
               })}
             </ul>
           </div>
+        </form>
 
-          {/* Order summary */}
-          <div className="mt-10 sm:ml-32 sm:pl-6">
-            <div className="rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:p-8">
-              <h2 className="sr-only">Order summary</h2>
+        {/* Order summary */}
+        <div className="mt-10 sm:ml-32 sm:pl-6">
+          <div className="rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:p-8">
+            <h2 className="sr-only">Order summary</h2>
 
-              <div className="flow-root">
-                <dl className="-my-4 divide-y divide-gray-200 text-sm">
-                  <div className="flex items-center justify-between py-4">
-                    <dt className="text-gray-600">Subtotal</dt>
-                    <dd className="font-medium text-gray-900">{+total!}</dd>
-                  </div>
-                  <div className="flex items-center justify-between py-4">
-                    <dt className="text-gray-600">Shipping</dt>
-                    <dd className="font-medium text-gray-900">$5.00</dd>
-                  </div>
-                  <div className="flex items-center justify-between py-4">
-                    <dt className="text-base font-medium text-gray-900">
-                      Order total
-                    </dt>
-                    <dd className="text-base font-medium text-gray-900">
-                      {(+total! + 5).toFixed(2)}
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-            </div>
-            <div className="mt-10">
-              <Link to={`/cart/${cartId}/checkout`}>
-                <button
-                  type="submit"
-                  className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
-                >
-                  Checkout
-                </button>
-              </Link>
-            </div>
-
-            <div className="mt-6 text-center text-sm text-gray-500">
-              <p>
-                <Link
-                  to="/"
-                  className="font-medium text-indigo-600 hover:text-indigo-500"
-                >
-                  Continue Shopping
-                  <span aria-hidden="true"> &rarr;</span>
-                </Link>
-              </p>
+            <div className="flow-root">
+              <dl className="-my-4 divide-y divide-gray-200 text-sm">
+                <div className="flex items-center justify-between py-4">
+                  <dt className="text-gray-600">Subtotal</dt>
+                  <dd className="font-medium text-gray-900">{+total!}</dd>
+                </div>
+                <div className="flex items-center justify-between py-4">
+                  <dt className="text-gray-600">Shipping</dt>
+                  <dd className="font-medium text-gray-900">$5.00</dd>
+                </div>
+                <div className="flex items-center justify-between py-4">
+                  <dt className="text-base font-medium text-gray-900">
+                    Order total
+                  </dt>
+                  <dd className="text-base font-medium text-gray-900">
+                    {(+total! + 5).toFixed(2)}
+                  </dd>
+                </div>
+              </dl>
             </div>
           </div>
-        </Form>
+          <div className="mt-10">
+            <Link
+              to={`/cart/${cartId}/checkout`}
+              className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+            >
+              Checkout
+            </Link>
+          </div>
+
+          <div className="mt-6 text-center text-sm text-gray-500">
+            <p>
+              <Link
+                to="/"
+                className="font-medium text-indigo-600 hover:text-indigo-500"
+              >
+                Continue Shopping
+                <span aria-hidden="true"> &rarr;</span>
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
