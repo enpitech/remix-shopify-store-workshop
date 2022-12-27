@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { addItemToCart } from "~/models/cart.client";
 import { useProduct } from "~/hooks/useProduct";
 import type { Product } from "~/types";
@@ -14,6 +14,7 @@ export default function ProductPage() {
 
   const parsedProduct: Product = useProduct(productId);
   const [updating, setUpdating] = useState(false);
+  const navigator = useNavigate();
   const cartId = useCartId();
 
   // Properties names shortening
@@ -33,6 +34,7 @@ export default function ProductPage() {
     setUpdating(true);
     addItemToCart(cartId, product.variantId!).then(() => {
       setUpdating(false);
+      navigator(`/cart/${cartId}`);
     });
   }
 
@@ -97,6 +99,7 @@ export default function ProductPage() {
               <div className="mt-4"></div>
               <div className="mt-10">
                 <button
+                  type="submit"
                   onClick={handleAddToBag}
                   className="mb-5 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                 >
