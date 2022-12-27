@@ -1,32 +1,44 @@
 import { useParams } from "react-router-dom";
-import { Form, Link } from "@remix-run/react";
-import { CheckIcon } from "@heroicons/react/20/solid";
-import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { addItemToCart } from "~/models/cart.client";
 import { useProduct } from "~/hooks/useProduct";
-import { useCartId } from "~/hooks/useCartId";
 import type { Product } from "~/types";
 
-export default function ProductPage() {
-  const cartId = useCartId();
-  const { productId } = useParams();
-  const parsedProduct: Product = useProduct(productId!);
+import { Link } from "@remix-run/react";
+import { CheckIcon } from "@heroicons/react/20/solid";
+import { ShieldCheckIcon } from "@heroicons/react/24/outline";
+import { useCartId } from "~/hooks/useCartId";
+import { useState } from "react";
 
-  //Properties names shortening
+export default function ProductPage() {
+  const { productId } = useParams();
+
+  const parsedProduct: Product = useProduct(productId);
+  const [updating, setUpdating] = useState(false);
+  const cartId = useCartId();
+
+  // Properties names shortening
   const product = {
     description: parsedProduct?.description,
     name: parsedProduct?.title,
-    price: parsedProduct?.priceRange.minVariantPrice.amount,
-    imageSrc: parsedProduct?.featuredImage.src,
-    altTxt: parsedProduct?.featuredImage.altText,
-    variantId: parsedProduct?.variants.edges[0].node.id,
+    price: parsedProduct?.priceRange?.minVariantPrice?.amount,
+    imageSrc: parsedProduct?.featuredImage?.src,
+    altTxt: parsedProduct?.featuredImage?.altText,
+    variantId: parsedProduct?.variants?.edges
+      ? parsedProduct?.variants?.edges[0]?.node?.id
+      : undefined,
   };
 
-  function handleAddToBag() {
-    addItemToCart(cartId, product.variantId!);
+  function handleAddToBag(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    setUpdating(true);
+    addItemToCart(cartId, product.variantId!).then(() => {
+      setUpdating(false);
+    });
   }
 
-  return parsedProduct ? (
+  if (!parsedProduct) return <div>Loading...</div>;
+
+  return (
     <div className="bg-white">
       <div className=" -w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
         {/* Product details */}
@@ -80,19 +92,19 @@ export default function ProductPage() {
             <h2 id="options-heading" className="sr-only">
               Product options
             </h2>
-            <Form method="post">
+            <form>
               <input type="text" name="localCartNo" className="hidden" />
               <div className="mt-4"></div>
               <div className="mt-10">
-                <Link
-                  to={`/cart/${cartId}`}
+                <button
                   onClick={handleAddToBag}
                   className="mb-5 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                 >
-                  Add to bag
-                </Link>
+                  {updating ? "Updating.." : "Add to bag"}
+                </button>
+
                 <Link
-                  className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                  className="mt-4 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                   to="/"
                 >
                   Continue Shopping
@@ -109,10 +121,10 @@ export default function ProductPage() {
                   </span>
                 </a>
               </div>
-            </Form>
+            </form>
           </section>
         </div>
       </div>
     </div>
-  ) : null;
+  );
 }
