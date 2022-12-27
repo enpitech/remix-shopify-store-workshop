@@ -32,7 +32,7 @@ function NavBar({
   setOpen,
 }: {
   collections: CollectionsArray;
-  setOpen: any;
+  setOpen: Function;
 }) {
   return (
     <nav aria-label="Top">

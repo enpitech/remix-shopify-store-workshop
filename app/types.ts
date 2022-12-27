@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 
 //Collections types
 
-export type CollectionsArray = [] | undefined;
+export type CollectionsArray = ShopifyCollection[] | undefined;
+// export type CollectionsArray = Collection[] | undefined;
 export interface Collection {
   key: string;
   name: string;
