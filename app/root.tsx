@@ -1,5 +1,7 @@
-import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import tailwindStylesheetUrl from "./styles/tailwind.css";
+import Layout from "~/components/Layout";
+import Error from "./components/Error";
 import {
   Links,
   LiveReload,
@@ -9,37 +11,48 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
-import tailwindStylesheetUrl from "./styles/tailwind.css";
-import { getUser } from "./session.server";
-
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
 };
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
-  title: "Remix Notes",
+  title: "Remix Workshop",
   viewport: "width=device-width,initial-scale=1",
 });
-
-export async function loader({ request }: LoaderArgs) {
-  return json({
-    user: await getUser(request),
-  });
-}
 
 export default function App() {
   return (
     <html lang="en" className="h-full">
       <head>
+        <Links />
+        <Meta />
+      </head>
+      <body className="h-full">
+        <Layout>
+          <Outlet />
+        </Layout>
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
+      </body>
+    </html>
+  );
+}
+
+export function ErrorBoundary({ error }: any) {
+  return (
+    <html lang="en" className="h-full">
+      <head>
+        <title>Something went wrong!</title>
         <Meta />
         <Links />
       </head>
       <body className="h-full">
-        <Outlet />
-        <ScrollRestoration />
+        <Layout>
+          <Error error={error.message} />
+        </Layout>
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   );
